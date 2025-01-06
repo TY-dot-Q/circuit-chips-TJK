@@ -1,0 +1,23 @@
+nodig:
+
+1. opzetten
+grid maker (0,0 link onder max, max rechts boven)
+systeem om chips in de grid te zetten
+
+2. weergeven
+fisualisatie ervan
+hoogte, chips, lijn onder lijn, lijn
+
+3. berekenen
+algoritme om lijnen te bepalen
+- dichtbij zijnde chips bepaalen/ berekenen
+-
+-
+- lengte bijhouden
+
+
+4. terug geven
+output terug geven op de juiste manier
+- hoeveel heid lijnstukken
+- waarde van alle lijnen (intersection en lijn aantal)
+- locatie lijnstukken
