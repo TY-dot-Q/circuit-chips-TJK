@@ -1,14 +1,15 @@
 grid =[]
-max_z = 3 #diepte oftewel de layers
 gatenr=1
+max_z = 3#layers
 
 def gridcreate (max_y, max_x) -> None:
     global grid, max_z
     grid = [[[0 for _ in range(max_y)] for _ in range(max_x)] for _ in range(max_z)]
     print("grid succesfol gemaakt")
 
-def printgrid (max_z, max_y, max_x) -> None:
+def printgrid () -> None:
     global grid
+    global max_z
     for z in range(max_z):
         print(f"laag {z}")
         for row in grid[z]:
@@ -25,8 +26,6 @@ def addgate (y,x) ->None:
 
 def _init_() ->None:
     #vraag de gates op, tot dat de user "stop" typt, dan maak de grid en print het met de functies hiervboven
-    global max_y, max_x
-    
     user_hoogte = int(input("geeft de maximaale verticale hoogte: 'y'"))
     max_y = user_hoogte
 
