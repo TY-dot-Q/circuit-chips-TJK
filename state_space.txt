@@ -1,0 +1,15 @@
+1. er zijn 20 combinaties voor 12 plekken dus eerst 20 plekken daarna 19 dan achten en omdat we rekening moeten houden met volgorde wordt alles vermenigvuldigd, omdat elk tijdslot een ander vak kan bevatten. dit komt neer op 20 x 19 x 18 x 17 x 16 x 15 x 14 x 13 x 12 x 11 x 10 x 9 = 60.339.831.552.000
+
+2. Bij elke kruispunt heb je drie opties dus je hebt 20 keer 3 opties. Wat neerkomt op 3^20 = 3.486.784.401
+
+3. 25 dozen + 3 keuzes - 1 = 27 en 25 dozen (3 keuzes min 1 ) maakt 
+27! / (25! x 2!) = 27 x 26 / 2 = 351
+
+4. 110 keuze per mogelijkheid en 30 mogelijkheden maar dit moet je ook doen voor 31 en 32 dus (110! / (110 - 30)!) + (110! / (110 - 31)! )+ (110! / (110 - 32)!) = 794.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000
+
+5. 26x25x24x23x22x21x20 is de keuzemogelijkheid dus 1 / (26x25x24x23x22x21x20) = 0,000000000301631
+
+6. 45 dozen + 3 keuzes per doos -1 = 47 dus 47! / (45! x 2!) =  47! / (45! x 2) 
+maar we moeten ook rekening houden met het het feit dat er 30 dozen zijn waardoor de keuze niet altijd uit drie soorten dozen bestaat dus moeten we voor alles boven de dertig dozen de mogelijkheden weghalen dus (45 - 31) + 3 -1 = 16 --> 16! / (16! x 2!) = 16! / (14! x 2) 
+(47! / (45! x 2)) - (16! / (14! x 2)) = 961
+
