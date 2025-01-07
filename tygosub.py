@@ -3,11 +3,18 @@ gatenr=1
 max_z = 3#layers
 
 def gridcreate (max_y, max_x) -> None:
+    """
+    creeert een array 3d grid gebaseerde op de globale max_z en opgegeven max_y en x
+    let op dit vervangt alle waardes niet runnen nadat gates zijn opgegeven.
+    """
     global grid, max_z
     grid = [[[0 for _ in range(max_y)] for _ in range(max_x)] for _ in range(max_z)]
     print("grid succesfol gemaakt")
 
 def printgrid () -> None:
+    """
+    print de huidig grid status met gates en verschillende lagen.
+    """
     global grid
     global max_z
     for z in range(max_z):
@@ -17,6 +24,10 @@ def printgrid () -> None:
     print("klaar met printen")
 
 def addgate (x, y) ->None:
+    """
+    vervangt de 0 waarde van de gridcreate met een nummer 1,2,3 etc en je kan hiermee dus gates toevoegen.
+    gebruik x en y coordinaten
+    """
     global grid, gatenr
 
     grid[1][y][x] = gatenr #voeg de gate toe
@@ -25,9 +36,13 @@ def addgate (x, y) ->None:
     gatenr=gatenr+1
 
 def addgaterequest()->None:
+    """
+    geeft een makkelijke manier om meerdere gates toe te voegen
+    herhaalt de addgatefunctie totdat de user stop typ. de input is y,x coordinaten
+    """
     print("geef de cordinaten van de gates, typ: 'stop' wanneer je klaar bent")
     while True:
-        user_coordinates = input("coordinaten bijv: 'x,y'")
+        user_coordinates = input("coordinaten bijv: 'y,x'")
         if user_coordinates.lower()=="stop":
             break
         
@@ -38,6 +53,9 @@ def addgaterequest()->None:
             print("eroor: ongeldige invoer")
 
 def _init_() ->None:
+    """
+    deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
+    """
     #vraag de gates op, tot dat de user "stop" typt, dan maak de grid en print het met de functies hiervboven
     user_hoogte = int(input("geeft de maximaale verticale hoogte: 'y'"))
     max_y = user_hoogte
