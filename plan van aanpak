@@ -11,7 +11,11 @@ hoogte, chips, lijn onder lijn, lijn
 3. berekenen
 algoritme om lijnen te bepalen
 - dichtbij zijnde chips bepaalen/ berekenen
--
+
+
+- 
+- checker of de nieuwe lijn al op een ander lijn ligt
+- locatie van alle lijnen in een lijst zetten
 -
 - lengte bijhouden
 
