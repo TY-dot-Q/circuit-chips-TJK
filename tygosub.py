@@ -16,7 +16,7 @@ def printgrid () -> None:
             print(row) 
     print("klaar met printen")
 
-def addgate (y,x) ->None:
+def addgate (x, y) ->None:
     global grid, gatenr
 
     grid[1][y][x] = gatenr #voeg de gate toe
@@ -24,16 +24,7 @@ def addgate (y,x) ->None:
     print(f"gate met het nummer {gatenr} toegevoegd op de coordinaten y={y}, x={x} ")
     gatenr=gatenr+1
 
-def _init_() ->None:
-    #vraag de gates op, tot dat de user "stop" typt, dan maak de grid en print het met de functies hiervboven
-    user_hoogte = int(input("geeft de maximaale verticale hoogte: 'y'"))
-    max_y = user_hoogte
-
-    user_breedte = int(input("geeft de maximaale horizontale lengte: 'x'"))
-    max_x = user_breedte
-    
-    gridcreate(max_y, max_x)
-
+def addgaterequest()->None:
     print("geef de cordinaten van de gates, typ: 'stop' wanneer je klaar bent")
     while True:
         user_coordinates = input("coordinaten bijv: 'x,y'")
@@ -45,6 +36,18 @@ def _init_() ->None:
             addgate(y,x)
         except ValueError:
             print("eroor: ongeldige invoer")
+
+def _init_() ->None:
+    #vraag de gates op, tot dat de user "stop" typt, dan maak de grid en print het met de functies hiervboven
+    user_hoogte = int(input("geeft de maximaale verticale hoogte: 'y'"))
+    max_y = user_hoogte
+
+    user_breedte = int(input("geeft de maximaale horizontale lengte: 'x'"))
+    max_x = user_breedte
+    
+    gridcreate(max_y, max_x)
+
+    addgaterequest()
 
     print("de uiteindelijke grid is:")
     printgrid()
