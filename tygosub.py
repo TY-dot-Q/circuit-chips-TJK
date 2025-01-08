@@ -4,6 +4,9 @@ class gridedit:
         self.max_z=max_z
         self.grid=[]
         self.gatenr =1
+        self.wirecount=0
+        self.wirecrosscount=0
+        self.score=0
 
     def gridcreate (self, max_y, max_x) -> None:
         """
@@ -24,7 +27,6 @@ class gridedit:
             self.gatenr +=1
         else:
             print(f"er staat al iets namelijk \"{self.grid[1][y][x]}\"")
-        
     
     def addwire (self, y, x, z) ->None:
         """
@@ -33,9 +35,18 @@ class gridedit:
         if self.grid[z][y][x] ==0:
             self.grid[z][y][x] = "+" #voeg de wire toe
             print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
-        
+            self.wirecount+=1
+
+        elif self.grid[z][y][x]=="+":
+            self.wirecrosscount+=1
+            print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
+
         else:
             print(f"er staat al iets namelijk: \"{self.grid[z][y][x]}\"")
+
+    def costenberekening(self)->None:
+        """berekent de score van de geplaatste draden"""
+        self.score = self.wirecount + 300 * self.wirecrosscount
 
 class userinput:
     def __init__(self, gridedit_obj):
@@ -74,7 +85,11 @@ class userinput:
                 self.gridedit.addwire(y,x, z)
             except ValueError:
                 print("eroor: ongeldige invoer")  
-
+    
+    def scorerequest(self)->None:
+        print(f"er zijn {self.gridedit.wirecount} draaden")
+        print(f"er zijn {self.gridedit.wirecrosscount} die overelkaar lopen")
+        print(f"dit geeft een score van c={self.gridedit.score}")
 
 class output:
     def __init__(self, gridedit_obj):
@@ -91,7 +106,8 @@ class output:
         print("klaar met printen")
 
 
-def _init_() ->None:
+
+def Startfunctie() ->None:
     """
     deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
     """
@@ -114,4 +130,8 @@ def _init_() ->None:
     print("De uiteindelijke grid is:")
     output_obj.printgrid()
 
-_init_()
+    gridedit_obj.costenberekening()
+    userinput_obj.scorerequest()
+
+
+Startfunctie()
