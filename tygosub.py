@@ -23,7 +23,7 @@ def printgrid () -> None:
             print(row) 
     print("klaar met printen")
 
-def addgate (x, y) ->None:
+def addgate (y, x) ->None:
     """
     vervangt de 0 waarde van de gridcreate met een nummer 1,2,3 etc en je kan hiermee dus gates toevoegen.
     gebruik x en y coordinaten
@@ -34,6 +34,18 @@ def addgate (x, y) ->None:
 
     print(f"gate met het nummer {gatenr} toegevoegd op de coordinaten y={y}, x={x} ")
     gatenr=gatenr+1
+
+def addwire (y, x, z) ->None:
+    """
+    vervangt de 0 waarde van de gridcreate met een wire, checkt ook of er niet al een gate is. 
+    """
+    global grid
+    if grid[z][y][x] ==0:
+        grid[z][y][x] = "+" #voeg de wire toe
+        print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
+    
+    else:
+        print(f"er staat al iets namelijk: \"{grid[z][y][x]}\"")
 
 def addgaterequest()->None:
     """
@@ -50,7 +62,25 @@ def addgaterequest()->None:
             y, x = map(int, user_coordinates.split(','))
             addgate(y,x)
         except ValueError:
-            print("eroor: ongeldige invoer")
+            print("eroor: ongeldige invoer")      
+
+def addwirerequest()->None:
+    """
+    geeft een makkelijke manier om meerdere gates toe te voegen
+    herhaalt de addgatefunctie totdat de user stop typ. de input is y,x coordinaten
+    """
+    print("geef de cordinaten van de wires, typ: 'stop' wanneer je klaar bent")
+    while True:
+        user_coordinates = input("coordinaten bijv: 'y,x,z'")
+        if user_coordinates.lower()=="stop":
+            break
+        
+        try:
+            y, x, z = map(int, user_coordinates.split(','))
+            addwire(y,x, z)
+        except ValueError:
+            print("eroor: ongeldige invoer")     
+
 
 def _init_() ->None:
     """
@@ -66,6 +96,7 @@ def _init_() ->None:
     gridcreate(max_y, max_x)
 
     addgaterequest()
+    addwirerequest()
 
     print("de uiteindelijke grid is:")
     printgrid()
