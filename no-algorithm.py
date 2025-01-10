@@ -1,9 +1,14 @@
+import csv, os
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
 class grid_edit:
     def __init__(self):
         """initaliseer de gridedit class"""
         self.max_z=3
         self.grid=[]
         self.gate_dict={}
+        self.wire_list=[]
         self.gatenr =1
         self.wirecount=0
         self.wirecrosscount=0
@@ -17,19 +22,20 @@ class grid_edit:
         self.grid = [[[0 for _ in range(max_x)] for _ in range(max_y)] for _ in range(self.max_z)]
         print("grid succesfol gemaakt")
 
-    def add_gate (self, y, x) ->None:
+    def add_gate (self, y, x, z) ->None:
         """
         vervangt de 0 waarde van de gridcreate met een nummer 1,2,3 etc en je kan hiermee dus gates toevoegen.
         gebruik x en y coordinaten
         """
-        if self.grid[1][y][x] ==0:
-            self.grid[1][y][x] = self.gatenr #voeg de gate toe
-            print(f"gate met het nummer {self.gatenr} toegevoegd op de coordinaten y={y}, x={x} ")
+        if self.grid[z][y][x] ==0:
+            self.grid[z][y][x] = self.gatenr #voeg de gate toe
+            self.gate_dict[self.gatenr] = (y,x,z)
+            print(f"gate met het nummer {self.gatenr} toegevoegd op de coordinaten y={y}, x={x}, z={z} ")
             self.gatenr +=1
             
-            self.gate_dict[self.gatenr] = y,x
+            
         else:
-            print(f"er staat al iets namelijk \"{self.grid[1][y][x]}\"")
+            print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
     
     def add_wire (self, y, x, z) ->None:
         """
@@ -37,9 +43,9 @@ class grid_edit:
         """
         if self.grid[z][y][x] ==0:
             self.grid[z][y][x] = "+" #voeg de wire toe
-            print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
             self.wirecount+=1
-
+            self.wire_list.append((y,x,z))
+            print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
         elif self.grid[z][y][x]=="+":
             self.wirecrosscount+=1
             print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
@@ -92,6 +98,36 @@ class user_input:
         print(f"er zijn {self.grid_edit.wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
         print(f"dit geeft een score van c={self.grid_edit.score}")
+    
+    def load_gates(self, file_path: str)->None:
+            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            if not os.path.isfile(file_path):
+                print(f"Bestand '{file_path}' niet gevonden!")
+            else:
+                try:
+                    with open(file_path, mode='r') as file:
+                        csv_reader = csv.reader(file)
+                        next(csv_reader)  # sla de eerste regel over
+
+                        for row in csv_reader:
+                            if len(row) < 2:
+                                print(f"Ongeldige regel in CSV-bestand: {row}")
+                                continue
+
+                            try:
+                                y=int(row[0])
+                                x=int(row[1])
+                                z=int(row[2]) if len(row)>2 else 3
+                                self.grid_edit.add_gate(y,x,z)
+                            except ValueError:
+                                print(f'print:error met waardes in regel:{row}')
+                                continue
+
+                    print("Alle gates zijn succesvol geladen uit het CSV-bestand.")
+                except FileNotFoundError:
+                    print(f"Fout: Het bestand '{file_path}' bestaat niet.")
+                except ValueError:
+                    print("Fout: Ongeldige waarden in het CSV-bestand.")
 
 class output:
     def __init__(self, grid_edit_obj):
@@ -101,9 +137,9 @@ class output:
         """
         print de huidig grid status met gates en verschillende lagen.
         """
-        for z in range(self.gridedit.max_z):
+        for z in range(self.grid_edit.max_z):
             print(f"laag {z}")
-            for row in self.gridedit.grid[z]:
+            for row in self.grid_edit.grid[z]:
                 print(row) 
         print("klaar met printen")
 
@@ -111,19 +147,38 @@ class output:
         """berekent de score van de geplaatste draden"""
         score = self.grid_edit.wirecount + 300 * self.grid_edit.wirecrosscount
         return score
+    
+    def visualisatie(self)->None:
+        
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection="3d")
+
+        for gate_nr, (y,x,z) in self.grid_edit.gate_dict.items():
+            ax.scatter(y,x,z, color='blue', label=f'gate{gate_nr}')
+        
+            for z in range(len(self.grid_edit.grid)):
+                for y in range(len(self.grid_edit.grid[z])):
+                    for x in range(len(self.grid_edit.grid[z][y])):
+                        if self.grid_edit.grid[z][y][x] == "+":
+                            ax.scatter(x, y, z, color='red', label='Wire')
+
+        ax.set_xlabel('X-as')
+        ax.set_ylabel('Y-as')
+        ax.set_zlabel('Z-as')
+
+        plt.show()
+
 
 class algorithm:
-    #def addgatelist()->None:
-        #gates toevoegen van de csv lijst
-        
+    
+
 
     def Start_functie() ->None:
         """
         deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
         """
         grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
-        output_obj = output(grid_edit_obj)
 
         #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
         user_hoogte = int(input("geeft de maximaale verticale hoogte: 'y'"))
@@ -132,10 +187,10 @@ class algorithm:
         user_breedte = int(input("geeft de maximaale horizontale lengte: 'x'"))
         max_x = user_breedte #maak lijn hierboven commentaar en verander user_hoogte naar een waarde
 
-        grid_edit_obj.gridcreate(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
+        grid_edit_obj.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
 
     #def algorithm() ->None:
-        #"grid_edit_obj.addgate(5,6)" om een gate toe tevoegen (altijd laag 1)
+        #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
         #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
         #""
 
@@ -150,16 +205,20 @@ class algorithm:
         user_breedte = int(input("geeft de maximaale horizontale lengte: 'x'"))
         max_x = user_breedte 
 
-        grid_edit_obj.gridcreate(max_y, max_x) 
+        grid_edit_obj.grid_create(max_y, max_x) 
 
-        user_input_obj.add_gate_request()
+        #user_input_obj.add_gate_request()
+        path="gates.csv"
+        user_input_obj.load_gates(path)
         user_input_obj.add_wire_request()
 
         
         print("De uiteindelijke grid is:")
-        output_obj.printgrid()
+        output_obj.print_grid()
 
-        grid_edit_obj.costenberekening()
-        user_input_obj.scorerequest()
+        output_obj.costen_berekening()
+        user_input_obj.score_request()
 
-    manual_check()
+        output_obj.visualisatie()
+
+    manual_check() #maak commentaar als je het niet handmatig wil checken
