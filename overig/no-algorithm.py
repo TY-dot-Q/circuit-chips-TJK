@@ -171,9 +171,6 @@ class output:
 
 
 class algorithm:
-    
-
-
     def Start_functie() ->None:
         """
         deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is

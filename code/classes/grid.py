@@ -1,6 +1,4 @@
 import csv, os
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 class grid_edit:
     def __init__(self):
@@ -54,13 +52,10 @@ class grid_edit:
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]
-
+    
 class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
-        auto_y =5
-        auto_x=5
-        auto_z=3
 
     def score_request(self)->None:
         print(f"er zijn {self.grid_edit.wirecount} draaden")
@@ -138,11 +133,7 @@ class user_input:
         except Exception as e:
             print(f"Fout tijdens het lezen van het bestand: {e}")
             return max_y, max_x, max_z  # Zorg voor een veilige return
-
-class output:
-    def __init__(self, grid_edit_obj):
-        self.grid_edit=grid_edit_obj
-
+        
     def print_grid (self, max_z) -> None:
         """
         print de huidig grid status met gates en verschillende lagen.
@@ -152,37 +143,6 @@ class output:
             for row in self.grid_edit.grid[z]:
                 print(row) 
         print("klaar met printen")
-
-    def costen_berekening(self)->int:
-        """berekent de score van de geplaatste draden"""
-        score = self.grid_edit.wirecount + 300 * self.grid_edit.wirecrosscount
-        return score
-    
-    def visualisatie(self)->None:
-        
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-
-        for gate_nr, (y,x,z) in self.grid_edit.gate_dict.items():
-            ax.scatter(y,x,z, color='blue', label=f'gate{gate_nr}')
-        
-            for z in range(len(self.grid_edit.grid)):
-                for y in range(len(self.grid_edit.grid[z])):
-                    for x in range(len(self.grid_edit.grid[z][y])):
-                        if self.grid_edit.grid[z][y][x] == "+":
-                            ax.scatter(x, y, z, color='red', label='Wire')
-
-        ax.set_xlabel('X-as')
-        ax.set_ylabel('Y-as')
-        ax.set_zlabel('Z-as')
-
-        plt.show()
-
-
-class start:
-    def __init__(self, grid_edit_obj):
-        self.grid_edit=grid_edit_obj
 
     def Auto_start_functie(self, user_path) ->None:
         """
@@ -201,32 +161,3 @@ class start:
 
 
         grid_edit_obj.grid_create(max_y, max_x, max_z) #maakt de grid met de opgegeven hoogte en breedt
-    
-
-class algorithm:
-    #def algorithm() ->None:
-        #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
-        #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
-        #""
-
-    def manual_check():
-        grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
-        output_obj = output(grid_edit_obj)
-        start_obj =start(grid_edit_obj)
-        
-        path="C:\\Users\\tygob\\Documents\\GitHub\\circuit-chips-TJK\\code"
-            
-        start_obj.Auto_start_functie(path)
-
-        user_input_obj.load_gates(path)
-        
-        print("De uiteindelijke grid is:")
-        output_obj.print_grid(3)
-
-        output_obj.costen_berekening()
-        user_input_obj.score_request()
-
-        output_obj.visualisatie()
-
-    manual_check() #maak commentaar als je het niet handmatig wil checken
