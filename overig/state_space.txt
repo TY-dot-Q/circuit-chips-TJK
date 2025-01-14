@@ -13,3 +13,16 @@
 maar we moeten ook rekening houden met het het feit dat er 30 dozen zijn waardoor de keuze niet altijd uit drie soorten dozen bestaat dus moeten we voor alles boven de dertig dozen de mogelijkheden weghalen dus (45 - 31) + 3 -1 = 16 --> 16! / (16! x 2!) = 16! / (14! x 2) 
 (47! / (45! x 2)) - (16! / (14! x 2)) = 961
 
+7. We maken voor de state space een aantal aannames:
+- We laten de verschillende lagen buiten beschouwing, omdat de laag waar de chips in de grid zitten de belangrijkste en drukste laag zal vormen
+- We gaan uit van de maximale case van 50 chips in een netwerk 
+- We gaan ervan uit dat de af te leggen route tussen chips gebeurt volgens het principe van de Manhattan Distance.
+- We gaan ervanuit dat alle chips de langst mogelijke route afleggen met als langste route van coördinaat (1,1) naar (15,15) en daar de helft van afleggen dus van (8,8) naar (15,15). Dit levert wellicht een overschatting op. 
+- We laten het feit dat kortsluiting kan optreden als draadjes langs dezelfde route lopen buiten beschouwing om onze case te versimpelen. 
+
+Verschillende chips kunnen met elkaar verbonden worden (bijvoorbeeld 1 met 2, maar bijvoorbeeldook 30 met 48) op verschillende manieren waar je aan het begin 50 mogelijkheden hebt en steeds per keuze die je maakt een optie minder krijgt, dus 50!
+
+Daarna kijken we naar de route die je een verbinding kan afleggen volgens het principe can de Manhattan distance. Hierbij krijgen we 14 stukjes af te leggen route waarvan 7 omhoog en 7 opzij dus 14C7. 
+
+Daarna kijk je dus voor elke mogelijke verbinding hoeveel routes mogelijk zijn. Dit doen we door het aantal mogelijke verbindingen te vermenigvuldigen met het aantal mogelijk routes:
+50! x 14C7 =  104.381.167.868.280.313.445.678.471.225.934.286.673.904.065.864.672.477.184.000.000.000.000 mogelijkheden 
