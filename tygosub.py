@@ -63,10 +63,6 @@ class grid_edit:
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]
-    
-    
-
-        
 
 class user_input:
     def __init__(self, grid_edit_obj):
