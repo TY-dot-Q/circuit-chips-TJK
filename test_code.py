@@ -1,6 +1,8 @@
 import csv, os
 import matplotlib.pyplot as plt
+import heapq
 from mpl_toolkits.mplot3d import Axes3D
+
 
 class grid_edit:
     grid=[]
@@ -227,11 +229,95 @@ class start:
         user_input_obj.load_gates(user_path)
 
 class algorithm:
-    #def algorithm() ->None:
-        #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
-        #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
-        #""
+    def __init__(self, grid_edit_obj):
+        self.grid_edit = grid_edit_obj
 
+    def heuristic(self, start, end):
+        sy, sx, sz = start
+        ey, ex, ez = end
+        return abs(sy - ey) + abs(sx - ex) + abs(sz - ez)
+
+    def check_valid(self, pos):
+        x, y, z = pos
+
+        # checks if the position is in the grid and if it is not already taken
+        if 0 <= x < self.grid_size[0] and 0 <= y < self.grid_size[1] and 0 <= z < self.grid_size[2] and (self.grid[x][y][z] is None):
+            return True
+        else:
+            return False
+    
+    def shortest_path(self, start, end):
+        open_set = [(0, start)]
+        origin = {}
+        current_cost = {start: 0}
+        estimated_cost = {start: self.heuristic(start, end)}
+        closed_set = set()
+
+        while open_set:
+            while open_set:
+            # takes the lowest priority node out of the heap
+            _, current = heapq.heappop(open_set)
+
+            # stops if the current point is the end point
+            if current == end:
+                self.reconstruct_path(origin, current)
+                return True
+
+            # adds this node to the processed node list
+            closed_set.append(current)
+            
+            # loops over the neighbors of the current point
+            for dx, dy, dz in [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]:
+                neighbor = (current[0] + dx, current[1] + dy, current[2] + dz)
+
+                # checks if the neighbor is inside the grid
+                if self.check_valid(neighbor) != True:
+                    continue
+                
+                # cost for moving to the neighbor
+                temp_current_cost = current_cost[current] + 1
+
+                if neighbor not in current_cost or temp_current_cost < current_cost[neighbor]:
+                    origin[neighbor] = current
+                    
+                    # updates costs to that of the neighbor
+                    current_cost[neighbor] = temp_current_cost
+
+                    # calculates the priority, with current costs and the heuristic
+                    estimated_cost = temp_current_cost + self.heuristic(neighbor, end)
+                    
+                    # adds neighbor to the prioritylist
+                    heapq.heappush(open_set, (estimated_cost, neighbor))
+        
+        # returns the path from start to end
+        return False
+        
+    def reconstruct_path(self, origin, current):
+        while current in origin:
+            y, x, z = current
+            self.grid_edit.add_wire(y,x,z)
+            current = origin[current]
+
+    def connect_gates(self):
+        # Haal alle gates op uit de gate_dict
+        gates = list(self.grid_edit.gate_dict.values())
+        if len(gates) < 2:
+            print("Er zijn niet genoeg gates om verbindingen te maken.")
+            return
+        # Bereken verbindingen: elke gate verbinden met de twee dichtstbijzijnde buren
+        connections = {}
+        for i, gate in enumerate(gates):
+            distances = sorted(
+                ((self.heuristic(gate, other_gate), other_gate) for j, other_gate in enumerate(gates) if i != j)
+            )
+            connections[gate] = [distances[0][1], distances[1][1]]  # Twee dichtstbijzijnde gates
+
+        # Leg verbindingen via wires
+        for start, neighbors in connections.items():
+            for neighbor in neighbors:
+                if not self.find_path(start, neighbor):
+                    print(f"Kan geen pad vinden tussen {start} en {neighbor}.")
+    
     def manual_check():
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
