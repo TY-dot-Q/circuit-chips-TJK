@@ -230,7 +230,7 @@ class start:
 
 class algorithm:
     def __init__(self, grid_edit_obj):
-        self.grid_edit = grid_edit_obj
+        self.grid_edit = grid_edit()
 
     def heuristic(self, start, end):
         sy, sx, sz = start
@@ -238,15 +238,24 @@ class algorithm:
         return abs(sy - ey) + abs(sx - ex) + abs(sz - ez)
 
     def check_valid(self, pos):
-        x, y, z = pos
-
         # checks if the position is in the grid and if it is not already taken
-        if 0 <= x < self.grid_size[0] and 0 <= y < self.grid_size[1] and 0 <= z < self.grid_size[2] and (self.grid[x][y][z] is None):
-            return True
-        else:
+        y, x, z = pos
+
+        # Ensure the position is within the grid bounds
+        if not (0 <= z < len(self.grid_edit.grid) and 
+                0 <= y < len(self.grid_edit.grid[0]) and 
+                0 <= x < len(self.grid_edit.grid[0][0])):
             return False
+
+        # Ensure the position is not already occupied
+        if self.grid_edit.grid[z][y][x] != 0:  # Assuming 0 means an empty cell
+            return False
+
+        return True
     
     def shortest_path(self, start, end):
+        start = self.grid_edit.gate_location(start)
+        end = self.grid_edit.gate_location(end)
         open_set = [(0, start)]
         origin = {}
         current_cost = {start: 0}
@@ -255,41 +264,40 @@ class algorithm:
 
         while open_set:
             while open_set:
-            # takes the lowest priority node out of the heap
-            _, current = heapq.heappop(open_set)
+                # takes the lowest priority node out of the heap
+                _, current = heapq.heappop(open_set)
 
-            # stops if the current point is the end point
-            if current == end:
-                self.reconstruct_path(origin, current)
-                return True
+                # stops if the current point is the end point
+                if current == end:
+                    self.reconstruct_path(origin, current)
+                    return True
 
-            # adds this node to the processed node list
-            closed_set.append(current)
-            
-            # loops over the neighbors of the current point
-            for dx, dy, dz in [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]:
-                neighbor = (current[0] + dx, current[1] + dy, current[2] + dz)
-
-                # checks if the neighbor is inside the grid
-                if self.check_valid(neighbor) != True:
-                    continue
+                # adds this node to the processed node list
+                closed_set.add(current)
                 
-                # cost for moving to the neighbor
-                temp_current_cost = current_cost[current] + 1
+                # loops over the neighbors of the current point
+                for dx, dy, dz in [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]:
+                    neighbor = (current[0] + dx, current[1] + dy, current[2] + dz)
 
-                if neighbor not in current_cost or temp_current_cost < current_cost[neighbor]:
-                    origin[neighbor] = current
+                    # checks if the neighbor is inside the grid
+                    if self.check_valid(neighbor) != True:
+                        continue
                     
-                    # updates costs to that of the neighbor
-                    current_cost[neighbor] = temp_current_cost
+                    # cost for moving to the neighbor
+                    temp_current_cost = current_cost[current] + 1
 
-                    # calculates the priority, with current costs and the heuristic
-                    estimated_cost = temp_current_cost + self.heuristic(neighbor, end)
-                    
-                    # adds neighbor to the prioritylist
-                    heapq.heappush(open_set, (estimated_cost, neighbor))
-        
-        # returns the path from start to end
+                    if neighbor not in current_cost or temp_current_cost < current_cost[neighbor]:
+                        origin[neighbor] = current
+                        
+                        # updates costs to that of the neighbor
+                        current_cost[neighbor] = temp_current_cost
+
+                        # calculates the priority, with current costs and the heuristic
+                        estimated_cost = temp_current_cost + self.heuristic(neighbor, end)
+                        
+                        # adds neighbor to the prioritylist
+                        heapq.heappush(open_set, (estimated_cost, neighbor))
+            
         return False
         
     def reconstruct_path(self, origin, current):
@@ -318,11 +326,13 @@ class algorithm:
                 if not self.find_path(start, neighbor):
                     print(f"Kan geen pad vinden tussen {start} en {neighbor}.")
     
+class run_code:    
     def manual_check():
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
         start_obj =start(grid_edit_obj)
+        algorithm_obj=algorithm(grid_edit_obj)
         
         path="gates.csv"
             
@@ -331,6 +341,7 @@ class algorithm:
         print("De uiteindelijke grid is:")
         #output_obj.print_grid()
 
+        algorithm_obj.shortest_path(1,5)
         output_obj.costen_berekening()
         user_input_obj.score_request()
 
