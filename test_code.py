@@ -5,16 +5,18 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 class grid_edit:
-    grid=[]
-    gate_dict={}
-    wire_list=[]
-    gate_nr =1
+    
 
-    def __init__(self):
+    def __init__(self, max_y, max_x):
         """initaliseer de gridedit class"""
         self.wirecount=0
         self.wirecrosscount=0
         self.score=0
+        self.grid=[]
+        self.gate_dict={}
+        self.wire_list=[]
+        self.gate_nr =1
+        self.grid_create(max_y, max_x)
 
     def grid_create (self, max_y, max_x) -> None:
         """
@@ -177,7 +179,7 @@ class output:
             Gates worden weergegeven als blauwe punten en wires als rode lijnen.
             """
             # Gebruik het grid_edit object dat is doorgegeven aan de class
-            grid_edit_obj = grid_edit()
+            grid_edit = self.grid_edit
             fig = plt.figure(figsize=(10, 8))
             ax = fig.add_subplot(111, projection='3d')
 
@@ -216,21 +218,20 @@ class start:
         """
         deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
         """
-        grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
+        user_input_obj = user_input(self.grid_edit)
 
         #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
         
         max_y, max_x = user_input_obj.max_grid_values(user_path)
 
-        grid_edit_obj.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
+        self.grid_edit.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
         
         # user_path=input("geef de file path op: ")
         user_input_obj.load_gates(user_path)
 
 class algorithm:
     def __init__(self, grid_edit_obj):
-        self.grid_edit = grid_edit()
+        self.grid_edit = grid_edit_obj
 
     def heuristic(self, start, end):
         sy, sx, sz = start
@@ -263,40 +264,43 @@ class algorithm:
         closed_set = set()
 
         while open_set:
-            while open_set:
-                # takes the lowest priority node out of the heap
-                _, current = heapq.heappop(open_set)
 
-                # stops if the current point is the end point
-                if current == end:
-                    self.reconstruct_path(origin, current)
-                    return True
+            # takes the lowest priority node out of the heap
+            _, current = heapq.heappop(open_set)
 
-                # adds this node to the processed node list
-                closed_set.add(current)
+            # stops if the current point is the end point
+            if current == end:
+                self.reconstruct_path(origin, current)
+                return True
+
+            # adds this node to the processed node list
+            closed_set.add(current)
+            
+            # loops over the neighbors of the current point
+            for dx, dy, dz in [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]:
+                neighbor = (current[0] + dx, current[1] + dy, current[2] + dz)
+
+                # checks if the neighbor is inside the grid
+                if self.check_valid(neighbor) != True:
+                    continue
                 
-                # loops over the neighbors of the current point
-                for dx, dy, dz in [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]:
-                    neighbor = (current[0] + dx, current[1] + dy, current[2] + dz)
+                # cost for moving to the neighbor
+                temp_current_cost = current_cost[current] + 1
 
-                    # checks if the neighbor is inside the grid
-                    if self.check_valid(neighbor) != True:
-                        continue
+
+                if neighbor not in current_cost or temp_current_cost < current_cost[neighbor]:
+                    origin[neighbor] = current
                     
-                    # cost for moving to the neighbor
-                    temp_current_cost = current_cost[current] + 1
+                    # updates costs to that of the neighbor
+                    current_cost[neighbor] = temp_current_cost
 
-                    if neighbor not in current_cost or temp_current_cost < current_cost[neighbor]:
-                        origin[neighbor] = current
-                        
-                        # updates costs to that of the neighbor
-                        current_cost[neighbor] = temp_current_cost
+                    # calculates the priority, with current costs and the heuristic
+                    estimated_cost = temp_current_cost + self.heuristic(neighbor, end)
+                    
 
-                        # calculates the priority, with current costs and the heuristic
-                        estimated_cost = temp_current_cost + self.heuristic(neighbor, end)
-                        
-                        # adds neighbor to the prioritylist
-                        heapq.heappush(open_set, (estimated_cost, neighbor))
+
+                    # adds neighbor to the prioritylist
+                    heapq.heappush(open_set, (estimated_cost, neighbor))
             
         return False
         
@@ -323,12 +327,12 @@ class algorithm:
         # Leg verbindingen via wires
         for start, neighbors in connections.items():
             for neighbor in neighbors:
-                if not self.find_path(start, neighbor):
+                if not self.shortest_path_path(start, neighbor):
                     print(f"Kan geen pad vinden tussen {start} en {neighbor}.")
     
 class run_code:    
     def manual_check():
-        grid_edit_obj = grid_edit()
+        grid_edit_obj = grid_edit(5,5)
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
         start_obj =start(grid_edit_obj)
