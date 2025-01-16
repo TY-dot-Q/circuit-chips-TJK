@@ -20,7 +20,7 @@ class grid_edit:
         let op dit vervangt alle waardes niet runnen nadat gates zijn opgegeven.
         """
         self.grid = [[[0 for _ in range(max_x)] for _ in range(max_y)] for _ in range(7)]
-        print("grid succesfol gemaakt")
+        print("grid succesvol gemaakt")
 
     def add_gate (self, y, x, z) ->None:
         """
