@@ -2,11 +2,14 @@ import csv, os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+gate_nrstart =1
+
 class grid_edit:
     grid=[]
     gate_dict={}
     wire_list=[]
-    gate_nr =1
+    gate_nr = gate_nrstart
+    
 
     def __init__(self):
         """initaliseer de gridedit class"""
@@ -37,6 +40,7 @@ class grid_edit:
             print(self.gate_dict[self.gate_nr])
             print(f"gate met het nummer {self.gate_nr} toegevoegd op de coordinaten y={y}, x={x}, z={z} ")
             self.gate_nr +=1
+            gate_nrstart
             
         else:
             print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
@@ -63,7 +67,39 @@ class grid_edit:
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]
+    
+    def dichtstbij(self, gate_check, list_iligal_gates):
+        """checkt wat de dichstbijzijnde gate is, geeft de gate terug en de afstand"""
+        #pak de hoeveelheid gates
 
+        #pak de coordinaten van de gate die wordt gevraagd
+        y,x,z = self.gate_dict[gate_check]
+        gate_nr_teller = self.gate_nr
+
+        gate_return=0
+        check_optimum=0
+        #loop de andere gates
+        if gate_nr_teller<1:
+            print("te weinig gates om dit uit te voeren")
+            return -1, -1
+
+        while gate_nr_teller > 1:
+            #test of de y,x en z waardes afstand samen groter is dan de vorige (in begin 0)
+            if gate_nr_teller!=gate_check & gate_nr_teller not in list_iligal_gates: 
+                test_y, test_x, test_z = self.gate_dict[gate_nr_teller]
+                v1 = abs(test_y - y)
+                v2 = abs(test_x - x) 
+                v3 = abs(test_z - z)
+                
+                if check_optimum>(v3+v2+v1):
+                    check_optimum =v3+v2+v1
+                    gate_return=gate_nr_teller
+
+            gate_nr_teller -=1
+        
+        return gate_return, check_optimum
+
+                
 class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
@@ -227,29 +263,121 @@ class start:
         user_input_obj.load_gates(user_path)
 
 class algorithm:
-    #def algorithm() ->None:
+    min_value=99999999
+
+    def use_algorithm(self) ->None:
         #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
         #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
-        #""
-
         
+        #pak gate hoeveel heid
+        grid_edit_obj = grid_edit()
 
+        start_teller=gate_nrstart
+        
+        start_gate_r2=0
+
+        print(f"aantal gates moet nu 5 zijn:({start_teller})")
+        #loop dat alle gate nummers overgaat om te checken wat het beste start punt is
+        while start_teller>1:
+            current_gate = start_teller
+            test_value=0
+            list_gates1=[]
+            list_gates2=[]
+
+            #eerste loop maakt paren van 2
+            while current_gate>1:
+                #skipt gates die al verbonden zijn
+                if current_gate not in list_gates1:
+                    #geeft een gate die nog niet verbonden is en de afstand (value) terug tot de opgegeven current_gate
+                    connect_gate, value = grid_edit_obj.dichtstbij(current_gate, list_gates1) 
+                    
+                    #-1, -1 wordt terug gegeven als er geen andere gate wordt gevonden
+                    if connect_gate == -1 & value==-1:
+                        start_gate_r2=current_gate
+                        current_gate-=1
+                        
+                        continue
+                        
+                    #dubbel checkt of de connect_gate niet al in de lijst zit
+                    elif connect_gate not in list_gates1:
+                        #past de score aan
+                        test_value+=value
+
+                        #voegt de 2 gates die verbonden zijn aan de lijst zodat ze niet nog een keer gecontroleerd worden
+                        list_gates1.append(connect_gate)
+                        list_gates1.append(current_gate)
+    
+                current_gate-=1
+
+            #gedeelte (2) koppel de gates nog 1 keer aan een andere
+
+            current_gate=start_teller#reset de gate zodat hij weer alle langs kan
+            
+            #maak de eerste connectie van de overig gate als die er is
+            if start_gate_r2!=-2:
+                connect_gate, value = grid_edit_obj.dichtstbij(start_gate_r2, list_gates2) #list 2 omdat dit de tweede connectie wordt
+                test_value+=value
+
+                list_gates1.append(start_gate_r2)
+                list_gates2.append(connect_gate)
+
+            print(list_gates1)
+            
+            #maakt een connectie voor alle gates die niet voorkomen in list_gates1 en 2 (dus nog 1 connectie hebben)
+            while current_gate>1:
+                #skipt gates die al verbonden zijn voor de tweede keer
+                if current_gate not in list_gates2:
+                    #geeft een gate die nog niet verbonden is voor de tweede keer en de afstand (value) terug tot de opgegeven current_gate
+                    connect_gate, value = grid_edit_obj.dichtstbij(current_gate, list_gates2) 
+                    
+                    #-1, -1 wordt terug gegeven als er geen andere gate wordt gevonden
+                    if connect_gate == -1 & value==-1:
+                        start_gate_r2=current_gate
+                        current_gate-=1
+                        
+                        continue
+                        
+                    #dubbel checkt of de connect_gate niet al in de lijst zit
+                    elif connect_gate not in list_gates2:
+                        #past de score aan
+                        test_value+=value
+
+                        #voegt de 2 gates die verbonden zijn aan de lijst zodat ze niet nog een keer gecontroleerd worden
+                        list_gates2.append(connect_gate)
+                        list_gates2.append(current_gate)
+    
+                current_gate-=1
+
+            #zet de test_value naar min_value als de score lager is (hoop is dat dit dan de laagste waarde geeft en dus de beste score)
+            print(test_value)
+            if test_value>min_value:
+                min_value=test_value
+
+            start_teller-=1
+
+        return 1 #min_value
+
+class start_the_code:
     def manual_check():
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
         start_obj =start(grid_edit_obj)
+        algorithm_obj=algorithm()
         
         path="gates.csv"
             
+
         start_obj.Auto_start_functie(path)
         
         print("De uiteindelijke grid is:")
         #output_obj.print_grid()
 
+        print(algorithm_obj.use_algorithm())
+
         output_obj.costen_berekening()
         user_input_obj.score_request()
 
-        output_obj.visualisatie()
+        #output_obj.visualisatie()
     
     manual_check()
