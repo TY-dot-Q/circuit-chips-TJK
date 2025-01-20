@@ -44,6 +44,19 @@ class grid_edit:
             
         else:
             print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
+
+    def gate_amount_count(self):
+        grid_edit_obj=grid_edit()
+
+        amount=0
+
+        for item in grid_edit_obj.gate_dict:
+            amount+=1
+            item+=1
+
+        #print(f"amount{amount}")
+
+        return amount
     
     def add_wire (self, y, x, z) ->None:
         """
@@ -73,8 +86,13 @@ class grid_edit:
         #pak de hoeveelheid gates
 
         #pak de coordinaten van de gate die wordt gevraagd
+        print(f"gate_check{gate_check}")
+        if gate_check <=0:
+            return -1, -1
+        
         y,x,z = self.gate_dict[gate_check]
-        gate_nr_teller = self.gate_nr
+        print(f"y={y} -- x={x} -- z={z}")
+        gate_nr_teller = self.gate_amount_count()
 
         gate_return=0
         check_optimum=0
@@ -263,16 +281,31 @@ class start:
         user_input_obj.load_gates(user_path)
 
 class algorithm:
-    min_value=99999999
+    
+
+    def gate_nr(self):
+        grid_edit_obj=grid_edit()
+
+        amount=0
+
+        for item in grid_edit_obj.gate_dict:
+            amount+=1
+            item+=1
+
+        print(f"amount{amount}")
+
+        return amount
+        
 
     def use_algorithm(self) ->None:
         #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
         #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
-        
+        min_value=99999999
+
         #pak gate hoeveel heid
         grid_edit_obj = grid_edit()
-
-        start_teller=gate_nrstart
+        
+        start_teller =self.gate_nr()
         
         start_gate_r2=0
 
@@ -285,12 +318,14 @@ class algorithm:
             list_gates2=[]
 
             #eerste loop maakt paren van 2
-            while current_gate>1:
+            while current_gate>=1:
                 #skipt gates die al verbonden zijn
                 if current_gate not in list_gates1:
+                    print(f"current gate{current_gate}:")
                     #geeft een gate die nog niet verbonden is en de afstand (value) terug tot de opgegeven current_gate
                     connect_gate, value = grid_edit_obj.dichtstbij(current_gate, list_gates1) 
-                    
+                    print(f"connect_gate: {connect_gate} -- value: {value}")
+
                     #-1, -1 wordt terug gegeven als er geen andere gate wordt gevonden
                     if connect_gate == -1 & value==-1:
                         start_gate_r2=current_gate
@@ -349,13 +384,13 @@ class algorithm:
                 current_gate-=1
 
             #zet de test_value naar min_value als de score lager is (hoop is dat dit dan de laagste waarde geeft en dus de beste score)
-            print(test_value)
-            if test_value>min_value:
+            print(f"test_value===={test_value}")
+            if test_value<min_value:
                 min_value=test_value
 
             start_teller-=1
 
-        return 1 #min_value
+        return min_value #min_value
 
 class start_the_code:
     def manual_check():
