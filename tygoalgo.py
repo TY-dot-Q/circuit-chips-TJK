@@ -85,36 +85,51 @@ class grid_edit:
         """checkt wat de dichstbijzijnde gate is, geeft de gate terug en de afstand"""
         #pak de hoeveelheid gates
 
+        #print("---------------nieuwe dichtstbij check --------------")
+        #print("")
+        #print(f"gate_check{gate_check}")
+
         #pak de coordinaten van de gate die wordt gevraagd
-        print(f"gate_check{gate_check}")
+        #print(f"gate_check == {gate_check}")
         if gate_check <=0:
             return -1, -1
         
         y,x,z = self.gate_dict[gate_check]
-        print(f"y={y} -- x={x} -- z={z}")
+        #print(f"y={y} -- x={x} -- z={z}")
         gate_nr_teller = self.gate_amount_count()
 
         gate_return=0
-        check_optimum=0
+        check_optimum=99999999
         #loop de andere gates
         if gate_nr_teller<1:
-            print("te weinig gates om dit uit te voeren")
+            #print("te weinig gates om dit uit te voeren")
             return -1, -1
 
         while gate_nr_teller > 1:
+            #print(f"gate_nr_teller={gate_nr_teller}")
             #test of de y,x en z waardes afstand samen groter is dan de vorige (in begin 0)
             if gate_nr_teller!=gate_check & gate_nr_teller not in list_iligal_gates: 
+                #print("gaat goed ")
                 test_y, test_x, test_z = self.gate_dict[gate_nr_teller]
+                #print(f"test_y={test_y} -- test_x={test_x} -- test_z={test_z}")
                 v1 = abs(test_y - y)
                 v2 = abs(test_x - x) 
                 v3 = abs(test_z - z)
+                nieuw_optimum=v3+v2+v1
+                #print(f"nieuw_optimum={nieuw_optimum}")
+                #print(f"check_optimum={check_optimum}")
                 
-                if check_optimum>(v3+v2+v1):
-                    check_optimum =v3+v2+v1
+                
+                if check_optimum>nieuw_optimum:
+                    check_optimum =nieuw_optimum
                     gate_return=gate_nr_teller
-
+                    #print(f"gate_return={gate_return}")
+                    #print(f"check_optimum={check_optimum}")
             gate_nr_teller -=1
-        
+
+            
+        #print(f"gate_return{gate_return}")
+        #print(f"check_optimum{check_optimum}")
         return gate_return, check_optimum
 
                 
@@ -321,10 +336,10 @@ class algorithm:
             while current_gate>=1:
                 #skipt gates die al verbonden zijn
                 if current_gate not in list_gates1:
-                    print(f"current gate{current_gate}:")
+                    #print(f"current gate{current_gate}:")
                     #geeft een gate die nog niet verbonden is en de afstand (value) terug tot de opgegeven current_gate
                     connect_gate, value = grid_edit_obj.dichtstbij(current_gate, list_gates1) 
-                    print(f"connect_gate: {connect_gate} -- value: {value}")
+                    #print(f"connect_gate: {connect_gate} -- value: {value}")
 
                     #-1, -1 wordt terug gegeven als er geen andere gate wordt gevonden
                     if connect_gate == -1 & value==-1:
@@ -384,13 +399,17 @@ class algorithm:
                 current_gate-=1
 
             #zet de test_value naar min_value als de score lager is (hoop is dat dit dan de laagste waarde geeft en dus de beste score)
-            print(f"test_value===={test_value}")
+            print(f"test_value={test_value}")
+
             if test_value<min_value:
                 min_value=test_value
+                doorgeef_starter=start_teller
 
             start_teller-=1
 
-        return min_value #min_value
+        print(f"min_value{min_value}")
+
+        return min_value, doorgeef_starter #min_value
 
 class start_the_code:
     def manual_check():
