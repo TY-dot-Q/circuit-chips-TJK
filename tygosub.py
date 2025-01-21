@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 class grid_edit:
     grid=[]
     gate_dict={}
-    wire_list=[]
+    wire_list=[(1,1,3), (1,3,3)]
     gate_nr =1
 
     def __init__(self):
@@ -194,6 +194,8 @@ class output:
             if wires:
                 wire_x, wire_y, wire_z = zip(*wires)  # Unpack wire coordinates
                 ax.scatter(wire_x, wire_y, wire_z, color='red', label='Wire', s=50)
+            else:
+                print("Geen wires gevonden")
 
             # Labels and legend
             ax.set_xlabel("X-as")
@@ -201,6 +203,18 @@ class output:
             ax.set_zlabel("Z-as")
             ax.set_title("3D Visualisatie van Gates en Wires")
             ax.legend()
+
+                # Stel de ticks in op stappen van 1.0 met alleen hele getallen
+            max_x = len(self.grid_edit.grid[0][0])
+            max_y = len(self.grid_edit.grid[0])
+            max_z = len(self.grid_edit.grid)
+
+            ax.set_xticks(range(0, max_x, 1))
+            ax.set_yticks(range(0, max_y, 1))
+            ax.set_zticks(range(0, max_z, 1))
+            ax.set_xticklabels(range(0, max_x, 1))
+            ax.set_yticklabels(range(0, max_y, 1))
+            ax.set_zticklabels(range(0, max_z, 1))
 
             # Tweak the view
             ax.view_init(elev=30, azim=30)
