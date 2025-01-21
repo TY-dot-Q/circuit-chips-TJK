@@ -179,6 +179,7 @@ class output:
             fig = plt.figure(figsize=(10, 8))
             ax = fig.add_subplot(111, projection='3d')
 
+
             print(grid_edit_obj.gate_dict[2])
             print(grid_edit_obj.gate_nr)
             if not grid_edit_obj.gate_dict:
@@ -197,24 +198,25 @@ class output:
             else:
                 print("Geen wires gevonden")
 
+            # Instellen van ticks met stappen van 1
+            ax.set_xticks(range(int(ax.get_xlim()[0]), int(ax.get_xlim()[1]) + 2, 1))
+            ax.set_yticks(range(int(ax.get_ylim()[0]), int(ax.get_ylim()[1]) + 2, 1))
+            ax.set_zlim(bottom=1)
+            ax.set_zticks(range(1, int(ax.get_zlim()[1]) + 1, 1))
+
+            # correctie om y-as om te draaien 
+            '''
+            Dit maakt het mogelijk dat de coordinaten 0,0 voor x,y onderaan begint
+            '''
+            ax.invert_yaxis()
+            ax.invert_xaxis()
+
             # Labels and legend
             ax.set_xlabel("X-as")
             ax.set_ylabel("Y-as")
             ax.set_zlabel("Z-as")
             ax.set_title("3D Visualisatie van Gates en Wires")
             ax.legend()
-
-                # Stel de ticks in op stappen van 1.0 met alleen hele getallen
-            max_x = len(self.grid_edit.grid[0][0])
-            max_y = len(self.grid_edit.grid[0])
-            max_z = len(self.grid_edit.grid)
-
-            ax.set_xticks(range(0, max_x, 1))
-            ax.set_yticks(range(0, max_y, 1))
-            ax.set_zticks(range(0, max_z, 1))
-            ax.set_xticklabels(range(0, max_x, 1))
-            ax.set_yticklabels(range(0, max_y, 1))
-            ax.set_zticklabels(range(0, max_z, 1))
 
             # Tweak the view
             ax.view_init(elev=30, azim=30)
