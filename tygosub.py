@@ -175,13 +175,13 @@ class output:
             Gates worden weergegeven als blauwe punten en wires als rode lijnen.
             """
             # Gebruik het grid_edit object dat is doorgegeven aan de class
-            grid_edit_obj = grid_edit()
+            grid_edit_obj = self.grid_edit
             fig = plt.figure(figsize=(10, 8))
             ax = fig.add_subplot(111, projection='3d')
 
-            print(grid_edit.gate_dict[2])
-            print(grid_edit.gate_nr)
-            if not grid_edit.gate_dict:
+            print(grid_edit_obj.gate_dict[2])
+            print(grid_edit_obj.gate_nr)
+            if not grid_edit_obj.gate_dict:
                 print("geen gates in de dict")
                 return
             
@@ -190,7 +190,7 @@ class output:
                 ax.scatter(x, y, z, color='blue', label=f'Gate {gate_nr}' if gate_nr == 1 else "", s=100)
             
             # Plot wires
-            wires = grid_edit.wire_list
+            wires = grid_edit_obj.wire_list
             if wires:
                 wire_x, wire_y, wire_z = zip(*wires)  # Unpack wire coordinates
                 ax.scatter(wire_x, wire_y, wire_z, color='red', label='Wire', s=50)
