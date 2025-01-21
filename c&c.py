@@ -1,1 +1,2 @@
-kijken of dit iets verandert
+def gridcreate (size):
+    while size !=0:
