@@ -1,5 +1,8 @@
 import csv
 import heapq
+import random
+
+random.seed(100)
 # using heap since it stores the lowest value first in the list
 # that is convenient for prioritizing the shortest dinstance
 
@@ -52,8 +55,11 @@ class CircuitAlgorithm:
             if current == end:
                 break
             
+            neighbors = [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]
+            random.shuffle(neighbors)
+
             # loops over the neighbors of the current point
-            for dx, dy, dz in [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]:
+            for dx, dy, dz in neighbors:
                 neighbor = (current[0] + dx, current[1] + dy, current[2] + dz)
 
                 # checks if the neighbor is inside the grid
@@ -128,7 +134,11 @@ class CircuitAlgorithm:
                 writer.writerow([x, y ,z])
 
 
-router = CircuitAlgorithm(grid_size=(5, 5, 2), netlist=[])
-path = router.shortest_path((0, 0, 0), (3, 3, 0))
-saved = router.path_to_csv(path, 'route.csv')
-print(path)
+router = CircuitAlgorithm(grid_size=(6, 6, 2), netlist=[])
+path = router.shortest_path((1, 1, 0), (4, 4, 0))
+router.path_placer(path, 1)
+path2 = router.shortest_path((4,4,0), (2,2,0))
+router.path_placer(path2, 2)
+router.path_to_csv(path, 'route.csv')
+router.path_to_csv(path2, 'route2.csv')
+print(path, path2)
