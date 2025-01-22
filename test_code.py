@@ -161,7 +161,7 @@ class user_input:
         except Exception as e:
             print(f"Fout bij het laden van gates: {e}")
 
-    def max_grid_values(self, file_path: str):
+    def max_grid_values(self, file_path: str): # pas deze max aan die in start wordt gebruikt.
         """Bepaal de maximale y-, x-, en z-waarden uit een CSV-bestand.
         Het bestand moet een lijst van coördinaten bevatten.
         Retourneert een tuple (max_y, max_x, max_z)."""
@@ -269,7 +269,7 @@ class output:
         ax = fig.add_subplot(111, projection='3d')
 
 
-        print(grid_edit_obj.gate_dict[2])
+        print("Huidige gates in de gate_dict:", grid_edit_obj.gate_dict)
         print(grid_edit_obj.gate_nr)
         if not grid_edit_obj.gate_dict:
             print("geen gates in de dict")
@@ -317,7 +317,7 @@ class start:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-    def get_chip_choice():
+    def get_chip_choice(self):
         """
         Vraagt de gebruiker om een geldige chipkeuze (0, 1 of 2) en genereert het pad naar de gates.csv en netlist.csv.
         Keuze wordt gevalideerd.
@@ -326,14 +326,14 @@ class start:
         chip_choice = int(input("Kies een chip (0, 1 of 2): "))
 
         while chip_choice not in [0, 1, 2]:
-            chip_choice = int(input("Ongeldige keuze! Kies 0, 1 of 2: "))
+            chip_choice = int(input("Ongeldige keuze! Kies chip 0, 1 of 2: "))
 
         # Controleer of de keuze geldig is
         if chip_choice in [0, 1, 2]:
-            net_choice = int(input("Kies een chip (1, 2 of 3): "))
+            net_choice = int(input("Kies een netlist (1, 2 of 3): "))
 
             while net_choice not in [1, 2, 3]:
-                net_choice = int(input("Ongeldige keuze! Kies 1, 2 of 3: "))
+                net_choice = int(input("Ongeldige keuze! Kies netlist 1, 2 of 3: "))
             
 
             if net_choice in [1, 2, 3]:
@@ -355,9 +355,6 @@ class start:
         max_y, max_x = user_input_obj.max_grid_values(user_path)
 
         grid_edit_obj.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
-        
-        # user_path=input("geef de file path op: ")
-        user_input_obj.load_gates(user_path)
 
 class algorithm:
     #def algorithm() ->None:
@@ -365,30 +362,48 @@ class algorithm:
         #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
         #""
 
-
     def manual_check():
-        # Bestandspaden voor gates en netlist
-
-        gates_csv = "/data/gates.csv"  # Het bestand met gate-informatie
-        netlist_csv = "/data/netlist.csv"  # Het bestand met de netlist
-
-        # Initialisatie van klassen
+        # Maak een nieuw grid_edit-object
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
 
-        # Stap 1: Laad gates en creëer de grid
-        max_y, max_x = user_input_obj.max_grid_values(gates_csv)  # Bepaal de gridgrootte
-        grid_edit_obj.grid_create(max_y, max_x)  # Maak de grid aan
-        user_input_obj.load_gates(gates_csv)  # Laad de gates
+        # Instantiate the start class and call the method
+        start_obj = start(grid_edit_obj)
+        path_to_gates_csv, path_to_netlist_csv = start_obj.get_chip_choice()
 
-        # Stap 2: Laad en verwerk de netlist
-        user_input_obj.load_netlist(netlist_csv)  # Verbind de gates volgens de netlist
+        # Start de setup met gates en netlist
+        start_obj.Auto_start_functie(path_to_gates_csv)
+        user_input_obj.load_netlist(path_to_netlist_csv)
 
-        # Stap 3: Visualiseer en bereken score
+        # Print de inhoud van het gates CSV-bestand
+        print(f"\nInhoud van het gates CSV-bestand ({path_to_gates_csv}):")
+        try:
+            with open(path_to_gates_csv, mode='r') as gates_file:
+                for line in gates_file:
+                    print(line.strip())
+        except Exception as e:
+            print(f"Fout bij het lezen van het gates CSV-bestand: {e}")
+
+        # Print de inhoud van het netlist CSV-bestand
+        print(f"\nInhoud van het netlist CSV-bestand ({path_to_netlist_csv}):")
+        try:
+            with open(path_to_netlist_csv, mode='r') as netlist_file:
+                for line in netlist_file:
+                    print(line.strip())
+        except Exception as e:
+            print(f"Fout bij het lezen van het netlist CSV-bestand: {e}")
+
+
+        # Print de uiteindelijke grid
+        print("De uiteindelijke grid is:")
         output_obj.print_grid()
-        output_obj.visualisatie()
+
+        # Bereken en toon de score
         score = output_obj.costen_berekening()
         user_input_obj.score_request(score)
-    
+
+        # Visualiseer de gates en wires
+        output_obj.visualisatie()
+
     manual_check()
