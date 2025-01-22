@@ -2,11 +2,14 @@ import csv, os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+gate_nrstart =1
+
 class grid_edit:
     grid=[]
     gate_dict={}
     wire_list=[]
-    gate_nr =1
+    gate_nr = gate_nrstart
+    
 
     def __init__(self):
         """initaliseer de gridedit class"""
@@ -20,7 +23,7 @@ class grid_edit:
         let op dit vervangt alle waardes niet runnen nadat gates zijn opgegeven.
         """
         self.grid = [[[0 for _ in range(max_x)] for _ in range(max_y)] for _ in range(7)]
-        print("grid succesvol gemaakt")
+        print("grid succesfol gemaakt")
 
     def add_gate (self, y, x, z) ->None:
         """
@@ -34,12 +37,25 @@ class grid_edit:
         if self.grid[z][y][x] ==0:
             self.grid[z][y][x] = self.gate_nr #voeg de gate toe
             self.gate_dict[self.gate_nr] = (y,x,z)
-            print(self.gate_dict[self.gate_nr])
-            print(f"gate met het nummer {self.gate_nr} toegevoegd op de coordinaten y={y}, x={x}, z={z} ")
+            print(f"gate met het nummer {self.gate_nr} toegevoegd op de coordinaten y={y}, x={x}, z={z} ---- check: {self.gate_dict[self.gate_nr]} ")
             self.gate_nr +=1
+            gate_nrstart
             
         else:
             print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
+
+    def gate_amount_count(self):
+        grid_edit_obj=grid_edit()
+
+        amount=0
+
+        for item in grid_edit_obj.gate_dict:
+            amount+=1
+            item+=1
+
+        #print(f"amount{amount}")
+
+        return amount
     
     def add_wire (self, y, x, z) ->None:
         """
@@ -116,7 +132,58 @@ class grid_edit:
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]
+    
+    def dichtstbij(self, gate_check, list_iligal_gates):
+        """checkt wat de dichstbijzijnde gate is, geeft de gate terug en de afstand"""
+        #pak de hoeveelheid gates
 
+        #print("---------------nieuwe dichtstbij check --------------")
+        #print("")
+        #print(f"gate_check{gate_check}")
+
+        #pak de coordinaten van de gate die wordt gevraagd
+        #print(f"gate_check == {gate_check}")
+        if gate_check <=0:
+            return -1, -1
+        
+        y,x,z = self.gate_dict[gate_check]
+        #print(f"y={y} -- x={x} -- z={z}")
+        gate_nr_teller = self.gate_amount_count()
+
+        gate_return=0
+        check_optimum=99999999
+        #loop de andere gates
+        if gate_nr_teller<1:
+            #print("te weinig gates om dit uit te voeren")
+            return -1, -1
+
+        while gate_nr_teller > 1:
+            #print(f"gate_nr_teller={gate_nr_teller}")
+            #test of de y,x en z waardes afstand samen groter is dan de vorige (in begin 0)
+            if gate_nr_teller!=gate_check & gate_nr_teller not in list_iligal_gates: 
+                #print("gaat goed ")
+                test_y, test_x, test_z = self.gate_dict[gate_nr_teller]
+                #print(f"test_y={test_y} -- test_x={test_x} -- test_z={test_z}")
+                v1 = abs(test_y - y)
+                v2 = abs(test_x - x) 
+                v3 = abs(test_z - z)
+                nieuw_optimum=v3+v2+v1
+                #print(f"nieuw_optimum={nieuw_optimum}")
+                #print(f"check_optimum={check_optimum}")
+                
+                
+                if check_optimum>nieuw_optimum:
+                    check_optimum =nieuw_optimum
+                    gate_return=gate_nr_teller
+                    #print(f"gate_return={gate_return}")
+                    #print(f"check_optimum={check_optimum}")
+            gate_nr_teller -=1
+
+            
+        #print(f"gate_return{gate_return}")
+        #print(f"check_optimum{check_optimum}")
+        return gate_return, check_optimum
+               
 class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
@@ -139,7 +206,7 @@ class user_input:
 
                         for row in csv_reader:
                             if len(row) < 2:
-                                print(f"Ongeldige regel in CSV-bestand: {row}")
+                                print(f"(gatelist) Ongeldige regel in CSV-bestand: {row}")
                                 continue
 
                             try:
@@ -148,14 +215,53 @@ class user_input:
                                 z=int(row[2])
                                 self.grid_edit.add_gate(y,x,z)
                             except ValueError:
-                                print(f'print:error met waardes in regel:{row}')
+                                print(f'(gatelist) print:error met waardes in regel:{row}')
                                 continue
 
-                    print("Alle gates zijn succesvol geladen uit het CSV-bestand.")
+                    print("(gatelist) Alle gates zijn succesvol geladen uit het CSV-bestand.")
                 except FileNotFoundError:
                     print(f"Fout: Het bestand '{file_path}' bestaat niet.")
                 except ValueError:
-                    print("Fout: Ongeldige waarden in het CSV-bestand.")
+                    print("(gatelist) Fout: Ongeldige waarden in het CSV-bestand.")
+
+    def load_netlist(self, file_path: str)->None:
+            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            connection_list=[]
+
+
+            if not os.path.isfile(file_path):
+                print(f"Bestand '{file_path}' niet gevonden!")
+            else:
+                try:
+                    with open(file_path, mode='r') as file:
+                        csv_reader = csv.reader(file)
+                        next(csv_reader)  # sla de eerste regel over
+
+                        counter=0
+
+                        for row in csv_reader:
+                            if len(row) < 2:
+                                print(f"(Netlist) Ongeldige regel in CSV-bestand: {row}")
+                                continue
+
+                            try:
+                                chip_a=int(row[0])
+                                chip_b=int(row[1])
+                                connection_list.append((chip_a, chip_b))
+                                print(f"connectie tussen {chip_a} en {chip_b} succevol ingeladen als {connection_list[counter]}")
+                                counter+=1
+                            except ValueError:
+                                print(f'(Netlist) print:error met waardes in regel:{row}')
+                                continue
+                        
+                        return connection_list, counter
+
+                    print("Netlist is succesvol geladen uit het CSV-bestand.")
+                except FileNotFoundError:
+                    print(f"Fout: Het bestand '{file_path}' bestaat niet.")
+                except ValueError:
+                    print("(Netlist) Fout: Ongeldige waarden in het CSV-bestand.")
 
     def max_grid_values(self, file_path: str):
         """Bepaal de maximale y-, x-, en z-waarden uit een CSV-bestand.
@@ -184,8 +290,8 @@ class user_input:
 
                         max_y = max(max_y, y)
                         max_x = max(max_x, x)
-                        max_y=max_y+4
-                        max_x=max_x+4
+                        max_y=max_y+2
+                        max_x=max_x+2
                     except ValueError:
                         print(f"Fout bij het verwerken van regel: {row}")
                         continue
@@ -282,7 +388,7 @@ class start:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-    def Auto_start_functie(self, user_path) ->None:
+    def Auto_start_functie(self, gate_path) ->None:
         """
         deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
         """
@@ -291,24 +397,145 @@ class start:
 
         #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
         
-        max_y, max_x = user_input_obj.max_grid_values(user_path)
+        max_y, max_x = user_input_obj.max_grid_values(gate_path)
 
         grid_edit_obj.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
         
         # user_path=input("geef de file path op: ")
-        user_input_obj.load_gates(user_path)
+        user_input_obj.load_gates(gate_path)
+        #user_input_obj.load_netlist(netlist_path)
 
 class algorithm:
-    #def algorithm() ->None:
+
+    def netlist_reorder(self, file_path):
+        """reorderd de net list, vraagt zelf de netlist op"""
+        grid_edit_obj = grid_edit()
+        user_input_obj = user_input(grid_edit_obj)
+
+        list, counter = user_input_obj.load_netlist(file_path)
+
+<<<<<<< Updated upstream
+=======
+        
+        gate_count_list=[]
+        max_y=0
+        max_x=0
+>>>>>>> Stashed changes
+
+        print(list)
+
+        for items in range(len(list)):
+            chip_a=list[items][0]
+            chip_b=list[items][1]
+
+            gate_count_list.append(list[items][0])
+            gate_count_list.append(list[items][1])
+
+            y1, x1, z1=grid_edit_obj.gate_dict[list[items][0]]
+            y2, x2, z2=grid_edit_obj.gate_dict[list[items][1]]
+
+            #bepaalt de maximale x en y waardes
+            if max_y<y1:
+                max_y=y1
+            if max_y<y2:
+                max_y=y2
+            if max_x<x1:
+                max_x=x1
+            if max_x<x2:
+                max_x=x2      
+
+        gate_list_count_balance=10
+        score_list=[]
+
+        counter=0
+        for items in range(len(list)):
+            #voegt de gates toe aan de list om bij te houden hoevaak hij verbonden is.
+            y1, x1, z1=grid_edit_obj.gate_dict[list[items][0]]
+            y2, x2, z2=grid_edit_obj.gate_dict[list[items][1]]
+
+            chip_a=list[items][0]
+            chip_b=list[items][1]
+
+            #telt hoevaak de gates verbonden moeten zijn
+
+            test1= gate_count_list.count(chip_a)
+            test2= gate_count_list.count(chip_b)
+
+            conection_amount=gate_list_count_balance-test1-test2
+
+            a1 = abs(x1-(max_x/2))
+            a2 = abs(y1-(max_y/2))
+            a3 = abs(x2-(max_x/2))
+            a4 = abs(y2-(max_y/2))
+
+            afstand_midden = a1+a2+a3+a4
+
+            #checkt de afstand tussen de gates
+            v1 = abs(y1 - y2)
+            v2 = abs(x1 - x2) 
+            v3 = abs(z1 - z2)
+            afstand_tussen_gates=v3+v2+v1
+
+            score = afstand_tussen_gates*1 + afstand_midden*1 + conection_amount*1
+
+            print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
+
+            score_list.append((counter, score))
+            counter+=1
+
+        print(score_list)
+
+        return_list=[]
+
+        return_list = sorted(score_list, key=lambda x: x[1])
+        
+        print(return_list)
+
+        return return_list
+        
+    
+    def gate_verbinding(self, gate_1, gate_2):
+        """verbind de 2 gates die worden opgegeven door wires te leggen"""
+        y2, x2, z2 = self.gate_dict[gate_2]
+        y1, x1, z1 = self.gate_dict[gate_1]
+
+        add_wire_list=[]
+
+        #zorg voor dezelfde y hoogte
+
+        #zorg voor dezelfde x hoogte
+
+        #zorg voor dezelfde z hoogte
+
+        #in elke 
+            # check er niet al een wire is
+
+    def gate_nr(self):
+        grid_edit_obj=grid_edit()
+
+        amount=0
+
+        for item in grid_edit_obj.gate_dict:
+            amount+=1
+            item+=1
+
+        print(f"amount{amount}")
+
+        return amount
+        
+
+    def use_algorithm(self) ->None:
         #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
         #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
-        #""
+        min=1
+        return "werkt nog niet"
 
-
+class start_the_code:
     def manual_check():
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
+<<<<<<< Updated upstream
         # Maak een grid en voeg gates toe
         grid_edit_obj.grid_create(10, 10)
         grid_edit_obj.add_gate(1, 1, 1)
@@ -329,3 +556,26 @@ class algorithm:
     manual_check()
 
 #wanneer kruizen wires elkaar precies bij dit probleem als ze een moment dezelfde coordinaten delen en niet lid zijn van een doorlopende wire die twee gates met elkaar verbind dus de wires die deel zijn van dezelfde ketting kunnen niet als gekruist worden gezien tenzij ze overzichzelf heen kruizen vanuit een andere kant dus bijvoorbeeld x,y is 1,2 en xy is verbonden met x,y is 3,2 door middel van 2 wires  maar x,y 2,3 en 2,1 zijn ook verbonden met 2 wires. deze kruizen elkaar omdat ze allebei over 2,2 heen gaan maar niet de wires nooit hetzelfde pas afleggen dus ze delen niet meer dan 1 coordinaat.
+=======
+        start_obj =start(grid_edit_obj)
+        algorithm_obj=algorithm()
+        
+        path_gates="gates.csv"
+        path_netlist="netlist.csv"
+
+        start_obj.Auto_start_functie(path_gates)
+
+        nieuw_list=algorithm_obj.netlist_reorder(path_netlist)
+        
+        print("De uiteindelijke grid is:")
+        #output_obj.print_grid()
+
+        print(algorithm_obj.use_algorithm())
+
+        output_obj.costen_berekening()
+        user_input_obj.score_request()
+
+        #output_obj.visualisatie()
+    
+    manual_check()
+>>>>>>> Stashed changes

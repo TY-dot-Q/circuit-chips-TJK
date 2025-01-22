@@ -131,8 +131,7 @@ class grid_edit:
         #print(f"gate_return{gate_return}")
         #print(f"check_optimum{check_optimum}")
         return gate_return, check_optimum
-
-                
+               
 class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
@@ -297,6 +296,21 @@ class start:
 
 class algorithm:
     
+    def gate_verbinding(self, gate_1, gate_2):
+        """verbind de 2 gates die worden opgegeven door wires te leggen"""
+        y2, x2, z2 = self.gate_dict[gate_2]
+        y1, x1, z1 = self.gate_dict[gate_2]
+
+        add_wire_list=[]
+
+        #zorg voor dezelfde y hoogte
+
+        #zorg voor dezelfde x hoogte
+
+        #zorg voor dezelfde z hoogte
+
+        #in elke 
+            # check er niet al een wire is
 
     def gate_nr(self):
         grid_edit_obj=grid_edit()
@@ -322,7 +336,7 @@ class algorithm:
         
         start_teller =self.gate_nr()
         
-        start_gate_r2=0
+        start_gate_r2=-2
 
         print(f"aantal gates moet nu 5 zijn:({start_teller})")
         #loop dat alle gate nummers overgaat om te checken wat het beste start punt is
@@ -331,6 +345,7 @@ class algorithm:
             test_value=0
             list_gates1=[]
             list_gates2=[]
+            connection_gates_list=[]
 
             #eerste loop maakt paren van 2
             while current_gate>=1:
@@ -356,6 +371,7 @@ class algorithm:
                         #voegt de 2 gates die verbonden zijn aan de lijst zodat ze niet nog een keer gecontroleerd worden
                         list_gates1.append(connect_gate)
                         list_gates1.append(current_gate)
+                        connection_gates_list.append(connect_gate, current_gate)
     
                 current_gate-=1
 
@@ -370,6 +386,7 @@ class algorithm:
 
                 list_gates1.append(start_gate_r2)
                 list_gates2.append(connect_gate)
+                connection_gates_list.append(start_gate_r2, connection_gates_list)
 
             print(list_gates1)
             
@@ -395,11 +412,16 @@ class algorithm:
                         #voegt de 2 gates die verbonden zijn aan de lijst zodat ze niet nog een keer gecontroleerd worden
                         list_gates2.append(connect_gate)
                         list_gates2.append(current_gate)
+                        connection_gates_list.append(connect_gate, current_gate)
     
                 current_gate-=1
 
             #zet de test_value naar min_value als de score lager is (hoop is dat dit dan de laagste waarde geeft en dus de beste score)
+            print(f"start_teller{start_teller}")
             print(f"test_value={test_value}")
+            print(f"list_gates1{list_gates1}")
+            print(f"list_gates2{list_gates2}")
+            print(f"paren gate{connection_gates_list}")
 
             if test_value<min_value:
                 min_value=test_value
