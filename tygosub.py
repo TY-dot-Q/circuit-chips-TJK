@@ -191,7 +191,7 @@ class user_input:
     def score_request(self, score)-> None:
         print(f"er zijn {self.grid_edit.wirecount} draden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
-        print(f"dit geeft een score van c={score}") # score wordt gereturnd door functie costen_berekening in class output
+        print(f"dit geeft een score van c={score}")
     
     def load_gates(self, file_path: str)-> None:
             """gates toevoegen van de csv lijst, gebruikt de file path"""
@@ -412,27 +412,23 @@ class algorithm:
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
 
-        list, counter = user_input_obj.load_netlist(file_path)
-
-<<<<<<< Updated upstream
-=======
+        netlist, counter = user_input_obj.load_netlist(file_path)
         
         gate_count_list=[]
         max_y=0
         max_x=0
->>>>>>> Stashed changes
 
-        print(list)
+        print(netlist)
 
-        for items in range(len(list)):
-            chip_a=list[items][0]
-            chip_b=list[items][1]
+        for items in range(len(netlist)):
+            chip_a=netlist[items][0]
+            chip_b=netlist[items][1]
 
-            gate_count_list.append(list[items][0])
-            gate_count_list.append(list[items][1])
+            gate_count_list.append(netlist[items][0])
+            gate_count_list.append(netlist[items][1])
 
-            y1, x1, z1=grid_edit_obj.gate_dict[list[items][0]]
-            y2, x2, z2=grid_edit_obj.gate_dict[list[items][1]]
+            y1, x1, z1=grid_edit_obj.gate_dict[netlist[items][0]]
+            y2, x2, z2=grid_edit_obj.gate_dict[netlist[items][1]]
 
             #bepaalt de maximale x en y waardes
             if max_y<y1:
@@ -448,13 +444,13 @@ class algorithm:
         score_list=[]
 
         counter=0
-        for items in range(len(list)):
+        for items in range(len(netlist)):
             #voegt de gates toe aan de list om bij te houden hoevaak hij verbonden is.
-            y1, x1, z1=grid_edit_obj.gate_dict[list[items][0]]
-            y2, x2, z2=grid_edit_obj.gate_dict[list[items][1]]
+            y1, x1, z1=grid_edit_obj.gate_dict[netlist[items][0]]
+            y2, x2, z2=grid_edit_obj.gate_dict[netlist[items][1]]
 
-            chip_a=list[items][0]
-            chip_b=list[items][1]
+            chip_a=netlist[items][0]
+            chip_b=netlist[items][1]
 
             #telt hoevaak de gates verbonden moeten zijn
 
@@ -483,17 +479,20 @@ class algorithm:
             score_list.append((counter, score))
             counter+=1
 
-        print(score_list)
+        sorted_list = sorted(score_list, key=lambda x: x[1])
 
         return_list=[]
 
-        return_list = sorted(score_list, key=lambda x: x[1])
-        
-        print(return_list)
+        counter=0
+        for counter in range(len(sorted_list)):
+            return_tuple=sorted_list[counter][0]
+            return_list.append(netlist[return_tuple])
+            counter+=1
 
+        print(f"return list===={return_list}")
+        
         return return_list
         
-    
     def gate_verbinding(self, gate_1, gate_2):
         """verbind de 2 gates die worden opgegeven door wires te leggen"""
         y2, x2, z2 = self.gate_dict[gate_2]
@@ -533,31 +532,9 @@ class algorithm:
 class start_the_code:
     def manual_check():
         grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
-        output_obj = output(grid_edit_obj)
-<<<<<<< Updated upstream
-        # Maak een grid en voeg gates toe
-        grid_edit_obj.grid_create(10, 10)
-        grid_edit_obj.add_gate(1, 1, 1)
-        grid_edit_obj.add_gate(5, 5, 1)
-        grid_edit_obj.add_gate(5, 1, 1)
-        grid_edit_obj.add_gate(2, 3, 1)
-
-        # Verbind de gates
-        grid_edit_obj.connect_gates(1, 2)
-
-
-        # Visualiseer de resultaten
-        score = output_obj.costen_berekening()
-        user_input_obj.score_request(score)
-        output_obj.print_grid()
-        output_obj.visualisatie()
-    
-    manual_check()
-
-#wanneer kruizen wires elkaar precies bij dit probleem als ze een moment dezelfde coordinaten delen en niet lid zijn van een doorlopende wire die twee gates met elkaar verbind dus de wires die deel zijn van dezelfde ketting kunnen niet als gekruist worden gezien tenzij ze overzichzelf heen kruizen vanuit een andere kant dus bijvoorbeeld x,y is 1,2 en xy is verbonden met x,y is 3,2 door middel van 2 wires  maar x,y 2,3 en 2,1 zijn ook verbonden met 2 wires. deze kruizen elkaar omdat ze allebei over 2,2 heen gaan maar niet de wires nooit hetzelfde pas afleggen dus ze delen niet meer dan 1 coordinaat.
-=======
         start_obj =start(grid_edit_obj)
+        output_obj=output(grid_edit_obj)
+        user_input_obj=user_input(grid_edit_obj)
         algorithm_obj=algorithm()
         
         path_gates="gates.csv"
@@ -566,16 +543,17 @@ class start_the_code:
         start_obj.Auto_start_functie(path_gates)
 
         nieuw_list=algorithm_obj.netlist_reorder(path_netlist)
+
+        print(nieuw_list)
         
         print("De uiteindelijke grid is:")
         #output_obj.print_grid()
 
         print(algorithm_obj.use_algorithm())
 
-        output_obj.costen_berekening()
-        user_input_obj.score_request()
+        #output_obj.costen_berekening()
+        #user_input_obj.score_request()
 
         #output_obj.visualisatie()
     
     manual_check()
->>>>>>> Stashed changes
