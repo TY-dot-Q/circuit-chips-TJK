@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 class grid_edit:
     grid=[]
     gate_dict={}
-    wire_list=[(1,1,3), (1,3,3)]
+    wire_list=[]
     gate_nr =1
 
     def __init__(self):
@@ -45,21 +45,74 @@ class grid_edit:
         """
         vervangt de 0 waarde van de gridcreate met een wire, checkt ook of er niet al een gate is. 
         """
+        # early stop bij out of bounds 
         if not (0 <= z < len(self.grid) and 0 <= y < len(self.grid[0]) and 0 <= x < len(self.grid[0][0])):
             print(f"Error: Coordinates y={y}, x={x}, z={z} are out of bounds.")
             return
 
-        if self.grid[z][y][x] ==0:
+        if self.grid[z][y][x] ==0 or isinstance(self.grid[z][y][x], int): # als de coordinaten van de grid op een gate staan
             self.grid[z][y][x] = "+" #voeg de wire toe
             self.wirecount+=1
             self.wire_list.append((y,x,z))
             print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
+            gate_nr = self.grid[z][y][x]
+            if gate_nr not in self.gate_dict:
+                self.gate_dict[gate_nr] = (y, x, z)  # Voeg toe aan gate dict
+                print(f"Gate nummer {gate_nr} toegevoegd aan gate_dict op coördinaten y={y}, x={x}, z={z}")
+            else:
+                print(f"Gate nummer {gate_nr} staat al in gate_dict.")
+        # als er al een draad is 
         elif self.grid[z][y][x]=="+":
             self.wirecrosscount+=1
             print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
-
+        # als het misgaat
         else:
             print(f"er staat al iets namelijk: \"{self.grid[z][y][x]}\"")
+
+    def connect_gates(self, gate1: int, gate2: int) -> None:
+        """
+        Verbind twee gates met een draad.
+        Gate nummers worden opgegeven als gate1 en gate2. 
+        Moet later overgenomen worden door netlist die aangeeft welke gates verbonden zijn
+        """
+        if gate1 not in self.gate_dict or gate2 not in self.gate_dict:
+            print(f"Een of beide gate nummers {gate1} of {gate2} bestaan niet.")
+            return
+
+        start = self.gate_dict[gate1]
+        end = self.gate_dict[gate2]
+
+        y1, x1, z1 = start
+        y2, x2, z2 = end
+        
+        # Voegt lijn van gate tot eerste punt van pad toe
+        self.add_wire(y1, x1, z1)
+
+        '''
+        Basis Manhattan-distance "algoritme" voor testen wires leggen
+        Algoritme kan met a* vanuit hier worden uitgebreid!
+        '''
+        current_y, current_x, current_z = y1, x1, z1
+
+        # loop om middelste stuk draad van pad te maken
+        while (current_y, current_x, current_z) != (y2, x2, z2):
+            # Verplaats in y-as
+            if current_y != y2:
+                current_y += 1 if current_y < y2 else -1
+            # Verplaats in x-as
+            elif current_x != x2:
+                current_x += 1 if current_x < x2 else -1
+            # Verplaats in z-as
+            elif current_z != z2:
+                current_z += 1 if current_z < z2 else -1
+
+            # Voeg de draad toe op de huidige locatie
+            self.add_wire(current_y, current_x, current_z)
+
+        # Voegt lijn van laatste punt van pad tot eindgate toe
+        self.add_wire(y2, x2, z2)
+        self.wirecount -= 1
+
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]
@@ -68,12 +121,12 @@ class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-    def score_request(self)->None:
-        print(f"er zijn {self.grid_edit.wirecount} draaden")
+    def score_request(self, score)-> None:
+        print(f"er zijn {self.grid_edit.wirecount} draden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
-        print(f"dit geeft een score van c={self.grid_edit.score}")
+        print(f"dit geeft een score van c={score}") # score wordt gereturnd door functie costen_berekening in class output
     
-    def load_gates(self, file_path: str)->None:
+    def load_gates(self, file_path: str)-> None:
             """gates toevoegen van de csv lijst, gebruikt de file path"""
             """gates toevoegen van de csv lijst, gebruikt de file path"""
             if not os.path.isfile(file_path):
@@ -148,6 +201,7 @@ class output:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
+
     def print_grid (self) -> None:
         """
         print de huidig grid status met gates en verschillende lagen.
@@ -166,61 +220,63 @@ class output:
 
     def costen_berekening(self)->int:
         """berekent de score van de geplaatste draden"""
-        score = self.grid_edit.wirecount + 300 * self.grid_edit.wirecrosscount
+        score = (self.grid_edit.wirecount) + 300 * self.grid_edit.wirecrosscount
         return score
     
     def visualisatie(self):
-            """
-            Visualiseert de gates en wires in een 3D-omgeving.
-            Gates worden weergegeven als blauwe punten en wires als rode lijnen.
-            """
-            # Gebruik het grid_edit object dat is doorgegeven aan de class
-            grid_edit_obj = self.grid_edit
-            fig = plt.figure(figsize=(10, 8))
-            ax = fig.add_subplot(111, projection='3d')
+        """
+        Visualiseert de gates en wires in een 3D-omgeving.
+        Gates worden weergegeven als blauwe punten en wires als rode lijnen.
+        """
+        # Gebruik het grid_edit object dat is doorgegeven aan de class
+        grid_edit_obj = self.grid_edit
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
 
 
-            print(grid_edit_obj.gate_dict[2])
-            print(grid_edit_obj.gate_nr)
-            if not grid_edit_obj.gate_dict:
-                print("geen gates in de dict")
-                return
+        print(grid_edit_obj.gate_dict[2])
+        print(grid_edit_obj.gate_nr)
+        if not grid_edit_obj.gate_dict:
+            print("geen gates in de dict")
+            return
+        
+        # zet gates in visualisatie grid 
+        for gate_nr, (y, x, z) in grid_edit.gate_dict.items():
+            ax.scatter(x, y, z, color='blue', label=f'Gate {gate_nr}' if gate_nr == 1 else "", s=100)
+        
+         # maakt lijnen voor pad in visualisatie
+        wires = self.grid_edit.wire_list
+        if wires:
+            wire_x, wire_y, wire_z = zip(*wires)
             
-            # Plot gates
-            for gate_nr, (y, x, z) in grid_edit.gate_dict.items():
-                ax.scatter(x, y, z, color='blue', label=f'Gate {gate_nr}' if gate_nr == 1 else "", s=100)
-            
-            # Plot wires
-            wires = grid_edit_obj.wire_list
-            if wires:
-                wire_x, wire_y, wire_z = zip(*wires)  # Unpack wire coordinates
-                ax.scatter(wire_x, wire_y, wire_z, color='red', label='Wire', s=50)
-            else:
-                print("Geen wires gevonden")
+            ax.plot(wire_x, wire_y, wire_z, color='purple', linewidth=2, label='Wire Path')
+        else:
+            print("Geen wires gevonden")
 
-            # Instellen van ticks met stappen van 1
-            ax.set_xticks(range(int(ax.get_xlim()[0]), int(ax.get_xlim()[1]) + 2, 1))
-            ax.set_yticks(range(int(ax.get_ylim()[0]), int(ax.get_ylim()[1]) + 2, 1))
-            ax.set_zlim(bottom=1)
-            ax.set_zticks(range(1, int(ax.get_zlim()[1]) + 1, 1))
 
-            # correctie om y-as om te draaien 
-            '''
-            Dit maakt het mogelijk dat de coordinaten 0,0 voor x,y onderaan begint
-            '''
-            ax.invert_yaxis()
-            ax.invert_xaxis()
+        # Instellen van ticks met stappen van 1
+        ax.set_xticks(range(int(ax.get_xlim()[0]), int(ax.get_xlim()[1]) + 2, 1))
+        ax.set_yticks(range(int(ax.get_ylim()[0]), int(ax.get_ylim()[1]) + 2, 1))
+        ax.set_zlim(bottom = 1)
+        ax.set_zticks(range(1, 10, 1))
 
-            # Labels and legend
-            ax.set_xlabel("X-as")
-            ax.set_ylabel("Y-as")
-            ax.set_zlabel("Z-as")
-            ax.set_title("3D Visualisatie van Gates en Wires")
-            ax.legend()
+        # correctie om y-as om te draaien 
+        '''
+        Dit maakt het mogelijk dat de coordinaten 0,0 voor x,y onderaan begint
+        '''
+        ax.invert_yaxis()
+        ax.invert_xaxis()
 
-            # Tweak the view
-            ax.view_init(elev=30, azim=30)
-            plt.show()    
+        # Labels and legend
+        ax.set_xlabel("X-as")
+        ax.set_ylabel("Y-as")
+        ax.set_zlabel("Z-as")
+        ax.set_title("3D Visualisatie van Gates en Wires")
+        ax.legend()
+
+        # Tweak the view
+        ax.view_init(elev=30, azim=30)
+        plt.show()    
 
 class start:
     def __init__(self, grid_edit_obj):
@@ -248,24 +304,28 @@ class algorithm:
         #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
         #""
 
-        
 
     def manual_check():
         grid_edit_obj = grid_edit()
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
-        start_obj =start(grid_edit_obj)
-        
-        path="gates.csv"
-            
-        start_obj.Auto_start_functie(path)
-        
-        print("De uiteindelijke grid is:")
-        #output_obj.print_grid()
+        # Maak een grid en voeg gates toe
+        grid_edit_obj.grid_create(10, 10)
+        grid_edit_obj.add_gate(1, 1, 1)
+        grid_edit_obj.add_gate(5, 5, 1)
+        grid_edit_obj.add_gate(5, 1, 1)
+        grid_edit_obj.add_gate(2, 3, 1)
 
-        output_obj.costen_berekening()
-        user_input_obj.score_request()
+        # Verbind de gates
+        grid_edit_obj.connect_gates(1, 2)
 
+
+        # Visualiseer de resultaten
+        score = output_obj.costen_berekening()
+        user_input_obj.score_request(score)
+        output_obj.print_grid()
         output_obj.visualisatie()
     
     manual_check()
+
+#wanneer kruizen wires elkaar precies bij dit probleem als ze een moment dezelfde coordinaten delen en niet lid zijn van een doorlopende wire die twee gates met elkaar verbind dus de wires die deel zijn van dezelfde ketting kunnen niet als gekruist worden gezien tenzij ze overzichzelf heen kruizen vanuit een andere kant dus bijvoorbeeld x,y is 1,2 en xy is verbonden met x,y is 3,2 door middel van 2 wires  maar x,y 2,3 en 2,1 zijn ook verbonden met 2 wires. deze kruizen elkaar omdat ze allebei over 2,2 heen gaan maar niet de wires nooit hetzelfde pas afleggen dus ze delen niet meer dan 1 coordinaat.
