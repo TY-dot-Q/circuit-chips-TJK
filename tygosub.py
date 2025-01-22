@@ -418,8 +418,6 @@ class algorithm:
         max_y=0
         max_x=0
 
-        print(netlist)
-
         for items in range(len(netlist)):
             chip_a=netlist[items][0]
             chip_b=netlist[items][1]
@@ -474,7 +472,7 @@ class algorithm:
 
             score = afstand_tussen_gates*1 + afstand_midden*1 + conection_amount*1
 
-            print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
+            #print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
 
             score_list.append((counter, score))
             counter+=1
@@ -489,7 +487,8 @@ class algorithm:
             return_list.append(netlist[return_tuple])
             counter+=1
 
-        print(f"return list===={return_list}")
+        print(f"orginele list --- {netlist}")
+        print(f"nieuwe list ----- {return_list}")
         
         return return_list
         
@@ -542,9 +541,8 @@ class start_the_code:
 
         start_obj.Auto_start_functie(path_gates)
 
+        #hergeordende net list = nieuw_list
         nieuw_list=algorithm_obj.netlist_reorder(path_netlist)
-
-        print(nieuw_list)
         
         print("De uiteindelijke grid is:")
         #output_obj.print_grid()
