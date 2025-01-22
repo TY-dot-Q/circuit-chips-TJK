@@ -472,7 +472,7 @@ class algorithm:
 
             score = afstand_tussen_gates*1 + afstand_midden*1 + conection_amount*1
 
-            #print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
+            print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
 
             score_list.append((counter, score))
             counter+=1
@@ -491,22 +491,6 @@ class algorithm:
         print(f"nieuwe list ----- {return_list}")
         
         return return_list
-        
-    def gate_verbinding(self, gate_1, gate_2):
-        """verbind de 2 gates die worden opgegeven door wires te leggen"""
-        y2, x2, z2 = self.gate_dict[gate_2]
-        y1, x1, z1 = self.gate_dict[gate_1]
-
-        add_wire_list=[]
-
-        #zorg voor dezelfde y hoogte
-
-        #zorg voor dezelfde x hoogte
-
-        #zorg voor dezelfde z hoogte
-
-        #in elke 
-            # check er niet al een wire is
 
     def gate_nr(self):
         grid_edit_obj=grid_edit()
