@@ -17,6 +17,7 @@ class grid_edit:
         self.wirecount=0
         self.wirecrosscount=0
         self.score=0
+        self.maximum_y, self.maximum_x = 0,0
 
     def grid_create (self, max_y, max_x) -> None:
         """
@@ -47,11 +48,10 @@ class grid_edit:
             print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
 
     def gate_amount_count(self):
-        grid_edit_obj=grid_edit()
 
         amount=0
 
-        for item in grid_edit_obj.gate_dict:
+        for item in self.grid_edit.gate_dict:
             amount+=1
             item+=1
 
@@ -234,7 +234,6 @@ class output:
             Gates worden weergegeven als blauwe punten en wires als rode lijnen.
             """
             # Gebruik het grid_edit object dat is doorgegeven aan de class
-            grid_edit_obj = grid_edit()
             fig = plt.figure(figsize=(10, 8))
             ax = fig.add_subplot(111, projection='3d')
 
@@ -273,14 +272,13 @@ class start:
         """
         deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
         """
-        grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
+        user_input_obj = user_input(self.grid_edit)
 
         #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
         
         max_y, max_x = user_input_obj.max_grid_values(user_path)
-
-        grid_edit_obj.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
+        print(max_x, max_y)
+        self.grid_edit.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
         
         # user_path=input("geef de file path op: ")
         user_input_obj.load_gates(user_path)
@@ -290,11 +288,10 @@ class algorithm:
         self.grid_edit = grid_edit_obj
 
     def gate_nr(self):
-        #grid_edit_obj=grid_edit()
 
         amount=0
 
-        for item in grid_edit_obj.gate_dict:
+        for item in self.grid_edit.gate_dict:
             amount+=1
             item+=1
 
@@ -304,21 +301,21 @@ class algorithm:
     
 
     def check_valid(self, pos):
-        grid_edit_obj = grid_edit()
         y, x, z = pos
-
         # checks if the position is in the grid and if it is not already taken
-        if 0 <= x <= 10 and 0 <= y <= 10 and 0 <= z <= 7 and (grid_edit_obj.grid[z][y][x] is 0):
-            return True
+        if 0 <= x < 10 and 0 <= y < 9 and 0 <= z < 7:
+            if self.grid_edit.grid[z][y][x] == 0:
+                return True
+            else:
+                return False
         else:
             return False
 
     def shortest_path(self, gate_1, gate_2):
         # turns the gate numbers into their coordinates
-        grid_edit_obj=grid_edit()
 
-        start = grid_edit_obj.gate_dict[gate_1]
-        end = grid_edit_obj.gate_dict[gate_2]
+        start = self.grid_edit.gate_dict[gate_1]
+        end = self.grid_edit.gate_dict[gate_2]
         
         # sets up the heuristic
         def heuristic(a,b):
@@ -349,7 +346,7 @@ class algorithm:
             for dy, dx, dz in neighbors:
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
 
-                # checks if the neighbor is inside the grid
+                # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor) != True:
                     continue
                 
@@ -372,10 +369,10 @@ class algorithm:
         # returns the path from start to end
         return self.reconstruct_path(path_traversed, start, end)
 
-    def reconstruct_path(self, origin, gate_1, gate_2):
+    def reconstruct_path(self, origin, start, end):
+        print(origin)
         # turns the gate numbers into their coordinates
-        start = grid_edit_obj.gate_dict[gate_1]
-        current = grid_edit_obj.gate_dict[gate_2]
+        current = end
         
         path = []
 
@@ -395,12 +392,11 @@ class algorithm:
         return path
 
     def use_algorithm(self) ->None:
-        #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
-        #"grid_edit_obj.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
+        #"self.grid_edit.addgate(5,6,1)" om een gate toe tevoegen
+        #"self.grid_edit.addwire(5,6,1)" om een wire toe te voegen (z level is hier nodig)
         min_value=99999999
 
         #pak gate hoeveel heid
-        grid_edit_obj = grid_edit()
         
         start_teller =self.gate_nr()
         
@@ -420,7 +416,7 @@ class algorithm:
                 if current_gate not in list_gates1:
                     print(f"current gate{current_gate}:")
                     #geeft een gate die nog niet verbonden is en de afstand (value) terug tot de opgegeven current_gate
-                    connect_gate, value = grid_edit_obj.dichtstbij(current_gate, list_gates1) 
+                    connect_gate, value = self.grid_edit.dichtstbij(current_gate, list_gates1) 
                     print(f"connect_gate: {connect_gate} -- value: {value}")
 
                     #-1, -1 wordt terug gegeven als er geen andere gate wordt gevonden
@@ -447,7 +443,7 @@ class algorithm:
             
             #maak de eerste connectie van de overig gate als die er is
             if start_gate_r2!=-2:
-                connect_gate, value = grid_edit_obj.dichtstbij(start_gate_r2, list_gates2) #list 2 omdat dit de tweede connectie wordt
+                connect_gate, value = self.grid_edit.dichtstbij(start_gate_r2, list_gates2) #list 2 omdat dit de tweede connectie wordt
                 test_value+=value
 
                 list_gates1.append(start_gate_r2)
@@ -460,7 +456,7 @@ class algorithm:
                 #skipt gates die al verbonden zijn voor de tweede keer
                 if current_gate not in list_gates2:
                     #geeft een gate die nog niet verbonden is voor de tweede keer en de afstand (value) terug tot de opgegeven current_gate
-                    connect_gate, value = grid_edit_obj.dichtstbij(current_gate, list_gates2) 
+                    connect_gate, value = self.grid_edit.dichtstbij(current_gate, list_gates2) 
                     
                     #-1, -1 wordt terug gegeven als er geen andere gate wordt gevonden
                     if connect_gate == -1 & value==-1:
@@ -499,12 +495,10 @@ class start_the_code:
         
         path="print_0.csv"
             
-
         start_obj.Auto_start_functie(path)
         
         print("De uiteindelijke grid is:")
-        #output_obj.print_grid()
-        
+        output_obj.print_grid()
         algorithm_obj.shortest_path(1,2)
 
         print(algorithm_obj.use_algorithm())
