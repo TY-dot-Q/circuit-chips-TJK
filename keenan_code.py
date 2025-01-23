@@ -1,6 +1,7 @@
 import csv, os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import heapq
 
 gate_nrstart = 1
 
@@ -285,10 +286,11 @@ class start:
         user_input_obj.load_gates(user_path)
 
 class algorithm:
-    
+    def __init__(self, grid_edit_obj):
+        self.grid_edit = grid_edit_obj
 
     def gate_nr(self):
-        grid_edit_obj=grid_edit()
+        #grid_edit_obj=grid_edit()
 
         amount=0
 
@@ -299,7 +301,98 @@ class algorithm:
         print(f"amount{amount}")
 
         return amount
+    
+
+    def check_valid(self, pos):
+        grid_edit_obj = grid_edit()
+        y, x, z = pos
+
+        # checks if the position is in the grid and if it is not already taken
+        if 0 <= x <= 10 and 0 <= y <= 10 and 0 <= z <= 7 and (grid_edit_obj.grid[z][y][x] is 0):
+            return True
+        else:
+            return False
+
+    def shortest_path(self, gate_1, gate_2):
+        # turns the gate numbers into their coordinates
+        grid_edit_obj=grid_edit()
+
+        start = grid_edit_obj.gate_dict[gate_1]
+        end = grid_edit_obj.gate_dict[gate_2]
         
+        # sets up the heuristic
+        def heuristic(a,b):
+            return abs(a[0] - b[0]) + abs(a[1] - b[1]) + abs(a[2] - b[2])
+
+        # makes a priority list for the node
+        open_set = []
+        heapq.heappush(open_set, (0, start))
+        
+        # a dict to keep track of the path traversed
+        path_traversed = {}
+        
+        # a dict for the current cost for each node
+        current_cost = {start: 0}
+        
+        # loops until there are no nodes left
+        while open_set:
+            # takes the lowest priority node out of the heap
+            _, current = heapq.heappop(open_set)
+
+            # stops if the current point is the end point
+            if current == end:
+                break
+            
+            neighbors = [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]
+
+            # loops over the neighbors of the current point
+            for dy, dx, dz in neighbors:
+                neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
+
+                # checks if the neighbor is inside the grid
+                if self.check_valid(neighbor) != True:
+                    continue
+                
+                # cost for moving to the neighbor
+                new_cost = current_cost[current] + 1
+
+                if neighbor not in current_cost or new_cost < current_cost[neighbor]:
+                    # updates costs to that of the neighbor
+                    current_cost[neighbor] = new_cost
+
+                    # calculates the priority, with current costs and the heuristic
+                    priority = new_cost + heuristic(neighbor, end)
+
+                    # adds neighbor to the prioritylist
+                    heapq.heappush(open_set, (priority, neighbor))
+
+                    # keeps track of the order
+                    path_traversed[neighbor] = current
+    
+        # returns the path from start to end
+        return self.reconstruct_path(path_traversed, start, end)
+
+    def reconstruct_path(self, origin, gate_1, gate_2):
+        # turns the gate numbers into their coordinates
+        start = grid_edit_obj.gate_dict[gate_1]
+        current = grid_edit_obj.gate_dict[gate_2]
+        
+        path = []
+
+        # we start looping from the back of the trail to the start
+        while current != start:
+            # appends to the pathlist
+            path.append(current)
+            
+            # updates current
+            current = origin[current]
+        
+        # adds the start point and reverses the list to go from start to end
+        path.append(start)
+        path.reverse()
+        
+        # returns the path
+        return path
 
     def use_algorithm(self) ->None:
         #"grid_edit_obj.addgate(5,6,1)" om een gate toe tevoegen
@@ -402,7 +495,7 @@ class start_the_code:
         user_input_obj = user_input(grid_edit_obj)
         output_obj = output(grid_edit_obj)
         start_obj =start(grid_edit_obj)
-        algorithm_obj=algorithm()
+        algorithm_obj=algorithm(grid_edit_obj)
         
         path="print_0.csv"
             
@@ -411,6 +504,8 @@ class start_the_code:
         
         print("De uiteindelijke grid is:")
         #output_obj.print_grid()
+        
+        algorithm_obj.shortest_path(1,2)
 
         print(algorithm_obj.use_algorithm())
 
