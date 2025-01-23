@@ -51,7 +51,7 @@ class grid_edit:
 
         amount=0
 
-        for item in self.grid_edit.gate_dict:
+        for item in self.gate_dict:
             amount+=1
             item+=1
 
@@ -300,11 +300,15 @@ class algorithm:
         return amount
     
 
-    def check_valid(self, pos):
+    def check_valid(self, pos, end):
         y, x, z = pos
         # checks if the position is in the grid and if it is not already taken
+        
+
         if 0 <= x < 10 and 0 <= y < 9 and 0 <= z < 7:
             if self.grid_edit.grid[z][y][x] == 0:
+                return True
+            elif pos == end:
                 return True
             else:
                 return False
@@ -330,9 +334,12 @@ class algorithm:
         
         # a dict for the current cost for each node
         current_cost = {start: 0}
-        
+        counter = 0
         # loops until there are no nodes left
         while open_set:
+            counter += 1
+
+            
             # takes the lowest priority node out of the heap
             _, current = heapq.heappop(open_set)
 
@@ -347,7 +354,7 @@ class algorithm:
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
 
                 # checks if the neighbor is inside the grid                
-                if self.check_valid(neighbor) != True:
+                if self.check_valid(neighbor, end) != True:
                     continue
                 
                 # cost for moving to the neighbor
@@ -367,10 +374,10 @@ class algorithm:
                     path_traversed[neighbor] = current
     
         # returns the path from start to end
-        return self.reconstruct_path(path_traversed, start, end)
+        print(self.reconstruct_path(path_traversed, start, current))
+        return self.reconstruct_path(path_traversed, start, current)
 
     def reconstruct_path(self, origin, start, end):
-        print(origin)
         # turns the gate numbers into their coordinates
         current = end
         
