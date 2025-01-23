@@ -17,7 +17,8 @@ class grid_edit:
         self.wirecount=0
         self.wirecrosscount=0
         self.score=0
-        self.maximum_y, self.maximum_x = 0,0
+        self.maximum_y = 0
+        self.maximum_x = 0
 
     def grid_create (self, max_y, max_x) -> None:
         """
@@ -148,7 +149,7 @@ class user_input:
                             try:
                                 x=int(row[1])
                                 y=int(row[2])
-                                z=1
+                                z=0
                                 self.grid_edit.add_gate(y,x,z)
                             
                             except ValueError:
@@ -193,8 +194,11 @@ class user_input:
                         print(f"Fout bij het verwerken van regel: {row}")
                         continue
 
-            max_y = max_y + 4
-            max_x = max_x + 4
+            max_y = max_y + 1
+            max_x = max_x + 1
+
+            self.grid_edit.maximum_x = max_x
+            self.grid_edit.maximum_y = max_y
 
             print(f"Maximale waarden gevonden: y={max_y}, x={max_x}")
             return max_y, max_x
@@ -213,7 +217,7 @@ class output:
         """
         try:
             for z, layer in enumerate(self.grid_edit.grid):
-                print(f"Laag {z}")
+                print(f"Laag {z+1}")
                 for row in layer:
                     print(row)
         except IndexError:
@@ -304,8 +308,7 @@ class algorithm:
         y, x, z = pos
         # checks if the position is in the grid and if it is not already taken
         
-
-        if 0 <= x < 10 and 0 <= y < 9 and 0 <= z < 7:
+        if 0 <= x < self.grid_edit.maximum_x and 0 <= y < self.grid_edit.maximum_y and 0 <= z < 7:
             if self.grid_edit.grid[z][y][x] == 0:
                 return True
             elif pos == end:
