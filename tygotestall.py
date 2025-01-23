@@ -307,7 +307,6 @@ class output:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-
     def print_grid (self) -> None:
         """
         print de huidig grid status met gates en verschillende lagen.
@@ -392,25 +391,28 @@ class start:
         """
         deels om te testen of het werkt maar je kan hier de grid opgeven, gates toevoegen en kijken wat de uitkomst is
         """
-        grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
+        
+        user_input_obj = user_input(self.grid_edit)
 
         #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
         
         max_y, max_x = user_input_obj.max_grid_values(gate_path)
 
-        grid_edit_obj.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
-        
+        self.grid_edit.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
+
         # user_path=input("geef de file path op: ")
         user_input_obj.load_gates(gate_path)
+
+        print("Dit is de eerste check of de grid leeg is:",len(self.grid_edit.grid))
         #user_input_obj.load_netlist(netlist_path)
 
 class algorithm:
+    def __init__(self, grid_edit_obj):
+        self.grid_edit=grid_edit_obj
 
     def netlist_reorder(self, file_path):
         """reorderd de net list, vraagt zelf de netlist op"""
-        grid_edit_obj = grid_edit()
-        user_input_obj = user_input(grid_edit_obj)
+        user_input_obj = user_input(self.grid_edit)
 
         netlist, counter = user_input_obj.load_netlist(file_path)
         
@@ -425,8 +427,8 @@ class algorithm:
             gate_count_list.append(netlist[items][0])
             gate_count_list.append(netlist[items][1])
 
-            y1, x1, z1=grid_edit_obj.gate_dict[netlist[items][0]]
-            y2, x2, z2=grid_edit_obj.gate_dict[netlist[items][1]]
+            y1, x1, z1=self.grid_edit.gate_dict[netlist[items][0]]
+            y2, x2, z2=self.grid_edit.gate_dict[netlist[items][1]]
 
             #bepaalt de maximale x en y waardes
             if max_y<y1:
@@ -444,8 +446,8 @@ class algorithm:
         counter=0
         for items in range(len(netlist)):
             #voegt de gates toe aan de list om bij te houden hoevaak hij verbonden is.
-            y1, x1, z1=grid_edit_obj.gate_dict[netlist[items][0]]
-            y2, x2, z2=grid_edit_obj.gate_dict[netlist[items][1]]
+            y1, x1, z1=self.grid_edit.gate_dict[netlist[items][0]]
+            y2, x2, z2=self.grid_edit.gate_dict[netlist[items][1]]
 
             chip_a=netlist[items][0]
             chip_b=netlist[items][1]
@@ -494,7 +496,6 @@ class algorithm:
     
     def wire_list_laying(self, connection_list):
         """gaat over de opgegeven wire list en gebruikt een andere functie (nu connect_two_gates) om de draden te verbinden"""
-        grid_edit_obj=grid_edit()
 
         wire_path_count=0
 
@@ -504,32 +505,39 @@ class algorithm:
             self.connect_two_gates(chip_a, chip_b, wire_path_count)
 
             wire_path_count+=1
-        
-
     
     def connect_two_gates(self, chip_a, chip_b, wire_path_count):
         """zoekt de kortste pad tussen twee punten en legt hier dan draden tussen
         dit wordt terug gegeven in een lijst, de lijst die hij ontvangt is de volgorde aan punt verbindingen die hij eerst gaat leggen"""
-        grid_edit_obj=grid_edit()
-        current_wire_nr=0
+        #todo:
+        #zorg dat de andere gates niet worden opgegeten
+        #zorg dat het niet over andere draden heen gaat
+        #zorg de draden duidelijk in een list worden neergezet
 
-        print(chip_a)
-        print(chip_b)
+        #grid_edit
+        #zorg dat je een list aan wires weg kan halen
+
+        #algo 
+        #zorg dat je een specifieke lijn opnieuw kan leggen
+
+        
+        current_wire_nr=0
 
         complete_wire_list=[]
 
-        y1, x1, z1 = grid_edit_obj.gate_dict[chip_a]
-        y2, x2, z2 = grid_edit_obj.gate_dict[chip_b]
+        y1, x1, z1 = self.grid_edit.gate_dict[chip_a]
+        y2, x2, z2 = self.grid_edit.gate_dict[chip_b]
+
+        print("")
+        print("")
+        print(f"Nieuwe connect gates ----{wire_path_count}------")
+
+        print("Dit is de check of de grid leeg is:",len(self.grid_edit.grid))
 
         print(f"chip_nr ={chip_a} met waarde: y={y1}, x={x1}, z={z1}")
         print(f"chip_nr ={chip_b} met waarde: y={y2}, x={x2}, z={z2}")
 
-
         cy, cx , cz = y1, x1, z1 
-
-        pos_change_y=0
-        pos_change_x=0
-        pos_change_z=0
 
         while cy != y2 or cx != x2 or cz != z2:
 
@@ -537,82 +545,80 @@ class algorithm:
             dif_x = cx-x2
             dif_z = cz-z2
 
+            pos_change_y=0
+            pos_change_x=0
+            pos_change_z=0
+
             print(f"dif_y ={dif_y} -- dif_x={dif_x} -- dif_z={dif_z}")
 
             if dif_y <0:
                 pos_change_y=1
             elif dif_y>0:
                 pos_change_y=-1
-            else:
-                print("dif_y = 0")
 
             if dif_x <0:
                 pos_change_x=1
             elif dif_x>0:
                 pos_change_x=-1
-            else:
-                print("dif_x = 0")
             
             if dif_z <0:
                 pos_change_z=1
             elif dif_z>0:
                 pos_change_z=-1
-            else:
-                print("dif_x = 0")
 
-            print(f"pos change y ={pos_change_y}, pos change x ={pos_change_y}, pos change z={pos_change_z} ")
+            print(f"pos change y =({pos_change_y}), pos change x =({pos_change_y}), pos change z=({pos_change_z}) ")
 
             #probeer dichterbij te komen op de y-as
             if cy!=y2:
                 #check of er op de volgende stap niet al iets is
-                if grid_edit_obj.gate_dict[cy+pos_change_y]!=0:
+                if self.grid_edit.gate_dict[cy+pos_change_y]!=0:
                     #verander de huidige coordinaten en voeg de wire toe aan de lijst
                     cy+=pos_change_y
 
                 #check of de volgende plek een wire is
-                if grid_edit_obj.gate_dict[cy+pos_change_y]=="+":
-                    print("nothing")
+                #if self.grid_edit.gate_dict[cy+pos_change_y]=="+":
+                    #print("nothing")
 
             elif cx!=x2:
                 check = cx+pos_change_x
                 print(f"check value{check}")
-                if grid_edit_obj.gate_dict[cx+pos_change_x]!=0:
+                if self.grid_edit.gate_dict[cx+pos_change_x]!=0:
                     #verander de huidige coordinaten en voeg de wire toe aan de lijst
                     cx+=pos_change_x
 
                 #check of de volgende plek een wire is
-                if grid_edit_obj.gate_dict[cx+pos_change_x]=="+":
-                    print("nothing")
+                #if self.grid_edit.gate_dict[cx+pos_change_x]=="+":
+                    #print("nothing")
 
             elif cz!=z2:
-                if grid_edit_obj.gate_dict[cz+pos_change_z]!=0:
+                if self.grid_edit.gate_dict[cz+pos_change_z]!=0:
                     #verander de huidige coordinaten en voeg de wire toe aan de lijst
                     cz+=pos_change_z
 
                 #check of de volgende plek een wire is
-                if grid_edit_obj.gate_dict[cz+pos_change_z]=="+":
-                    print("nothing")
+                #if self.grid_edit.gate_dict[cz+pos_change_z]=="+":
+                    #print("nothing")
             
-            grid_edit_obj.add_wire(cy, cx, cz)
-            complete_wire_list.append(([wire_path_count],([cy, cx, cz ])))
+            self.grid_edit.add_wire(cy, cx, cz)
+            complete_wire_list.append(([wire_path_count],[current_wire_nr],([cy, cx, cz ])))
 
             current_wire_nr+=1
 
             print(f"{current_wire_nr}")
+            print("")
 
         print(f"Current wire path = {wire_path_count}")
     
-        print(complete_wire_list[wire_path_count])
+        #print(complete_wire_list[wire_path_count-1])
 
     def reconstruct_line(self):
         """neemt een gegeven wire path en gaat controleren of deze beter kan"""
 
     def gate_nr(self):
-        grid_edit_obj=grid_edit()
-
+        """geeft het aantal grates terug in de grid"""
         amount=0
 
-        for item in grid_edit_obj.gate_dict:
+        for item in self.grid_edit.gate_dict:
             amount+=1
             item+=1
 
@@ -633,12 +639,14 @@ class start_the_code:
         start_obj =start(grid_edit_obj)
         output_obj=output(grid_edit_obj)
         user_input_obj=user_input(grid_edit_obj)
-        algorithm_obj=algorithm()
+        algorithm_obj=algorithm(grid_edit_obj)
         
         path_gates="gates.csv"
         path_netlist="netlist.csv"
 
         start_obj.Auto_start_functie(path_gates)
+
+        output_obj.print_grid()
 
         #hergeordende net list = nieuw_list
         nieuw_list=algorithm_obj.netlist_reorder(path_netlist)
@@ -646,7 +654,7 @@ class start_the_code:
         algorithm_obj.wire_list_laying(nieuw_list)
         
         print("De uiteindelijke grid is:")
-        #output_obj.print_grid()
+        output_obj.print_grid()
 
         print(algorithm_obj.use_algorithm())
 

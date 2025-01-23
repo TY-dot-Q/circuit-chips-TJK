@@ -25,24 +25,38 @@ class grid_edit:
         self.grid = [[[0 for _ in range(max_x)] for _ in range(max_y)] for _ in range(7)]
         print("grid succesfol gemaakt")
 
-    def add_gate (self, y, x, z) ->None:
+    def add_gate(self, y, x, z) -> None:
         """
-        vervangt de 0 waarde van de gridcreate met een nummer 1,2,3 etc en je kan hiermee dus gates toevoegen.
-        gebruik x en y coordinaten
+        Voeg een gate toe aan het grid, en zorg dat het grid dynamisch wordt uitgebreid indien nodig.
         """
-        if not (0 <= z < len(self.grid) and 0 <= y < len(self.grid[0]) and 0 <= x < len(self.grid[0][0])):
-            print(f"Error: Coordinates y={y}, x={x}, z={z} are out of bounds.")
-            return
-    
-        if self.grid[z][y][x] ==0:
-            self.grid[z][y][x] = self.gate_nr #voeg de gate toe
-            self.gate_dict[self.gate_nr] = (y,x,z)
-            print(f"gate met het nummer {self.gate_nr} toegevoegd op de coordinaten y={y}, x={x}, z={z} ---- check: {self.gate_dict[self.gate_nr]} ")
-            self.gate_nr +=1
-            gate_nrstart
-            
+        # Zorg dat het grid bestaat
+        if not hasattr(self, "grid"):
+            self.grid = []
+
+        # Zorg dat de z-index bestaat
+        while len(self.grid) <= z:
+            self.grid.append([])
+
+        # Zorg dat de y-index bestaat binnen z
+        while len(self.grid[z]) <= y:
+            self.grid[z].append([])
+
+        # Zorg dat de x-index bestaat binnen y
+        while len(self.grid[z][y]) <= x:
+            self.grid[z][y].append(None)
+
+        # Controleer of er al een waarde is
+        if self.grid[z][y][x] is not None:
+            print(f"Error: Er staat al een waarde \"{self.grid[z][y][x]}\" op coördinaten z={z}, y={y}, x={x}.")
         else:
-            print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
+            # Voeg de gate toe
+            self.grid[z][y][x] = self.gate_nr
+            if not hasattr(self, "gate_dict"):
+                self.gate_dict = {}
+            self.gate_dict[self.gate_nr] = (y, x, z)
+            print(f"Gate met het nummer {self.gate_nr} toegevoegd op coördinaten z={z}, y={y}, x={x}.")
+            self.gate_nr += 1
+
 
     def gate_amount_count(self):
         grid_edit_obj=grid_edit()
