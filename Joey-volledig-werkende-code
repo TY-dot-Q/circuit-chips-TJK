@@ -248,8 +248,6 @@ class output:
         score = self.grid_edit.wirecount + 300 * self.grid_edit.wirecrosscount
         return score
     
-    
-
     def animation(self, frame, ax, grid_edit_obj):
         
         print(grid_edit_obj.gate_dict[2])
