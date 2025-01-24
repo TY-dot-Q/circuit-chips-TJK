@@ -1,7 +1,8 @@
-from code.classes import grid_edit
+from classes import grid_edit
 #from code.algorithms import ...
-from code.visualisation import visualisation as vis
-from code.classes import auto_start
+from visualisation import visualisation as vis
+from classes import user_input
+from classes import auto_start
 
 
 if __name__ =="__main__":
@@ -12,10 +13,10 @@ if __name__ =="__main__":
     #maximale waardes die voorkomen in het csv bestand
 
     #auto_start(gate_path)
-    max_y, max_x, max_z =grid_edit.user_input.max_grid_values(path)
+    max_y, max_x, max_z = user_input.max_grid_values(path)
     
     #maak een grid met die maximale waardes
-    grid_edit.grid_edit.grid_create(max_y, max_x, max_z)
+    grid_edit.grid_create(max_y, max_x, max_z)
 
     #importeer de gates naar de gecreerde gates.
     grid_edit.user_input.load_gates(path)
