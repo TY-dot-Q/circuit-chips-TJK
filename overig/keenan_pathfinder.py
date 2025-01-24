@@ -130,4 +130,5 @@ class CircuitAlgorithm:
 
 router = CircuitAlgorithm(grid_size=(5, 5, 2), netlist=[])
 path = router.shortest_path((0, 0, 0), (3, 3, 0))
+saved = router.path_to_csv(path, 'route.csv')
 print(path)
