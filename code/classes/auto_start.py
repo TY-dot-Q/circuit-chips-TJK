@@ -1,6 +1,6 @@
 from classes import user_input
 
-class auto_start:
+class auto_functions:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
@@ -18,3 +18,15 @@ class auto_start:
             
             # user_path=input("geef de file path op: ")
             user_input_obj.load_gates(user_path)
+
+    def wire_list_laying(self, connection_list):
+        """gaat over de opgegeven wire list en gebruikt een andere functie (nu connect_two_gates) om de draden te verbinden"""
+
+        wire_path_count=0
+
+        for wire_path_count in range(len(connection_list)):
+            chip_a =connection_list[wire_path_count][0]
+            chip_b =connection_list[wire_path_count][1]
+            self.connect_two_gates(chip_a, chip_b, wire_path_count)
+
+            wire_path_count+=1
