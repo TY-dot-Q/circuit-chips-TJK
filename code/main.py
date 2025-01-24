@@ -1,6 +1,7 @@
 from code.classes import grid_edit
 #from code.algorithms import ...
 from code.visualisation import visualisation as vis
+from code.classes import auto_start
 
 
 if __name__ =="__main__":
@@ -9,6 +10,8 @@ if __name__ =="__main__":
     path ="C:\\Users\\tygob\\Documents\\GitHub\\circuit-chips-TJK\\code"
 
     #maximale waardes die voorkomen in het csv bestand
+
+    #auto_start(gate_path)
     max_y, max_x, max_z =grid_edit.user_input.max_grid_values(path)
     
     #maak een grid met die maximale waardes
