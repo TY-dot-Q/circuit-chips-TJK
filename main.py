@@ -1,31 +1,25 @@
-from classes import grid_edit
-#from code.algorithms import ...
-from visualisation import visualisation as vis
-from classes import user_input
-from classes import auto_start
+from code.classes import grid_edit, output, user_input, auto_start
+from code.visualisation import visualisation as vis
 
+#from code.algorithms import ...
 
 if __name__ =="__main__":
+    grid_edit_obj=grid_edit()
 
-    #path voor het laden van de csv nodes
-    path ="C:\\Users\\tygob\\Documents\\GitHub\\circuit-chips-TJK\\code"
+    path="gates.csv"
 
-    #maximale waardes die voorkomen in het csv bestand
+    grid_edit_obj = grid_edit()
+    user_input_obj = user_input(grid_edit_obj)
+    output_obj = output(grid_edit_obj)
+    start_obj =start(grid_edit_obj)
+    algorithm_obj=algorithm(grid_edit_obj)
+            
+    start_obj.Auto_start_functie(path)
 
-    #auto_start(gate_path)
-    max_y, max_x, max_z = user_input.max_grid_values(path)
-    
-    #maak een grid met die maximale waardes
-    grid_edit.grid_create(max_y, max_x, max_z)
+    # Voeg de wirepaths toe aan de CSV
+    output_obj.print_grid()
 
-    #importeer de gates naar de gecreerde gates.
-    grid_edit.user_input.load_gates(path)
+    output_obj.costen_berekening()
+    user_input_obj.score_request()
 
-    #pas het algortime toe
-
-
-    #check of de uitkomst toepasbaar is
-
-
-    #visualiseer de grid
-    vis.visualisatie()
+    output_obj.visualisatie()
