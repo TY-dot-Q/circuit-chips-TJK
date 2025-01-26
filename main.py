@@ -18,6 +18,7 @@ if __name__ =="__main__":
 
     # Voeg de wirepaths toe aan de CSV
     output_obj.print_grid()
+    output_obj.write_to_csv(grid_edit_obj.wirepaths_list)
 
     output_obj.costen_berekening()
     user_input_obj.score_request()
