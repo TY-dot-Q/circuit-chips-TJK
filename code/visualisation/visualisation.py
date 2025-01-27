@@ -122,7 +122,7 @@ class output:
         _ = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
-        plt.show()   
+        plt.show(block=False) 
     
     def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
