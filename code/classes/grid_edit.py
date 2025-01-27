@@ -28,7 +28,7 @@ class grid_edit:
     def add_gate (self, y, x, z) ->None:
         """
         vervangt de 0 waarde van de gridcreate met een nummer 1,2,3 etc en je kan hiermee dus gates toevoegen.
-        gebruik x en y coordinaten
+        gebruik y, x en z coordinaten coordinaten. Dit wordt automatische gedaan met de functie in autostart
         """
         if not (0 <= z < len(self.grid) and 0 <= y < len(self.grid[0]) and 0 <= x < len(self.grid[0][0])):
             print(f"Error: Coordinates y={y}, x={x}, z={z} are out of bounds.")
@@ -45,8 +45,6 @@ class grid_edit:
         else:
             print(f"er staat al iets namelijk \"{self.grid[z][y][x]}\"")
 
-    def gate_amount_count(self): # zit volgens mij al in code keenan
-
         amount=0
 
         for item in self.gate_dict:
@@ -59,7 +57,7 @@ class grid_edit:
     
     def add_wire (self, kortste_pad) ->None:
         """
-        vervangt de 0 waarde van de gridcreate met een wire, checkt ook of er niet al een gate is. 
+        vervangt de 0 waarde van de gridcreate met een wire,  
         """
         # tests if shortest path is valid and filled
         if not kortste_pad:
@@ -92,6 +90,14 @@ class grid_edit:
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]
+    
+    def remove_wire(self, y, x, z):
+        """verwijdert een wire op een opgegeven locatie (neemt y, x, z in als input)"""
+        if self.grid[z][y][x]=="+":
+            self.grid[z][y][x]=0
+            print(f"wire op locatie y{y}, x{x}, z{z} succesvol verwijdert")
+        else:
+            print(f"er is op locate y{y}, x{x}, z{z} geen wire gevonden.")
     
     def dichtstbij(self, gate_check, list_iligal_gates):
         """checkt wat de dichstbijzijnde gate is, geeft de gate terug en de afstand"""
