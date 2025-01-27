@@ -41,6 +41,45 @@ class user_input:
                     print(f"Fout: Het bestand '{file_path}' bestaat niet.")
                 except ValueError:
                     print("Fout: Ongeldige waarden in het CSV-bestand.")
+    
+    def load_netlist(self, file_path: str)->None:
+            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            connection_list=[]
+
+
+            if not os.path.isfile(file_path):
+                print(f"Bestand '{file_path}' niet gevonden!")
+            else:
+                try:
+                    with open(file_path, mode='r') as file:
+                        csv_reader = csv.reader(file)
+                        next(csv_reader)  # sla de eerste regel over
+
+                        counter=0
+
+                        for row in csv_reader:
+                            if len(row) < 2:
+                                print(f"(Netlist) Ongeldige regel in CSV-bestand: {row}")
+                                continue
+
+                            try:
+                                chip_a=int(row[0])
+                                chip_b=int(row[1])
+                                connection_list.append((chip_a, chip_b))
+                                print(f"connectie tussen {chip_a} en {chip_b} succevol ingeladen als {connection_list[counter]}")
+                                counter+=1
+                            except ValueError:
+                                print(f'(Netlist) print:error met waardes in regel:{row}')
+                                continue
+                        
+                        return connection_list, counter
+
+                    print("Netlist is succesvol geladen uit het CSV-bestand.")
+                except FileNotFoundError:
+                    print(f"Fout: Het bestand '{file_path}' bestaat niet.")
+                except ValueError:
+                    print("(Netlist) Fout: Ongeldige waarden in het CSV-bestand.")
 
     def max_grid_values(self, file_path: str):
         """Bepaal de maximale y-, x-, en z-waarden uit een CSV-bestand.
