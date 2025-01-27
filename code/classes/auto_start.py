@@ -1,4 +1,4 @@
-from classes import user_input
+from code.classes.user_input import user_input
 
 class auto_functions:
     def __init__(self, grid_edit_obj):
