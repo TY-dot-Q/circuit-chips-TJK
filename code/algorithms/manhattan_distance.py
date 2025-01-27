@@ -85,31 +85,12 @@ class ManhattanDistance():
 
                     # keeps track of the order
                     path_traversed[neighbor] = current
-                    
-        """
-        Pas dit niet aan! 
-        Dit zorgt ervoor dat visualisatie werkt en gegevens in csv-bestand komen.
-        """
 
         # returns the path from start to end
         kortste_pad = self.reconstruct_path(path_traversed, start, current)
 
         #prints shortest path to terminal 
         print(kortste_pad)
-
-        # counts wires and prints amount of wires 
-        if kortste_pad:
-            self.grid_edit.wirecount += len(kortste_pad) - 1
-            print(f"Wirecount bijgewerkt: {self.grid_edit.wirecount}")
-        
-        # puts single wirepath in wirepaths_list 
-        self.grid_edit.wirepaths_list.append(kortste_pad)
-
-        #add wires of path to grid
-        self.grid_edit.add_wire(kortste_pad)
-
-
-        # returns shortest path (noodzakelijk voor add_wire functie)
         return kortste_pad
 
     def reconstruct_path(self, origin, start, end):
