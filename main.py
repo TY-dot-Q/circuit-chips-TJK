@@ -4,19 +4,25 @@ from code.visualisation import visualisation as vis
 from code.visualisation.visualisation import output
 from code.classes.auto_start import auto_functions
 from code.algorithms.manhattan_distance import ManhattanDistance as MD
+from code.algorithms.netlist_reorder import netlist_reordering
 
 if __name__ == "__main__":
     grid_edit_obj = grid_edit()
 
-    path="data/chip_0/print_0.csv"
+    grid_path="data/chip_0/print_0.csv"
+    netlist_path="data/chip_0/netlist/netlist_1.csv"
 
     user_input_obj = user_input(grid_edit_obj)
     output_obj = output(grid_edit_obj)
     start_obj = auto_functions(grid_edit_obj)
     algorithm_obj= MD(grid_edit_obj)
+    netlist_reorder_obj=netlist_reordering(grid_edit_obj)
             
-    start_obj.Auto_start_functie(path)
-    algorithm_obj.netlist_looper('data/chip_0/netlist/netlist_1.csv')
+    start_obj.Auto_start_functie(grid_path)
+
+    netlist_reorder_obj.netlist_reordering(netlist_path)
+
+    algorithm_obj.netlist_looper(netlist_path)
 
     # Voeg de wirepaths toe aan de CSV
    
