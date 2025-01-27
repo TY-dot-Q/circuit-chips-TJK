@@ -122,8 +122,8 @@ class output:
         animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
-        plt.show(block=False) 
-        animatie.save("animation.mp4", fps=30, extra_args=['-vcodec', 'libx264'])
+        plt.savefig("plot.png", dpi=300)  # Hoge resolutie (300 dpi)
+        plt.close()
     
     def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
