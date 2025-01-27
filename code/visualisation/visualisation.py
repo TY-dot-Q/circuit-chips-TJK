@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import PillowWriter
 
 class output:
     def __init__(self, grid_edit_obj):
@@ -122,8 +123,8 @@ class output:
         animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
-        plt.savefig("plot.png", dpi=300)  # Hoge resolutie (300 dpi)
-        plt.close()
+        writer = PillowWriter(fps=30)
+        animatie.save("animation.gif", writer=writer)
     
     def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
