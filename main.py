@@ -8,7 +8,7 @@ from code.algorithms.manhattan_distance import ManhattanDistance as MD
 if __name__ == "__main__":
     grid_edit_obj = grid_edit()
 
-    path="print_0.csv"
+    path="data/chip_0/print_0.csv"
 
     user_input_obj = user_input(grid_edit_obj)
     output_obj = output(grid_edit_obj)
@@ -16,6 +16,7 @@ if __name__ == "__main__":
     algorithm_obj= MD(grid_edit_obj)
             
     start_obj.Auto_start_functie(path)
+    algorithm_obj.netlist_looper('data/chip_0/netlist/netlist_1.csv')
 
     # Voeg de wirepaths toe aan de CSV
     output_obj.print_grid()

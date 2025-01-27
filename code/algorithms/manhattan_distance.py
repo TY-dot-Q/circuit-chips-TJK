@@ -1,5 +1,6 @@
 from code.classes import grid_edit
 import csv, os
+import heapq
 
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
@@ -106,33 +107,30 @@ class ManhattanDistance():
         """
         Loops over the netlist to connect the gates.
         """
+        wirepaths_list = []
         # checks if the file is found
         if not os.path.isfile(file_path):
             print(f"File '{file_path}' not found!")
         
         else:
-            try:
-                with open(file_path, mode='r') as file:
-                        csv_reader = csv.reader(file)
-                        next(csv_reader)  # skips the first line
+            with open(file_path, mode='r') as file:
+                    csv_reader = csv.reader(file)
+                    next(csv_reader)  # skips the first line
 
-                        # checks if the row is long enough
-                        for row in csv_reader:
-                            if len(row) < 2:
-                                print(f"Invalid row in row {row}.")
-                                continue
+                    # checks if the row is long enough
+                    for row in csv_reader:
+                        if len(row) < 2:
+                            print(f"Invalid row in row {row}.")
+                            continue
 
-                            # gets the gates that need to be connected and finds the shortest path
-                            try:
-                                gate_1 = int(row[0])
-                                gate_2 = int(row[1])
-                                path = self.shortest_path(gate_1, gate_2)
-                                self.grid_edit.add_wire(path)
-                            
-                            # HIER MOETEN WE NOG BESLISSEN OVER HOE WE DE WIRES OPSLAAN
-        
-                            
-
+                        # gets the gates that need to be connected and finds the shortest path
+                        gate_1 = int(row[0])
+                        gate_2 = int(row[1])
+                        path = self.shortest_path(gate_1, gate_2)
+                        self.grid_edit.add_wire(path)
+                        wirepaths_list.append(path)
+        print(wirepaths_list)
+        return wirepaths_list
 
     def run(self, iterations):
         """
