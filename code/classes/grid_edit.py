@@ -114,7 +114,7 @@ class grid_edit:
     
     def add_wire (self, kortste_pad) ->None: # voeg toe *
         """
-        vervangt de 0 waarde van de gridcreate met een wire,  
+        vervangt de 0 waarde van de grid met een wire 
         """
         # tests if shortest path is valid and filled
         if not kortste_pad:
@@ -150,7 +150,7 @@ class grid_edit:
         return self.gate_dict[nr_check]
     
     def remove_wire(self, y, x, z):
-        """verwijdert een wire op een opgegeven locatie (neemt y, x, z in als input)"""
+        """verwijdert een wire op een opgegeven locatie in de grid (neemt y, x, z in als input voor de coordinaten)"""
         if self.grid[z][y][x]=="+":
             self.grid[z][y][x]=0
             print(f"wire op locatie y{y}, x{x}, z{z} succesvol verwijdert")

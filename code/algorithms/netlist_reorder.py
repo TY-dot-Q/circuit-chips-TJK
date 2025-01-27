@@ -6,7 +6,9 @@ class netlist_reordering():
         self.grid_edit = grid_edit_obj
 
     def netlist_reorder(self, file_path):
-        """reorderd de net list, vraagt zelf de netlist op"""
+        """Maakt een lijst met een hergeorderde netlist. Deze volgorde is gebaseerd op aantal wires die verbonden zijn, afstand tot het midden en afstand tot de andere gate. 
+        vraagt de path van de netlist op (waar het csv bestand staat), geeft een lijst terug zoals :(1,2), (3,5), (5,6) etc
+        """
         
 
         user_input_obj = user_input(self.grid_edit)

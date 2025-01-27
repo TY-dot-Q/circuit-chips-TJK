@@ -5,6 +5,7 @@ class user_input:
         self.grid_edit=grid_edit_obj
 
     def score_request(self)->None:
+        """print de score van de grid door de bijgehouden waardes van de grid_edit classe te bekijken"""
         print("-----score_request-----")
         print(f"er zijn {self.grid_edit.wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
@@ -12,8 +13,7 @@ class user_input:
         print("")
     
     def load_gates(self, file_path: str)->None:
-            """gates toevoegen van de csv lijst, gebruikt de file path"""
-            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            """voegt gates toe in het grid, gebruikt de file path waar de grid locaties staan opgeslagen"""
 
             print("-----load_gates-----")
             if not os.path.isfile(file_path):
@@ -49,8 +49,7 @@ class user_input:
             print("")
     
     def load_netlist(self, file_path: str)->None:
-            """gates toevoegen van de csv lijst, gebruikt de file path"""
-            """gates toevoegen van de csv lijst, gebruikt de file path"""
+            """voegt alle verbindingen tussen de gates toe aan een lijst en geeft deze lijst terug. heeft een file_path nodig met de verbonden gates"""
             connection_list=[]
             print("-----load_netlist-----")
 

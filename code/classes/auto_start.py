@@ -6,7 +6,7 @@ class auto_functions:
 
     def Auto_start_functie(self, user_path) ->None:
             """
-            Maakt automatisch een grid aan, neemt de gatelist als input om de max coordinaten te bepalen
+            Maakt automatisch een grid aan. Dit checkt voor de x en y waarde die de grid moet krijgen, maakt een grid aan en zet dan de gates in de grid. 
             """
             user_input_obj = user_input(self.grid_edit)
 

@@ -1,12 +1,17 @@
 import random
 from classes.grid_edit import grid_edit
+from algorithms.manhattan_distance import ManhattanDistance
 
 class hil_climber:
+    """haalt een of meerdere wire verbinden tussen gates weg, en legt deze opnieuw met een bepaalde methode (zie reconstruct_ine)"""
+    def __init__(self, grid_edit_obj):
+        self.grid_edit = grid_edit_obj
+
     def reconstruct_line(self, chip_a, chip_b):
         """neemt een gegeven wire connection en legt deze opnieuw en gaat controleren of deze beter kan"""
 
         #geef hier op welke manier je wilt gebruiken om de lijn opnieuw te leggen
-        connect_two_gates(chip_a, chip_b)
+        ManhattanDistance.shortest_path(chip_a, chip_b)
 
 
     def remove_wire_connection(self, wireconnection):
@@ -25,7 +30,6 @@ class hil_climber:
         random.seed(31)
 
         remakelist=[]
-
 
         for i in reset_amount:
 
@@ -47,8 +51,3 @@ class hil_climber:
             chip_a = remakelist[i][0]
             chip_b = remakelist[i][1]
             self.reconstruct_line(chip_a, chip_b)
-
-
-
-
-    
