@@ -119,10 +119,11 @@ class output:
         
         total_frames = sum(len(wire) for wire in wires)
         # Maak de animatie
-        _ = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
+        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
         plt.show(block=False) 
+        animatie.save("animation.mp4", fps=30, extra_args=['-vcodec', 'libx264'])
     
     def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
