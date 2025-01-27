@@ -7,6 +7,8 @@ class grid_edit:
     gate_dict={}
     wirepaths_list=[]
     gate_nr = gate_nrstart
+    wirecross_list = [] 
+    overlapping_lijst = []
     
 
     def __init__(self):
@@ -16,6 +18,7 @@ class grid_edit:
         self.score=0
         self.maximum_y = 0
         self.maximum_x = 0
+        self.nummer = 0 
 
     def grid_create (self, max_y, max_x) -> None:
         """
@@ -56,8 +59,63 @@ class grid_edit:
         #print(f"amount{amount}")
 
         return amount
+
+    def overlapping(self, wire1, wire2):
+        """
+        Controleert of wire1 en wire2 opeenvolgende coördinaten delen.
+        """
+        overlap_temp = []
+        for i in range(len(wire1) - 1):
+            check1 = wire1[i:i + 2]
+            for j in range(len(wire2) - 1):
+                check2 = wire2[j:j + 2]
+                if check1 == check2 or check1 == list(reversed(check2)):
+                    sorted_pair = sorted([check1[0], check1[1]])
+                    if sorted_pair not in overlap_temp:
+                        overlap_temp.append(sorted_pair)  # Voeg beide coördinaten van de overlap toe
+        return overlap_temp
+
+    def check_all_overlaps(self): 
+        """
+        Controleer alle wires voor overlappen met elkaar en sla de overlappen op in overlapping_lijst.
+        """
+        overlaplijst = []
+        for i, wire1 in enumerate(self.wirepaths_list):
+            for wire2 in self.wirepaths_list[i+1:]:
+                overlaps = self.overlapping(wire1, wire2)
+                if overlaps:
+                    overlaplijst.extend(overlaps)
+        
+        # Zorg ervoor dat elk paar coördinaten slechts één keer voorkomt, ongeacht de volgorde
+        unieke_overlappingen = []
+        
+        for overlap in overlaplijst:
+            # Controleer of dit paar al eerder is toegevoegd (let op de volgorde)
+            overlap_found = False
+            for unique_overlap in unieke_overlappingen:
+                if (overlap == unique_overlap) or (overlap == tuple(reversed(unique_overlap))):
+                    overlap_found = True
+                    break
+            
+            if not overlap_found:
+                unieke_overlappingen.append(overlap)
+        
+        self.overlapping_lijst = unieke_overlappingen
+
+        if not self.overlapping_lijst:
+            return "Ja"
+
+        for sublist in self.overlapping_lijst:
+            for tuple1 in sublist:
+                for tuple2 in self.wirecross_list:
+                    if tuple1 == tuple2:
+                        self.wirecross_list.remove(tuple2)
+        self.wirecrosscount = len(self.wirecross_list)
+        print(f"selfwirecross: {self.wirecross_list} -> {self.wirecrosscount}")
+        print(f"Overlappingen gevonden: {self.overlapping_lijst}")
+        return "Nee"
     
-    def add_wire (self, kortste_pad) ->None:
+    def add_wire (self, kortste_pad) ->None: # voeg toe *
         """
         vervangt de 0 waarde van de gridcreate met een wire, checkt ook of er niet al een gate is. 
         """
@@ -80,11 +138,12 @@ class grid_edit:
             # adds wire to grid 
             if self.grid[z][y][x] == 0:
                 self.grid[z][y][x] = '+'
-                print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
 
-            # if there's a wire already than add one for 'kruizingen'/kortsluiting
+                print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
             elif self.grid[z][y][x]=="+":
+                # if there's a wire already than add one for 'kruizingen'/kortsluiting
                 self.wirecrosscount+=1
+                self.wirecross_list.append((y,x,z)) # voeg toe *
                 print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
 
             else:
