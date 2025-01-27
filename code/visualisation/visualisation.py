@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FFMpegWriter
 from matplotlib.animation import PillowWriter
 
 class output:
@@ -123,8 +124,9 @@ class output:
         animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
-        writer = PillowWriter(fps=30)
-        animatie.save("animation.gif", writer=writer)
+
+
+        plt.show()
     
     def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
