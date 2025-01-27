@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
-import heapq
+from matplotlib.animation import FFMpegWriter
+from matplotlib.animation import PillowWriter
 
 class output:
     def __init__(self, grid_edit_obj):
@@ -26,13 +27,11 @@ class output:
         finally:
             print("Klaar met printen.")        
 
-    def costen_berekening(self)->int:
+    def costen_berekening(self)->int: #voeg toe *
         """berekent de score van de geplaatste draden"""
-        score = self.grid_edit.wirecount + 300 * self.grid_edit.wirecrosscount
-        return score
+        self.grid_edit.score = self.grid_edit.wirecount + (300 * self.grid_edit.wirecrosscount)
     
-    def animation(self, frame, ax, grid_edit_obj):
-        
+    def animation(self, frame, ax, grid_edit_obj): # voeg toe *
         print(grid_edit_obj.gate_dict[2])
         print(grid_edit_obj.gate_nr)
         if not grid_edit_obj.gate_dict:
@@ -46,8 +45,8 @@ class output:
                 ax.scatter(x, y, z, color='blue', label=f'Gate' if gate_nr == 1 else "", s=100, marker = 'o')
 
         kleuren_palet = cycle([ 
-            'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'black',
-            'gray', 'orange', 'brown', 'pink', 'purple', 'teal', 'gold', 'lime',
+            'green', 'blue', 'cyan', 'magenta', 'pink',
+            'gray', 'orange', 'brown', 'purple', 'teal', 'gold', 'lime',
             'indigo', 'maroon', 'navy', 'olive', 'coral', 'aqua', 'fuchsia',
             'salmon', 'tan', 'lavender', 'beige', 'khaki', 'ivory', 'azure',
             'turquoise', 'plum', 'orchid', 'violet'])
@@ -68,7 +67,27 @@ class output:
         else:
             print("Geen wires gevonden")
 
-        # Instellen van ticks met stappen van 1
+        
+        # print wirecrosses in visual
+        if frame == total_frames - 1: 
+            wirecross = grid_edit_obj.wirecross_list 
+            if wirecross:
+                for y, x, z in wirecross:
+                    ax.scatter(x, y, z, color='black', label='Kruising' if frame == total_frames - 1 else "", s=250, marker='x')
+
+        # print overlaps in visual
+        if frame == total_frames - 1: 
+            overlap = grid_edit_obj.overlapping_lijst
+            if isinstance(overlap, list):
+                flattened_overlap = [coord for sublist in overlap for coord in sublist]
+                if all(isinstance(coord, tuple) and len(coord) == 3 for coord in flattened_overlap):
+                    if flattened_overlap:
+                        overlap_y, overlap_x, overlap_z = zip(*flattened_overlap)
+                        ax.plot(overlap_x, overlap_y, overlap_z, color='red', linewidth=3, label='Overlapping' if frame == total_frames - 1 else "")
+                    else:
+                        print("overlapping_lijst bevat geen geldige coördinaten.")
+            
+        # set axes for grid
         maximum = max(grid_edit_obj.maximum_y, grid_edit_obj.maximum_x)
         ax.set_xticks(range(0, maximum + 4, 1))
         ax.set_yticks(range(0, maximum + 4, 1))
@@ -76,13 +95,11 @@ class output:
         ax.set_zticks(range(1, 10, 1))
 
 
-        # Labels and legend
+        # title axes and legend
         ax.set_xlabel("X-as")
         ax.set_ylabel("Y-as")
         ax.set_zlabel("Z-as")
-        ax.set_title("3D Visualisatie van Gates en Wires")
-        
-    
+        ax.set_title(f"3D Visualisatie van nummer {self.grid_edit.nummer} \n Score:{self.grid_edit.score}")
         ax.legend()
 
         # Set the view
@@ -104,12 +121,14 @@ class output:
         
         total_frames = sum(len(wire) for wire in wires)
         # Maak de animatie
-        _ = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=500, repeat=False)
+        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
-        plt.show()   
+
+
+        plt.show()
     
-    def write_to_csv(self, wirepaths_list):
+    def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
         grid_edit_obj = self.grid_edit
         with open('wirepaths.csv', 'a', newline='') as csvfile:
@@ -131,14 +150,14 @@ class output:
                 data = {
                     'nummer': nummer,
                     'pad': str(wirepaths_list),  # Zet de wirepath om in een string
-                    'succes': 'ja',  # klopt niet - als er geen overlapping is dus twee twee 
-                    'score': 100,  # klopt niet
+                    'succes': succes,  # klopt niet - als er geen overlapping is dus twee twee 
+                    'score': grid_edit_obj.score,  # klopt niet
                     'aantal_wires': grid_edit_obj.wirecount,  # Aantal draden in netwerk
                     'aantal_kruizingen': grid_edit_obj.wirecrosscount  # aantal kruisingen 
                 }
-
+                
                 # Schrijf in csv bestand
                 writer.writerow(data)
                 nummer += 1  # Verhoog het nummer voor de volgende rij
-
+        self.grid_edit.nummer = nummer - 1
         print("CSV-bestand succesvol geschreven.")

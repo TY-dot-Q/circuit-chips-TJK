@@ -12,6 +12,8 @@ class grid_edit:
     grid=[]
     gate_dict={}
     wirepaths_list=[]
+    wirecross_list = [] # voeg toe *
+    overlapping_lijst = [] # voeg toe *
     gate_nr = gate_nrstart
     
 
@@ -22,6 +24,7 @@ class grid_edit:
         self.score=0
         self.maximum_y = 0
         self.maximum_x = 0
+        self.nummer = 0 # voeg toe *
 
     def grid_create (self, max_y, max_x) -> None:
         """
@@ -63,7 +66,65 @@ class grid_edit:
 
         return amount
     
-    def add_wire (self, kortste_pad) ->None:
+    def overlapping(self, wire1, wire2): # voeg toe *
+        """
+        Controleert of wire1 en wire2 opeenvolgende coördinaten delen.
+        """
+        overlap_temp = []
+        for i in range(len(wire1) - 1):
+            check1 = wire1[i:i + 2]
+            for j in range(len(wire2) - 1):
+                check2 = wire2[j:j + 2]
+                if check1 == check2 or check1 == list(reversed(check2)):
+                    sorted_pair = sorted([check1[0], check1[1]])
+                    if sorted_pair not in overlap_temp:
+                        overlap_temp.append(sorted_pair)  # Voeg beide coördinaten van de overlap toe
+        return overlap_temp
+    
+
+    def check_all_overlaps(self): # voeg toe *
+        """
+        Controleer alle wires voor overlappen met elkaar en sla de overlappen op in overlapping_lijst.
+        """
+        overlaplijst = []
+        for i, wire1 in enumerate(self.wirepaths_list):
+            for wire2 in self.wirepaths_list[i+1:]:
+                overlaps = self.overlapping(wire1, wire2)
+                if overlaps:
+                    overlaplijst.extend(overlaps)
+        
+        # Zorg ervoor dat elk paar coördinaten slechts één keer voorkomt, ongeacht de volgorde
+        unieke_overlappingen = []
+        
+        for overlap in overlaplijst:
+            # Controleer of dit paar al eerder is toegevoegd (let op de volgorde)
+            overlap_found = False
+            for unique_overlap in unieke_overlappingen:
+                if (overlap == unique_overlap) or (overlap == tuple(reversed(unique_overlap))):
+                    overlap_found = True
+                    break
+            
+            if not overlap_found:
+                unieke_overlappingen.append(overlap)
+        
+        self.overlapping_lijst = unieke_overlappingen
+
+        if not self.overlapping_lijst:
+            return "Ja"
+
+        for sublist in self.overlapping_lijst:
+            for tuple1 in sublist:
+                for tuple2 in self.wirecross_list:
+                    if tuple1 == tuple2:
+                        self.wirecross_list.remove(tuple2)
+        self.wirecrosscount = len(self.wirecross_list)
+        print(f"selfwirecross: {self.wirecross_list} -> {self.wirecrosscount}")
+        print(f"Overlappingen gevonden: {self.overlapping_lijst}")
+        return "Nee"
+
+        
+
+    def add_wire (self, kortste_pad) ->None: # voeg toe *
         """
         vervangt de 0 waarde van de gridcreate met een wire, checkt ook of er niet al een gate is. 
         """
@@ -86,11 +147,12 @@ class grid_edit:
             # adds wire to grid 
             if self.grid[z][y][x] == 0:
                 self.grid[z][y][x] = '+'
-                print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
 
-            # if there's a wire already than add one for 'kruizingen'/kortsluiting
+                print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
             elif self.grid[z][y][x]=="+":
+                # if there's a wire already than add one for 'kruizingen'/kortsluiting
                 self.wirecrosscount+=1
+                self.wirecross_list.append((y,x,z)) # voeg toe *
                 print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
 
             else:
@@ -140,7 +202,7 @@ class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-    def score_request(self)->None:
+    def score_request(self)->None: # VOEG TOE* VERPLAATST NAAR GRID_EDIT CLASS
         print(f"er zijn {self.grid_edit.wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
         print(f"dit geeft een score van c={self.grid_edit.score}")
@@ -243,13 +305,11 @@ class output:
         finally:
             print("Klaar met printen.")        
 
-    def costen_berekening(self)->int:
+    def costen_berekening(self)->int: #voeg toe *
         """berekent de score van de geplaatste draden"""
-        score = self.grid_edit.wirecount + 300 * self.grid_edit.wirecrosscount
-        return score
+        self.grid_edit.score = self.grid_edit.wirecount + (300 * self.grid_edit.wirecrosscount)
     
-    def animation(self, frame, ax, grid_edit_obj):
-        
+    def animation(self, frame, ax, grid_edit_obj): # voeg toe *
         print(grid_edit_obj.gate_dict[2])
         print(grid_edit_obj.gate_nr)
         if not grid_edit_obj.gate_dict:
@@ -263,8 +323,8 @@ class output:
                 ax.scatter(x, y, z, color='blue', label=f'Gate' if gate_nr == 1 else "", s=100, marker = 'o')
 
         kleuren_palet = cycle([ 
-            'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'black',
-            'gray', 'orange', 'brown', 'pink', 'purple', 'teal', 'gold', 'lime',
+            'green', 'blue', 'cyan', 'magenta', 'pink',
+            'gray', 'orange', 'brown', 'purple', 'teal', 'gold', 'lime',
             'indigo', 'maroon', 'navy', 'olive', 'coral', 'aqua', 'fuchsia',
             'salmon', 'tan', 'lavender', 'beige', 'khaki', 'ivory', 'azure',
             'turquoise', 'plum', 'orchid', 'violet'])
@@ -285,7 +345,27 @@ class output:
         else:
             print("Geen wires gevonden")
 
-        # Instellen van ticks met stappen van 1
+        
+        # print wirecrosses in visual
+        if frame == total_frames - 1: 
+            wirecross = grid_edit_obj.wirecross_list 
+            if wirecross:
+                for y, x, z in wirecross:
+                    ax.scatter(x, y, z, color='black', label='Kruising' if frame == total_frames - 1 else "", s=250, marker='x')
+
+        # print overlaps in visual
+        if frame == total_frames - 1: 
+            overlap = grid_edit_obj.overlapping_lijst
+            if isinstance(overlap, list):
+                flattened_overlap = [coord for sublist in overlap for coord in sublist]
+                if all(isinstance(coord, tuple) and len(coord) == 3 for coord in flattened_overlap):
+                    if flattened_overlap:
+                        overlap_y, overlap_x, overlap_z = zip(*flattened_overlap)
+                        ax.plot(overlap_x, overlap_y, overlap_z, color='red', linewidth=3, label='Overlapping' if frame == total_frames - 1 else "")
+                    else:
+                        print("overlapping_lijst bevat geen geldige coördinaten.")
+            
+        # set axes for grid
         maximum = max(grid_edit_obj.maximum_y, grid_edit_obj.maximum_x)
         ax.set_xticks(range(0, maximum + 4, 1))
         ax.set_yticks(range(0, maximum + 4, 1))
@@ -293,13 +373,11 @@ class output:
         ax.set_zticks(range(1, 10, 1))
 
 
-        # Labels and legend
+        # title axes and legend
         ax.set_xlabel("X-as")
         ax.set_ylabel("Y-as")
         ax.set_zlabel("Z-as")
-        ax.set_title("3D Visualisatie van Gates en Wires")
-        
-    
+        ax.set_title(f"3D Visualisatie van nummer {self.grid_edit.nummer} \n Score:{self.grid_edit.score}")
         ax.legend()
 
         # Set the view
@@ -321,12 +399,12 @@ class output:
         
         total_frames = sum(len(wire) for wire in wires)
         # Maak de animatie
-        _ = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=500, repeat=False)
+        _ = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
 
         # Toon de animatie
         plt.show()   
     
-    def write_to_csv(self, wirepaths_list):
+    def write_to_csv(self, wirepaths_list, succes): # voeg toe
         # Open het CSV-bestand in 'append' mode
         grid_edit_obj = self.grid_edit
         with open('wirepaths.csv', 'a', newline='') as csvfile:
@@ -348,16 +426,16 @@ class output:
                 data = {
                     'nummer': nummer,
                     'pad': str(wirepaths_list),  # Zet de wirepath om in een string
-                    'succes': 'ja',  # klopt niet - als er geen overlapping is dus twee twee 
-                    'score': 100,  # klopt niet
+                    'succes': succes,  # klopt niet - als er geen overlapping is dus twee twee 
+                    'score': grid_edit_obj.score,  # klopt niet
                     'aantal_wires': grid_edit_obj.wirecount,  # Aantal draden in netwerk
                     'aantal_kruizingen': grid_edit_obj.wirecrosscount  # aantal kruisingen 
                 }
-
+                
                 # Schrijf in csv bestand
                 writer.writerow(data)
                 nummer += 1  # Verhoog het nummer voor de volgende rij
-
+        self.grid_edit.nummer = nummer - 1
         print("CSV-bestand succesvol geschreven.")
 
 class start:
@@ -485,6 +563,7 @@ class algorithm:
         #add wires of path to grid
         self.grid_edit.add_wire(kortste_pad)
 
+
         # returns shortest path (noodzakelijk voor add_wire functie)
         return kortste_pad
 
@@ -611,6 +690,7 @@ class start_the_code:
         output_obj = output(grid_edit_obj)
         start_obj =start(grid_edit_obj)
         algorithm_obj=algorithm(grid_edit_obj)
+
             
         start_obj.Auto_start_functie(path)
         print("De uiteindelijke grid is:")
@@ -620,18 +700,25 @@ class start_the_code:
         algorithm_obj.shortest_path(3,4)
         algorithm_obj.shortest_path(4,5)
         algorithm_obj.shortest_path(5,1)
+        grid_edit_obj.wirepaths_list.append([(1,2,0), (1,3,0), (1,3,1), (1,3,2)])
+        grid_edit_obj.wirecount += len([(1,2,0), (1,3,0), (1,3,1), (1,3,2)]) - 1
+        grid_edit_obj.add_wire([(1,2,0), (1,3,0), (1,3,1), (1,3,2)])
         print(algorithm_obj.use_algorithm())
 
         
-        # Voeg de wirepaths toe aan de CSV
-        output_obj.write_to_csv(grid_edit_obj.wirepaths_list)
-        output_obj.print_grid()
+
 
         print("CSV-bestand succesvol geschreven.")
+        succes = grid_edit_obj.check_all_overlaps() # voeg toe * 
 
-        output_obj.costen_berekening()
-        user_input_obj.score_request()
 
+        output_obj.costen_berekening() # voeg toe
+        user_input_obj.score_request() #voeg toe verbeter*
+        
+        # Voeg de wirepaths toe aan de CSV
+        output_obj.write_to_csv(grid_edit_obj.wirepaths_list, succes) # voeg toe * 
+        output_obj.print_grid()
+        print(f"!!!!!{grid_edit_obj.overlapping_lijst}")
         output_obj.visualisatie()
     
     manual_check()
