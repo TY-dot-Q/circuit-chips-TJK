@@ -5,13 +5,17 @@ class user_input:
         self.grid_edit=grid_edit_obj
 
     def score_request(self)->None:
+        print("-----score_request-----")
         print(f"er zijn {self.grid_edit.wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
         print(f"dit geeft een score van c={self.grid_edit.score}")
+        print("")
     
     def load_gates(self, file_path: str)->None:
             """gates toevoegen van de csv lijst, gebruikt de file path"""
             """gates toevoegen van de csv lijst, gebruikt de file path"""
+
+            print("-----load_gates-----")
             if not os.path.isfile(file_path):
                 print(f"Bestand '{file_path}' niet gevonden!")
             else:
@@ -41,11 +45,14 @@ class user_input:
                     print(f"Fout: Het bestand '{file_path}' bestaat niet.")
                 except ValueError:
                     print("Fout: Ongeldige waarden in het CSV-bestand.")
+
+            print("")
     
     def load_netlist(self, file_path: str)->None:
             """gates toevoegen van de csv lijst, gebruikt de file path"""
             """gates toevoegen van de csv lijst, gebruikt de file path"""
             connection_list=[]
+            print("-----load_netlist-----")
 
 
             if not os.path.isfile(file_path):
@@ -73,6 +80,8 @@ class user_input:
                                 print(f'(Netlist) print:error met waardes in regel:{row}')
                                 continue
                         
+                        print("Netlist is succesvol geladen uit het CSV-bestand.")
+                        print("")
                         return connection_list, counter
 
                     print("Netlist is succesvol geladen uit het CSV-bestand.")
@@ -80,11 +89,13 @@ class user_input:
                     print(f"Fout: Het bestand '{file_path}' bestaat niet.")
                 except ValueError:
                     print("(Netlist) Fout: Ongeldige waarden in het CSV-bestand.")
+            print("")
 
     def max_grid_values(self, file_path: str):
         """Bepaal de maximale y-, x-, en z-waarden uit een CSV-bestand.
         Het bestand moet een lijst van coördinaten bevatten.
         Retourneert een tuple (max_y, max_x, max_z)."""
+        print("-----max_grid_values-----")
          
         max_y, max_x = 0, 0  # Initiële waarden voor maxima
 
@@ -120,6 +131,7 @@ class user_input:
             self.grid_edit.maximum_y = max_y
 
             print(f"Maximale waarden gevonden: y={max_y}, x={max_x}")
+            print("")
             return max_y, max_x
 
         except Exception as e:

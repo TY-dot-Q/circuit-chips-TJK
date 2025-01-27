@@ -40,8 +40,7 @@ class grid_edit:
         if self.grid[z][y][x] ==0:
             self.grid[z][y][x] = self.gate_nr #voeg de gate toe
             self.gate_dict[self.gate_nr] = (y,x,z)
-            print(self.gate_dict[self.gate_nr])
-            print(f"gate met het nummer {self.gate_nr} toegevoegd op de coordinaten y={y}, x={x}, z={z} ")
+            print(f"gate met het nummer {self.gate_nr} toegevoegd op de coordinaten y={y}, x={x}, z={z} controle:{self.gate_dict[self.gate_nr]} ")
             self.gate_nr +=1
             gate_nrstart
             

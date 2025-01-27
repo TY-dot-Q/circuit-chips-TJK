@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     #----------------Manhatten distance--------------------
     algorithm_obj.netlist_looper(netlist_path)
-    
+
 
     #-----------------resulten------------------------------
     

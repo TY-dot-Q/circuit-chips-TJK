@@ -13,7 +13,7 @@ class auto_functions:
             #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
             
             max_y, max_x = user_input_obj.max_grid_values(user_path)
-            print(max_x, max_y)
+            #print(max_x, max_y)
             self.grid_edit.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
             
             # user_path=input("geef de file path op: ")

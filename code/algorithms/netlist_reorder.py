@@ -7,9 +7,12 @@ class netlist_reordering():
 
     def netlist_reorder(self, file_path):
         """reorderd de net list, vraagt zelf de netlist op"""
+        
+
         user_input_obj = user_input(self.grid_edit)
 
         netlist, counter = user_input_obj.load_netlist(file_path)
+        print("-----netlist_reorder-----")
         
         gate_count_list=[]
         max_y=0
@@ -69,7 +72,7 @@ class netlist_reordering():
 
             score = afstand_tussen_gates*1 + afstand_midden*1 + conection_amount*1
 
-            print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
+            #print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
 
             score_list.append((counter, score))
             counter+=1
@@ -86,5 +89,6 @@ class netlist_reordering():
 
         print(f"orginele list --- {netlist}")
         print(f"nieuwe list ----- {return_list}")
+        print("")
         
         return return_list
