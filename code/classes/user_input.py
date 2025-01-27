@@ -4,10 +4,10 @@ class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-    def score_request(self)->None:
+    def score_request(self, wirecount)->None:
         """print de score van de grid door de bijgehouden waardes van de grid_edit classe te bekijken"""
         print("-----score_request-----")
-        print(f"er zijn {self.grid_edit.wirecount} draaden")
+        print(f"er zijn {wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
         print(f"dit geeft een score van c={self.grid_edit.score}")
         print("")

@@ -27,11 +27,11 @@ class output:
         finally:
             print("Klaar met printen.")        
 
-    def costen_berekening(self)->int: #voeg toe *
+    def costen_berekening(self, wirecount)->int: 
         """berekent de score van de geplaatste draden"""
-        self.grid_edit.score = self.grid_edit.wirecount + (300 * self.grid_edit.wirecrosscount)
+        self.grid_edit.score = wirecount + (300 * self.grid_edit.wirecrosscount)
     
-    def animation(self, frame, ax, grid_edit_obj): # voeg toe *
+    def animation(self, frame, ax, grid_edit_obj): # VOEG TOE
         print(grid_edit_obj.gate_dict[2])
         print(grid_edit_obj.gate_nr)
         if not grid_edit_obj.gate_dict:
@@ -128,11 +128,11 @@ class output:
 
         plt.show()
     
-    def write_to_csv(self, wirepaths_list, succes): # voeg toe
+    def write_to_csv(self, wirepaths_list, overlapping_lijst, wirecount): # DEZE TOEVOEGEN
         # Open het CSV-bestand in 'append' mode
         grid_edit_obj = self.grid_edit
         with open('wirepaths.csv', 'a', newline='') as csvfile:
-            kolom = ['nummer', 'pad', 'succes', 'score', 'aantal_wires', 'aantal_kruizingen']
+            kolom = ['nummer', 'pad', 'overlappingen', 'kruizingen', 'succes', 'score', 'aantal_wires', 'aantal_kruizingen']
             writer = csv.DictWriter(csvfile, fieldnames=kolom)
 
             # Als het bestand leeg is, schrijf dan eerst de header (kolomnamen)
@@ -149,10 +149,12 @@ class output:
                 # Dit zijn de andere gegevens die je wilt toevoegen. Pas deze aan op basis van je eigen logica.
                 data = {
                     'nummer': nummer,
-                    'pad': str(wirepaths_list),  # Zet de wirepath om in een string
-                    'succes': succes,  # klopt niet - als er geen overlapping is dus twee twee 
+                    'pad': str(wirepaths_list),
+                    'overlappingen': str(overlapping_lijst),
+                    'kruizingen': str(grid_edit_obj.wirecross_list),
+                    'succes': "Nee" if len(overlapping_lijst) > 0 else "Ja",  # klopt niet - als er geen overlapping is dus twee twee 
                     'score': grid_edit_obj.score,  # klopt niet
-                    'aantal_wires': grid_edit_obj.wirecount,  # Aantal draden in netwerk
+                    'aantal_wires': wirecount,  # Aantal draden in netwerk
                     'aantal_kruizingen': grid_edit_obj.wirecrosscount  # aantal kruisingen 
                 }
                 

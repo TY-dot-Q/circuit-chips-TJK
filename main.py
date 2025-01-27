@@ -7,7 +7,7 @@ from code.algorithms.manhattan_distance import ManhattanDistance as MD
 from code.algorithms.netlist_reorder import netlist_reordering
 
 if __name__ == "__main__":
-    #maakt een instancie van grid edit aan en geeft dit door aan andere classes
+    # maakt een instancie van grid edit aan en geeft dit door aan andere classes
     grid_edit_obj = grid_edit()
     
     user_input_obj = user_input(grid_edit_obj)
@@ -17,11 +17,11 @@ if __name__ == "__main__":
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
     
     
-    #Path van de grid en netlist die je wilt oplossen.
+    # Path van de grid en netlist die je wilt oplossen.
     grid_path="data/chip_0/print_0.csv"
     netlist_path="data/chip_0/netlist/netlist_1.csv"
 
-    #maak de grid aan        
+    # maak de grid aan        
     start_obj.Auto_start_functie(grid_path)
 
 
@@ -35,15 +35,20 @@ if __name__ == "__main__":
 
     #-----------------resulten------------------------------
     
-    succes = grid_edit_obj.check_all_overlaps()
-    output_obj.write_to_csv(grid_edit_obj.wirepaths_list, succes) 
+    wirecount = grid_edit_obj.update_wirecount() # DEZE TOEVOEGEN
+    succes = grid_edit_obj.check_all_overlaps() # DEZE TOEVOEGEN
+    grid_edit_obj.find_wirecross() # DEZE TOEVOEGEN
+    output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount) # DEZE TOEVOEGEN
 
-    #scoren bepalen
-    output_obj.costen_berekening()
-    user_input_obj.score_request()
+    # scoren bepalen
+    output_obj.costen_berekening(wirecount) # DEZE TOEVOEGEN
+    user_input_obj.score_request(wirecount) # DEZE TOEVOEGEN
+
+    #----------------visualisatie----------------------------
     
-    #print de grid in de terminal
-    output_obj.print_grid()
+    # print de grid in de terminal
+    output_obj.print_grid()     # DEZE TOEVOEGEN
+    output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)  # DEZE TOEVOEGEN
    
-   #visualtisatie
+   # 3d visualisatie
     output_obj.visualisatie()
