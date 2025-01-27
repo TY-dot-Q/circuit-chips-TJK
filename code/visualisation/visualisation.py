@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
-import heapq
 
 class output:
     def __init__(self, grid_edit_obj):
