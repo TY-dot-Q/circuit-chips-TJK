@@ -31,8 +31,8 @@ class user_input:
 
 
                             try:
-                                x=int(row[2])
-                                y=int(row[1])
+                                x=int(row[1])
+                                y=int(row[2])
                                 z=0
                                 self.grid_edit.add_gate(y,x,z)
                             
