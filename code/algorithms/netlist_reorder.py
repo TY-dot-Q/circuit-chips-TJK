@@ -1,6 +1,10 @@
-from classes import user_input
+from code.classes.user_input import user_input
+from code.classes.grid_edit import grid_edit
 
-class netlist_reordering:
+class netlist_reordering():
+    def __init__(self, grid_edit_obj):
+        self.grid_edit = grid_edit_obj
+
     def netlist_reorder(self, file_path):
         """reorderd de net list, vraagt zelf de netlist op"""
         user_input_obj = user_input(self.grid_edit)

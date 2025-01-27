@@ -20,7 +20,7 @@ if __name__ == "__main__":
             
     start_obj.Auto_start_functie(grid_path)
 
-    netlist_reorder_obj.netlist_reordering(netlist_path)
+    netlist_reorder_obj.netlist_reorder(netlist_path)
 
     algorithm_obj.netlist_looper(netlist_path)
 
