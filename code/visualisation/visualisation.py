@@ -160,4 +160,6 @@ class output:
                 writer.writerow(data)
                 nummer += 1  # Verhoog het nummer voor de volgende rij
         self.grid_edit.nummer = nummer - 1
+        print("-----output-----")
         print("CSV-bestand succesvol geschreven.")
+        print("")

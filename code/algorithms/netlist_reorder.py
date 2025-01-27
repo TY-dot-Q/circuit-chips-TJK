@@ -13,7 +13,7 @@ class netlist_reordering():
 
         netlist, counter = user_input_obj.load_netlist(file_path)
         print("-----netlist_reorder-----")
-        
+
         gate_count_list=[]
         max_y=0
         max_x=0
@@ -89,6 +89,6 @@ class netlist_reordering():
 
         print(f"orginele list --- {netlist}")
         print(f"nieuwe list ----- {return_list}")
-        print("")
+        #print("")
         
         return return_list

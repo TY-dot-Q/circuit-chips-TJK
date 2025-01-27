@@ -90,7 +90,8 @@ class ManhattanDistance():
         kortste_pad = self.reconstruct_path(path_traversed, start, current)
 
         #prints shortest path to terminal 
-        print(kortste_pad)
+        print("")
+        print(f"kortst gevonden pad: {kortste_pad}")
         return kortste_pad
 
     def reconstruct_path(self, origin, start, end):
@@ -140,7 +141,10 @@ class ManhattanDistance():
                         path = self.shortest_path(gate_1, gate_2)
                         self.grid_edit.add_wire(path)
                         wirepaths_list.append(path)
+        print("")
+        print("complete wirepath list:")
         print(wirepaths_list)
+        print("")
         return wirepaths_list
 
     def run(self, iterations):
