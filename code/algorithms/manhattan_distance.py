@@ -60,7 +60,8 @@ class ManhattanDistance():
                 break
             
             # list of neighbor coordinates
-            neighbors = random.shuffle([(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)])
+            neighbors = [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]
+            random.shuffle(neighbors)
 
             # loops over the neighbors of the current point
             for dy, dx, dz in neighbors:
