@@ -11,7 +11,8 @@ class hil_climber:
         """neemt een gegeven wire connection en legt deze opnieuw en gaat controleren of deze beter kan"""
 
         #geef hier op welke manier je wilt gebruiken om de lijn opnieuw te leggen
-        ManhattanDistance.shortest_path(chip_a, chip_b)
+        path = ManhattanDistance.shortest_path(chip_a, chip_b)
+        self.grid_edit.add_wire(path)
 
 
     def remove_wire_connection(self, wireconnection):
