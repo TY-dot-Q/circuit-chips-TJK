@@ -19,8 +19,8 @@ if __name__ == "__main__":
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
-    grid_path="data/chip_0/print_0.csv"
-    netlist_path="data/chip_0/netlist/netlist_1.csv"
+    grid_path="data/chip_1/print_1.csv"
+    netlist_path="data/chip_1/netlist/netlist_2.csv"
 
     # maak de grid aan        
     start_obj.Auto_start_functie(grid_path)

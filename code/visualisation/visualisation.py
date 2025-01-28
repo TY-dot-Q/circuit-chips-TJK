@@ -124,7 +124,7 @@ class output:
 
         # Setup - Gebruik het grid_edit object dat is doorgegeven aan de class
         grid_edit_obj = self.grid_edit
-        fig = plt.figure(figsize=(10, 8))
+        fig = plt.figure(figsize=(14, 10))
         ax = fig.add_subplot(111, projection='3d')
         wires = grid_edit_obj.wirepaths_list
         animatie = self.animation
