@@ -1,6 +1,6 @@
 import random
-from classes.grid_edit import grid_edit
-from algorithms.manhattan_distance import ManhattanDistance
+from code.classes.grid_edit import grid_edit
+from code.algorithms.manhattan_distance import ManhattanDistance
 
 
 class hil_climber:

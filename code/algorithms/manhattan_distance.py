@@ -3,7 +3,7 @@ import csv, os
 import heapq
 import random
 
-random.seed(0)
+random.seed(10)
 
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
@@ -16,7 +16,7 @@ class ManhattanDistance():
         y, x, z = pos
         
         # checks if the position is in the grid
-        if 0 <= x < self.grid_edit.maximum_x and 0 <= y < self.grid_edit.maximum_y and 0 <= z < 7:
+        if 0 <= x <= self.grid_edit.maximum_x and 0 <= y <= self.grid_edit.maximum_y and 0 <= z <= 7:
             # checks if the positions is the end position
             if pos == end:
                 return True
@@ -25,7 +25,22 @@ class ManhattanDistance():
             elif self.grid_edit.grid[z][y][x] == 0:
                 return True        
         else:
-            print(f"position {pos} is occupied")
+            #print(f"position {pos} is occupied")
+            return False
+
+    def check_valid_cross(self, pos, end):
+        """
+        Checks if the position in the grid is inside and not already taken
+        This is the check needed to consider a wire cross
+        """
+        y, x, z = pos
+        
+        # checks if the position is in the grid
+        if 0 <= x <= self.grid_edit.maximum_x and 0 <= y <= self.grid_edit.maximum_y and 0 <= z <= 7:
+            # else checks if the position is empty
+            if self.grid_edit.grid[z][y][x] == '+':
+                return True        
+        else:
             return False
     
     def shortest_path(self, gate_1, gate_2):
@@ -47,6 +62,8 @@ class ManhattanDistance():
         # a dict to keep track of the path traversed
         path_traversed = {}
         
+        cross_checker = False
+
         # a dict for the current cost for each node
         current_cost = {start: 0}
         
@@ -66,15 +83,23 @@ class ManhattanDistance():
             # loops over the neighbors of the current point
             for dy, dx, dz in neighbors:
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
-                print(f"Checking neighbor: {neighbor}")
+                #print(f"Checking neighbor: {neighbor}")
 
                 # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor, end) != True:
-                    print(f"Neighbor {neighbor} is invalid")
-                    continue
+                    #print(f"Neighbor {neighbor} is invalid")
+                    cross_checker = True    
+
+                    if self.check_valid_cross(neighbor, end) != True:
+                        cross_checker = False
+                        continue
+                    
+                
                 
                 # cost for moving to the neighbor
                 new_cost = current_cost[current] + 1
+                if cross_checker:
+                    new_cost += 50
 
                 if neighbor not in current_cost or new_cost < current_cost[neighbor]:
                     # updates costs to that of the neighbor
@@ -94,7 +119,6 @@ class ManhattanDistance():
 
         #prints shortest path to terminal 
         print("")
-        print(f"tussen gate {gate_1} en {gate_2}")
         print(f"gate {gate_1} {self.grid_edit.gate_dict[gate_1]} en gate {gate_2} {self.grid_edit.gate_dict[gate_2]}")
         print(f"is het kortst gevonden pad: {kortste_pad}")
         return kortste_pad

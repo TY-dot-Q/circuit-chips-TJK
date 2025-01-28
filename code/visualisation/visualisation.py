@@ -93,8 +93,8 @@ class output:
             
         # set axes for grid
         maximum = max(grid_edit_obj.maximum_y, grid_edit_obj.maximum_x)
-        ax.set_xticks(range(0, self.grid_edit.maximum_x, 1))
-        ax.set_yticks(range(0, self.grid_edit.maximum_y, 1))
+        ax.set_xticks(range(0, self.grid_edit.maximum_x + 1, 1))
+        ax.set_yticks(range(0, self.grid_edit.maximum_y + 1, 1))
         ax.set_zlim(bottom=0)
         ax.set_zticks(range(1, 10, 1))
 
@@ -134,7 +134,7 @@ class output:
         
         total_frames = sum(len(wire) for wire in wires)
         # Maak de animatie
-        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=100, repeat=False)
+        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=16, repeat=False)
 
         # Toon de animatie
         plt.show()

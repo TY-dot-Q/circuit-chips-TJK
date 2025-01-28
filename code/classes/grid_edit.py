@@ -25,7 +25,7 @@ class grid_edit:
         creeert een array 3d grid gebaseerde op de globale max_z en opgegeven max_y en x
         let op dit vervangt alle waardes niet runnen nadat gates zijn opgegeven.
         """
-        self.grid = [[[0 for _ in range(max_x)] for _ in range(max_y)] for _ in range(7)]
+        self.grid = [[[0 for _ in range(max_x + 1)] for _ in range(max_y + 1)] for _ in range(8)]
         print("grid succesvol gemaakt")
 
     def add_gate (self, y, x, z) ->None:
