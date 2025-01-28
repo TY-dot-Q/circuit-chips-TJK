@@ -91,7 +91,9 @@ class ManhattanDistance():
 
         #prints shortest path to terminal 
         print("")
-        print(f"kortst gevonden pad: {kortste_pad}")
+        print(f"tussen gate {gate_1} en {gate_2}")
+        print(f"gate {gate_1} {self.grid_edit.gate_dict[gate_1]} en gate {gate_2} {self.grid_edit.gate_dict[gate_2]}")
+        print(f"is het kortst gevonden pad: {kortste_pad}")
         return kortste_pad
 
     def reconstruct_path(self, origin, start, end):
@@ -115,33 +117,19 @@ class ManhattanDistance():
         # returns the path
         return path
     
-    def netlist_looper(self, file_path):
+    def netlist_looper(self, netlist):
         """
         Loops over the netlist to connect the gates.
         """
-        wirepaths_list = []
-        # checks if the file is found
-        if not os.path.isfile(file_path):
-            print(f"File '{file_path}' not found!")
-        
-        else:
-            with open(file_path, mode='r') as file:
-                    csv_reader = csv.reader(file)
-                    next(csv_reader)  # skips the first line
-
-                    # checks if the row is long enough
-                    for row in csv_reader:
-                        if len(row) < 2:
-                            print(f"Invalid row in row {row}.")
-                            continue
-
-                        # gets the gates that need to be connected and finds the shortest path
-                        gate_1 = int(row[0])
-                        gate_2 = int(row[1])
-                        path = self.shortest_path(gate_1, gate_2)
-                        self.grid_edit.add_wire(path)
-                        wirepaths_list.append(path)
-
+        wirepaths_list=[]
+        print(netlist)
+        for i in range(len(netlist)):
+            gate_1= netlist[i][0]
+            gate_2= netlist[i][1]
+            path = self.shortest_path(gate_1, gate_2)
+            self.grid_edit.add_wire(path)
+            wirepaths_list.append(path)
+            
         self.grid_edit.wirepaths_list = wirepaths_list
         print("")
         print("complete wirepath list:")

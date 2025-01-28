@@ -13,7 +13,7 @@ class netlist_reordering():
 
         user_input_obj = user_input(self.grid_edit)
 
-        netlist, counter = user_input_obj.load_netlist(file_path)
+        netlist = user_input_obj.load_netlist(file_path)
         print("-----netlist_reorder-----")
 
         gate_count_list=[]

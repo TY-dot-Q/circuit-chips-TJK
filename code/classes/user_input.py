@@ -81,7 +81,7 @@ class user_input:
                         
                         print("Netlist is succesvol geladen uit het CSV-bestand.")
                         print("")
-                        return connection_list, counter
+                        return connection_list
 
                     print("Netlist is succesvol geladen uit het CSV-bestand.")
                 except FileNotFoundError:

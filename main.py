@@ -26,12 +26,13 @@ if __name__ == "__main__":
     start_obj.Auto_start_functie(grid_path)
 
 
-    #----------------Netlist reorder-----------------------
-    netlist_reorder_obj.netlist_reorder(netlist_path)
+    #----------------Netlist passer-----------------------
+    netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
+    #netlist_list=user_input_obj.load_netlist(netlist_path)
     
 
     #----------------Manhatten distance--------------------
-    algorithm_obj.netlist_looper(netlist_path)
+    algorithm_obj.netlist_looper(netlist_list)
 
 
     #-----------------resulten------------------------------
@@ -46,6 +47,7 @@ if __name__ == "__main__":
     #----------------visualisatie----------------------------
     
     # print de grid in de terminal
+    
     output_obj.print_grid() 
 
     # schrijf de resultaten naar een csv bestand
