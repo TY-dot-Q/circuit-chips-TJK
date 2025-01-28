@@ -1,6 +1,9 @@
 from code.classes import grid_edit
 import csv, os
 import heapq
+import random
+
+random.seed(0)
 
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
@@ -20,12 +23,9 @@ class ManhattanDistance():
             
             # else checks if the position is empty
             elif self.grid_edit.grid[z][y][x] == 0:
-                return True
-        
-            else:
-                return False
-        
+                return True        
         else:
+            print(f"position {pos} is occupied")
             return False
     
     def shortest_path(self, gate_1, gate_2):
@@ -60,14 +60,16 @@ class ManhattanDistance():
                 break
             
             # list of neighbor coordinates
-            neighbors = [(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)]
+            neighbors = random.shuffle([(-1,0,0), (1,0,0), (0,-1,0), (0,1,0), (0,0,-1), (0,0,1)])
 
             # loops over the neighbors of the current point
             for dy, dx, dz in neighbors:
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
+                print(f"Checking neighbor: {neighbor}")
 
                 # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor, end) != True:
+                    print(f"Neighbor {neighbor} is invalid")
                     continue
                 
                 # cost for moving to the neighbor

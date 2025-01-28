@@ -93,8 +93,8 @@ class output:
             
         # set axes for grid
         maximum = max(grid_edit_obj.maximum_y, grid_edit_obj.maximum_x)
-        ax.set_xticks(range(0, maximum + 4, 1))
-        ax.set_yticks(range(0, maximum + 4, 1))
+        ax.set_xticks(range(0, self.grid_edit.maximum_x, 1))
+        ax.set_yticks(range(0, self.grid_edit.maximum_y, 1))
         ax.set_zlim(bottom=0)
         ax.set_zticks(range(1, 10, 1))
 
