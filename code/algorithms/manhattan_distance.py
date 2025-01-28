@@ -3,11 +3,12 @@ import csv, os
 import heapq
 import random
 
-random.seed(10)
+random.seed(100)
 
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
         self.grid_edit = grid_edit_obj
+        self.parallel_set = set()
 
     def check_valid(self, pos, end):
         """
@@ -28,18 +29,23 @@ class ManhattanDistance():
             #print(f"position {pos} is occupied")
             return False
 
-    def check_valid_cross(self, pos, end):
+    def check_valid_cross(self, current, adjacent):
         """
         Checks if the position in the grid is inside and not already taken
         This is the check needed to consider a wire cross
         """
-        y, x, z = pos
+        y, x, z = adjacent
         
         # checks if the position is in the grid
         if 0 <= x <= self.grid_edit.maximum_x and 0 <= y <= self.grid_edit.maximum_y and 0 <= z <= 7:
             # else checks if the position is empty
-            if self.grid_edit.grid[z][y][x] == '+':
-                return True        
+            if self.grid_edit.grid[z][y][x] == '+': 
+                parallel_check = (current, adjacent)
+                if parallel_check not in self.parallel_set:
+                    return True
+                else:
+                    print("!!!!!!!!!!!!!!!PARALLELE LIJNEN!!!!!!!!!!!!")
+                    return False
         else:
             return False
     
@@ -84,13 +90,13 @@ class ManhattanDistance():
             for dy, dx, dz in neighbors:
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
                 #print(f"Checking neighbor: {neighbor}")
-
+                
                 # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor, end) != True:
                     #print(f"Neighbor {neighbor} is invalid")
                     cross_checker = True    
 
-                    if self.check_valid_cross(neighbor, end) != True:
+                    if self.check_valid_cross(current, neighbor) != True:
                         cross_checker = False
                         continue
                     
@@ -99,7 +105,7 @@ class ManhattanDistance():
                 # cost for moving to the neighbor
                 new_cost = current_cost[current] + 1
                 if cross_checker:
-                    new_cost += 50
+                    new_cost += 5
 
                 if neighbor not in current_cost or new_cost < current_cost[neighbor]:
                     # updates costs to that of the neighbor
@@ -157,6 +163,12 @@ class ManhattanDistance():
             self.grid_edit.add_wire(path)
             wirepaths_list.append(path)
             
+        for j in range(len(path) - 1):
+                parallel = (path[j], path[j + 1])
+                reverse_parallel = (path[j+1], path[j])
+                self.parallel_set.add(parallel)
+                self.parallel_set.add(reverse_parallel)
+
         self.grid_edit.wirepaths_list = wirepaths_list
         print("")
         print("complete wirepath list:")
