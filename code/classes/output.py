@@ -6,7 +6,7 @@ class write_to_csv:
     def write_to_csv(wirepaths_list):
                 # Open het CSV-bestand in 'append' mode
                 with open('wirepaths.csv', 'a', newline='') as csvfile:
-                    kolom = ['nummer', 'pad', 'succes', 'score', 'aantal_wires', 'aantal_kruizingen']
+                    kolom = ['nummer', 'pad', 'succes', 'score', 'aantal_wires', 'aantal_kruisingen']
                     writer = csv.DictWriter(csvfile, fieldnames=kolom)
 
                     # Als het bestand leeg is, schrijf dan eerst de header (kolomnamen)
@@ -27,7 +27,7 @@ class write_to_csv:
                             'succes': 'ja',  # Voorbeeld, pas aan volgens je logica succes als er geen overlapping is dus twee twee 
                             'score': 100,  # Voorbeeld
                             'aantal_wires': grid_edit.wirecount,  # Aantal items in de wirepath
-                            'aantal_kruizingen': grid_edit.wirecrosscount  # Voorbeeld, pas aan volgens je logica
+                            'aantal_kruisingen': grid_edit.wirecrosscount  # Voorbeeld, pas aan volgens je logica
                         }
 
                         # Schrijf de rij naar het bestand
