@@ -113,8 +113,8 @@ class user_input:
                         continue
 
                     try:
-                        y = int(row[1])
-                        x = int(row[2])
+                        y = int(row[2])
+                        x = int(row[1])
 
                         max_y = max(max_y, y)
                         max_x = max(max_x, x)
