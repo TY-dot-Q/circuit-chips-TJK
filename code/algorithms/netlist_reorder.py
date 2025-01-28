@@ -72,9 +72,9 @@ class netlist_reordering():
             v3 = abs(z1 - z2)
             afstand_tussen_gates=v3+v2+v1
 
-            score = afstand_tussen_gates*1 + afstand_midden*1 + conection_amount*1
+            score = afstand_tussen_gates*100 + afstand_midden*100 + conection_amount*500
 
-            #print(f"nr({counter}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
+            print(f"nr({counter}) -- gate {chip_a}({test1}) en {chip_b}({test2}) -- score({score}) -- mid({afstand_midden}) -- tussen gates({afstand_tussen_gates}) -- cons({conection_amount})")
 
             score_list.append((counter, score))
             counter+=1

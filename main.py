@@ -5,6 +5,7 @@ from code.visualisation.visualisation import output
 from code.classes.auto_start import auto_functions
 from code.algorithms.manhattan_distance import ManhattanDistance as MD
 from code.algorithms.netlist_reorder import netlist_reordering
+from code.algorithms.hill_climber import hil_climber
 
 if __name__ == "__main__":
     #-----------------setup-------------------------------
@@ -17,6 +18,7 @@ if __name__ == "__main__":
     start_obj = auto_functions(grid_edit_obj)
     algorithm_obj= MD(grid_edit_obj)
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
+    hil_climber_obj=hil_climber(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
     grid_path="data/chip_1/print_1.csv"
@@ -26,14 +28,17 @@ if __name__ == "__main__":
     start_obj.Auto_start_functie(grid_path)
 
 
-    #----------------Netlist passer-----------------------
+    #----------------Netlist passer------------------------
     netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
     #netlist_list=user_input_obj.load_netlist(netlist_path)
     
 
-    #----------------Manhatten distance--------------------
+    #----------------Manhatten distance---------------------
     algorithm_obj.netlist_looper(netlist_list)
 
+
+    #----------------Hill climber---------------------------
+    #hil_climber_obj.start_hill_climb() #wertk nog niet
 
     #-----------------resulten------------------------------
     wirecount = grid_edit_obj.update_wirecount()
@@ -51,7 +56,7 @@ if __name__ == "__main__":
     output_obj.print_grid() 
 
     # schrijf de resultaten naar een csv bestand
-    output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
+    #output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
    
     # 3d visualisatie
     output_obj.visualisatie()
