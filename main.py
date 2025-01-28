@@ -38,7 +38,8 @@ if __name__ == "__main__":
 
 
     #----------------Hill climber---------------------------
-    #hil_climber_obj.start_hill_climb() #wertk nog niet
+    reset_wires = 5 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
+    hil_climber_obj.start_hill_climb(5, netlist_list) #wertk nog niet
 
     #-----------------resulten------------------------------
     wirecount = grid_edit_obj.update_wirecount()
