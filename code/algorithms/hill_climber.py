@@ -2,10 +2,14 @@ import random
 from classes.grid_edit import grid_edit
 from algorithms.manhattan_distance import ManhattanDistance
 
+
 class hil_climber:
     """haalt een of meerdere wire verbinden tussen gates weg, en legt deze opnieuw met een bepaalde methode (zie reconstruct_ine)"""
     def __init__(self, grid_edit_obj):
         self.grid_edit = grid_edit_obj
+
+    def start_hill_climb(self):
+        """activeer om de hill climber te starten"""
 
     def reconstruct_line(self, chip_a, chip_b):
         """neemt een gegeven wire connection en legt deze opnieuw en gaat controleren of deze beter kan"""
