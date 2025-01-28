@@ -25,7 +25,7 @@ class ManhattanDistance():
             elif self.grid_edit.grid[z][y][x] == 0:
                 return True        
         else:
-            print(f"position {pos} is occupied")
+            #print(f"position {pos} is occupied")
             return False
     
     def shortest_path(self, gate_1, gate_2):
@@ -66,11 +66,11 @@ class ManhattanDistance():
             # loops over the neighbors of the current point
             for dy, dx, dz in neighbors:
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
-                print(f"Checking neighbor: {neighbor}")
+                #print(f"Checking neighbor: {neighbor}")
 
                 # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor, end) != True:
-                    print(f"Neighbor {neighbor} is invalid")
+                    #print(f"Neighbor {neighbor} is invalid")
                     continue
                 
                 # cost for moving to the neighbor
