@@ -56,7 +56,7 @@ if __name__ == "__main__":
     
     output_obj.print_grid() 
 
-    # schrijf de resultaten naar een csv bestand
+    # schrijf de resultaten naar het bestand wirepaths.csv
     #output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
    
     # 3d visualisatie
