@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
-from matplotlib.animation import FFMpegWriter
-from matplotlib.animation import PillowWriter
+
 
 class output:
     def __init__(self, grid_edit_obj):

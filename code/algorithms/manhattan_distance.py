@@ -141,11 +141,12 @@ class ManhattanDistance():
                         path = self.shortest_path(gate_1, gate_2)
                         self.grid_edit.add_wire(path)
                         wirepaths_list.append(path)
+
+        self.grid_edit.wirepaths_list = wirepaths_list
         print("")
         print("complete wirepath list:")
-        print(wirepaths_list)
+        print(self.grid_edit.wirepaths_list)
         print("")
-        return wirepaths_list
 
     def run(self, iterations):
         """
