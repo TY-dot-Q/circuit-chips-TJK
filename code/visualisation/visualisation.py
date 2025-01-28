@@ -107,11 +107,13 @@ class output:
         ax.legend()
 
         # Set the view
-        ax.view_init(elev=37, azim=-138, roll=-11)
+        ax.view_init(elev=37, azim=-131, roll=7)
+        ax.dist = 2
 
         if frame == total_frames - 1:
             print("\n3D visualisatie succesvol getoond.\n**Sluit het venster van animatie om programma te stoppen**")
-
+            plt.savefig(f"eindstand_animatie_{self.grid_edit.nummer}.png", dpi=300)
+            print(f"Afbeelding opgeslagen: eindstand_animatie_{self.grid_edit.nummer}.png")
 
     def visualisatie(self):
         """
@@ -124,7 +126,7 @@ class output:
 
         # Setup - Gebruik het grid_edit object dat is doorgegeven aan de class
         grid_edit_obj = self.grid_edit
-        fig = plt.figure(figsize=(14, 10))
+        fig = plt.figure(figsize=(11, 8))
         ax = fig.add_subplot(111, projection='3d')
         wires = grid_edit_obj.wirepaths_list
         animatie = self.animation
