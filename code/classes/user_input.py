@@ -4,10 +4,10 @@ class user_input:
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
-    def score_request(self)->None:
+    def score_request(self, wirecount)->None:
         """print de score van de grid door de bijgehouden waardes van de grid_edit classe te bekijken"""
         print("-----score_request-----")
-        print(f"er zijn {self.grid_edit.wirecount} draaden")
+        print(f"er zijn {wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
         print(f"dit geeft een score van c={self.grid_edit.score}")
         print("")
@@ -31,8 +31,8 @@ class user_input:
 
 
                             try:
-                                x=int(row[2])
-                                y=int(row[1])
+                                x=int(row[1])
+                                y=int(row[2])
                                 z=0
                                 self.grid_edit.add_gate(y,x,z)
                             
@@ -113,8 +113,8 @@ class user_input:
                         continue
 
                     try:
-                        y = int(row[1])
-                        x = int(row[2])
+                        y = int(row[2])
+                        x = int(row[1])
 
                         max_y = max(max_y, y)
                         max_x = max(max_x, x)

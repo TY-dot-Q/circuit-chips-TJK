@@ -72,7 +72,7 @@ class grid_edit:
                         overlap_temp.append(sorted_pair)  # Voeg beide coördinaten van de overlap toe
         return overlap_temp
 
-    def check_all_overlaps(self): 
+    def check_all_overlaps(self): # VOEG TOE
         """
         Controleer alle wires voor overlappen met elkaar en sla de overlappen op in overlapping_lijst.
         """
@@ -87,34 +87,52 @@ class grid_edit:
         unieke_overlappingen = []
         
         for overlap in overlaplijst:
-            # Controleer of dit paar al eerder is toegevoegd (let op de volgorde)
-            overlap_found = False
-            for unique_overlap in unieke_overlappingen:
-                if (overlap == unique_overlap) or (overlap == tuple(reversed(unique_overlap))):
-                    overlap_found = True
-                    break
-            
-            if not overlap_found:
+            # Uniekheid controleren zonder volgorde
+            if overlap not in unieke_overlappingen and tuple(reversed(overlap)) not in unieke_overlappingen:
                 unieke_overlappingen.append(overlap)
-        
+            
+        # Update de lijst van overlappen
         self.overlapping_lijst = unieke_overlappingen
 
+        # Controleer of er geen overlappen zijn
         if not self.overlapping_lijst:
-            return "Ja"
+            return "Ja"  # Geen overlappingen gevonden
 
-        for sublist in self.overlapping_lijst:
-            for tuple1 in sublist:
-                for tuple2 in self.wirecross_list:
-                    if tuple1 == tuple2:
-                        self.wirecross_list.remove(tuple2)
-        self.wirecrosscount = len(self.wirecross_list)
-        print(f"selfwirecross: {self.wirecross_list} -> {self.wirecrosscount}")
         print(f"Overlappingen gevonden: {self.overlapping_lijst}")
         return "Nee"
     
-    def add_wire (self, kortste_pad) ->None: # voeg toe *
+    def find_wirecross(self): # VOEG TOE
+        # Stap 1: Verzamel alle elementen behalve de eerste en laatste uit elke sublijst
+        wirecross = []
+        for sublist in self.wirepaths_list:
+            if len(sublist) > 2:
+                wirecross.extend(sublist[1:-1])  # Pak alles behalve eerste en laatste element
+
+        # Stap 2: Houd alleen de waarden die exact twee keer voorkomen
+        wirecross = [item for item in wirecross if wirecross.count(item) == 2]
+        print(f"\n\n** voor eindde Wirecrosses gevonden: {wirecross}\n\n")
+
+        # Stap 3: Haal alle (y, x, z)-waarden uit overlappingen_lijst
+        overlapping_values = [item for sublist in self.overlapping_lijst for item in sublist]
+
+        # Stap 4: Verwijder waarden uit wirecross die ook in overlapping_values voorkomen
+        wirecross = [item for item in wirecross if item not in overlapping_values]
+
+        # Stap 5: Return de uiteindelijke wirecross-lijst
+        wirecross2 = []
+        for item in wirecross:
+            if item not in wirecross2:
+                wirecross2.append(item)
+
+        self.wirecross_list = wirecross2
+        self.wirecrosscount = len(wirecross2)
+        print(f"\n\n** na eindde Wirecrosses gevonden: {self.wirecross_list}") # haal weg
+        print(f"Wirecrosscount: {self.wirecrosscount}\n\n") # haal weg
+
+    
+    def add_wire (self, kortste_pad) ->None: # VOEG TOE 
         """
-        vervangt de 0 waarde van de grid met een wire 
+        vervangt de 0 waarde van de gridcreate met een wire, checkt ook of er niet al een gate is. 
         """
         # tests if shortest path is valid and filled
         if not kortste_pad:
@@ -134,17 +152,39 @@ class grid_edit:
 
             # adds wire to grid 
             if self.grid[z][y][x] == 0:
-                self.grid[z][y][x] = '+'
-
+                self.grid[z][y][x] = '+' #voeg de wire toe
                 print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
             elif self.grid[z][y][x]=="+":
-                # if there's a wire already than add one for 'kruizingen'/kortsluiting
-                self.wirecrosscount+=1
-                self.wirecross_list.append((y,x,z)) # voeg toe *
-                print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
 
+                print(f"Over kruisend draad heen op de coördinaten y={y}, x={x}, z={z}")
+       
             else:
                 print(f"er staat al iets namelijk: \"{self.grid[z][y][x]}\"")
+
+    # Voeg de wirecount toe aan de lijst
+    def update_wirecount(self) -> int: # VOEG TOE
+        """
+        Telt het totale aantal coördinaten in alle wirepaths (j van alle i) 
+        en trekt daar de lengte van i af (om de begin- en eindpunten van elke wirepath uit te sluiten).
+        
+        Returns:
+            int: Het berekende wirecount.
+        """
+        total_count = 0
+
+        # Tel het totale aantal coördinaten in alle wirepaths
+        for wirepath in self.wirepaths_list:
+            total_count += len(wirepath)
+
+        # Trek het aantal wirepaths af van het totaal
+        wirecount = total_count - len(self.wirepaths_list)
+
+        # Debug-informatie
+        print(f"Totaal aantal coördinaten: {total_count}") #haal weg
+        print(f"Aantal wirepaths: {len(self.wirepaths_list)}") #haal weg 
+        print(f"Wirecount: {wirecount}")
+
+        return wirecount
 
     def gate_location(self, nr_check)->int:
         return self.gate_dict[nr_check]

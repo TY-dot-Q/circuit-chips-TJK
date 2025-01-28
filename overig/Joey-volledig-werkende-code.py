@@ -150,7 +150,7 @@ class grid_edit:
 
                 print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
             elif self.grid[z][y][x]=="+":
-                # if there's a wire already than add one for 'kruizingen'/kortsluiting
+                # if there's a wire already than add one for 'kruisingen'/kortsluiting
                 self.wirecrosscount+=1
                 self.wirecross_list.append((y,x,z)) # voeg toe *
                 print(f"kruisende draad toegevoegd op de coordinaten y={y}, x={x} z={z} ")
@@ -408,7 +408,7 @@ class output:
         # Open het CSV-bestand in 'append' mode
         grid_edit_obj = self.grid_edit
         with open('wirepaths.csv', 'a', newline='') as csvfile:
-            kolom = ['nummer', 'pad', 'succes', 'score', 'aantal_wires', 'aantal_kruizingen']
+            kolom = ['nummer', 'pad', 'succes', 'score', 'aantal_wires', 'aantal_kruisingen']
             writer = csv.DictWriter(csvfile, fieldnames=kolom)
 
             # Als het bestand leeg is, schrijf dan eerst de header (kolomnamen)
@@ -429,7 +429,7 @@ class output:
                     'succes': succes,  # klopt niet - als er geen overlapping is dus twee twee 
                     'score': grid_edit_obj.score,  # klopt niet
                     'aantal_wires': grid_edit_obj.wirecount,  # Aantal draden in netwerk
-                    'aantal_kruizingen': grid_edit_obj.wirecrosscount  # aantal kruisingen 
+                    'aantal_kruisingen': grid_edit_obj.wirecrosscount  # aantal kruisingen 
                 }
                 
                 # Schrijf in csv bestand
