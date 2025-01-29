@@ -262,6 +262,20 @@ class grid_edit:
         Returns:
             None
         """
+        counter=0
+        counter2=0
+        for item in self.parallel_set:
+            for i in item:
+                counter2+=1
+
+        print(counter2)
+
+        for item in self.wirepaths_list:
+            for i in item:
+                counter+=1
+        print(counter)    
+        #print(self.parallel_set)
+
         for i in range(len(wire) - 1):
             parallel = (wire[i], wire[i + 1])
             reverse_parallel = (wire[i + 1], wire[i])
