@@ -40,7 +40,7 @@ if __name__ == "__main__":
     #----------------Hill climber---------------------------
     reset_wires = 5 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
     reloop_time = 5 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
-    hil_climber_obj.start_hill_climb(5, netlist_list, reloop_time) #wertk nog niet
+    hil_climber_obj.start_hill_climb(reset_wires, netlist_list, reloop_time) #wertk nog niet
 
     #-----------------resulten------------------------------
     wirecount = grid_edit_obj.update_wirecount()
@@ -61,4 +61,4 @@ if __name__ == "__main__":
     #output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
    
     # 3d visualisatie
-    #output_obj.visualisatie()
+    output_obj.visualisatie()

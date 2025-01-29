@@ -37,7 +37,10 @@ class hil_climber:
         #geef hier op welke manier je wilt gebruiken om de lijn opnieuw te leggen
         path = ManhattanDistance_obj.shortest_path(chip_a, chip_b)
 
-        self.netlist.append((chip_a),(chip_b))
+
+        print(chip_a, chip_b)
+        print(self.netlist)
+        self.netlist.append((chip_a)(chip_b))
         self.grid_edit.add_wire(path)
 
 
@@ -121,6 +124,8 @@ class hil_climber:
             self.remove_wire_connection(remove_wire)
             remove_rate+=1
 
+    def save_score(self):
+        """houdt de score bij om een graph te kunnen maken"""
 
     def loop_climb(self, reset_amount, total_wirelist, loop):
         """loop over de hill_climb om meerdere keeren het aantal draden te verwijderen """
