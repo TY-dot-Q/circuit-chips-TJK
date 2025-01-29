@@ -11,11 +11,15 @@ class hil_climber:
     #hou alle scores bij
     #hou alle laagste scores bij per iteratie
 
+
+    #bug fixes
+
     """haalt een of meerdere wire verbinden tussen gates weg, en legt deze opnieuw met een bepaalde methode (zie reconstruct_ine)"""
     def __init__(self, grid_edit_obj):
         self.grid_edit = grid_edit_obj
         self.lowest_score=0
         self.netlist=[]
+        self.reset_amount=5
 
         #testen (houdt bij wat de aanpassingen zijn die het maakt)
         self.first_length=-1
@@ -31,6 +35,7 @@ class hil_climber:
         
         total_wirelist = self.grid_edit.wirepaths_list 
         self.netlist=real_netlist
+        self.reset_amount=reset_amount
         #print(self.netlist) 
         #print(reset_amount)
 
@@ -129,25 +134,51 @@ class hil_climber:
 
     def reset_oude_grid(self, wirenet):
         """zet de oude grid weer terug in de huidige grid"""
+        print(f"RESET OUDE GRID IS NU GEACTIVEERD LALALALALALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLl")
         print(wirenet)
-        self.grid_edit.add_wire_parallel_set(wirenet)
-        self.grid_edit.add_wire(wirenet)
+        print("")
+        #fix de wirenet hier
+
+        i=0
+        while i < self.reset_amount:
+            print(f"ronde nummer {i+1}")
+            self.grid_edit.add_wire(wirenet[i])
+            print(f"toevoegen van wirepath: {wirenet[i]}")
+
+            self.grid_edit.add_wire_parallel_set(wirenet[i])
+            print(f"toevoegen van wire_parrallel set: {wirenet[i]}")
+            i+=1
+            print("")
 
     def remove_nieuw_wires(self, reset_amount):
         """haalt de nieuw gelgde wires weg"""
         remove_rate=len(self.netlist)
+        length_of_netlist = len(self.netlist)
 
-        print("test hij komt in de loop")
+        print(f"lengte van netlist")
 
-        while remove_rate > (len(self.netlist)-reset_amount):
+        print("")
+        print("verwijderen van nieuwe draden --------------------")
+
+        while remove_rate > length_of_netlist-reset_amount:
             print(f"remove_rate: {remove_rate}")
-            print(f"todat test: {len(self.netlist)-reset_amount}")
-            print(len(self.grid_edit.wirepaths_list))
-            remove_wire=self.grid_edit.wirepaths_list[remove_rate-1]
+            print(f"todat test: {length_of_netlist-reset_amount}")
+            remove_number = remove_rate-1
+
+            #check welke hij weghaalt, welke hij gates dat zijn en hoeveelste lijn dit moet zijn
+            print(f"verwijderen van {remove_number} in de lijst  -- netlist:{self.netlist[remove_number]} -- ")
+            print(f"dit is het pad:")
+            print(self.grid_edit.wirepaths_list[remove_number])
+            print("")
+            
+
+
+            remove_wire=self.grid_edit.wirepaths_list[remove_number]
             self.remove_wire_connection(remove_wire)
-            print(remove_rate)
+
+            print(f"test welke netlist connectie wordt weg gehaald{self.netlist[remove_number]}")
+            self.netlist.pop(remove_number)
             remove_rate-=1
-            print(remove_rate)
 
         
         print("test hij komt uit de loop")
