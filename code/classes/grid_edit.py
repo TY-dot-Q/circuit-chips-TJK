@@ -109,7 +109,7 @@ class grid_edit:
             if len(sublist) > 2:
                 wirecross.extend(sublist[1:-1])  # Pak alles behalve eerste en laatste element
 
-        # Stap 2: Houd alleen de waarden die exact twee keer voorkomen
+        # Stap 2: Houd alleen de waarden die exact twee keer of drie keer voorkomen
         wirecross = [item for item in wirecross if wirecross.count(item) == 2 or wirecross.count(item) == 3]
         print(f"\n\n** voor eindde Wirecrosses gevonden: {wirecross}\n\n")
 
@@ -122,11 +122,12 @@ class grid_edit:
         # Stap 5: Return de uiteindelijke wirecross-lijst
         wirecross2 = []
         for item in wirecross:
+            if item in wirecross2:
+                self.wirecrosscount += 1
             if item not in wirecross2:
                 wirecross2.append(item)
 
         self.wirecross_list = wirecross2
-        self.wirecrosscount = len(wirecross2)
         print(f"\n\n** na eindde Wirecrosses gevonden: {self.wirecross_list}") # haal weg
         print(f"Wirecrosscount: {self.wirecrosscount}\n\n") # haal weg
 

@@ -36,7 +36,7 @@ class output:
         """
         # Check of er gates zijn
         if not grid_edit_obj.gate_dict:
-            print(" - geen gates in de dict")
+            print("   geen gates in de dict")
             return
         
 
@@ -71,7 +71,7 @@ class output:
             wirecross = grid_edit_obj.wirecross_list 
             if wirecross:
                 for y, x, z in wirecross:
-                    ax.scatter(x, y, z, color='black', s=250, marker='x')
+                    ax.scatter(x, y, z, color='red', s=125, marker='x')
             else:
                 print("   geen kruisingen gevonden.")
 
@@ -103,14 +103,13 @@ class output:
         ax.set_zlabel("Z-as")
         ax.set_title(f"3D Visualisatie van nummer {self.grid_edit.nummer} \n Score:{self.grid_edit.score}")
         legend_elements = [
-        Line2D([0], [0], color='black', marker='x', linestyle='None', markersize=10, label='Kruising'),
+        Line2D([0], [0], color='red', marker='x', linestyle='None', markersize=10, label='Kruising'),
         Line2D([0], [0], color='red', linewidth=3, label='Overlapping'),
         Line2D([0], [0], color='blue', marker='o', linestyle='None', markersize=8, label='Gate')
         ]
 
         # Voeg de aangepaste legenda toe
         ax.legend(handles=legend_elements, loc="upper right")
-        ax.legend()
 
         # Set the view
         ax.view_init(elev=37, azim=-131, roll=7)
@@ -118,8 +117,85 @@ class output:
 
         if frame == total_frames - 1:
             print("\n3D visualisatie succesvol getoond.\n**Sluit het venster van animatie om programma te stoppen**")
-            plt.savefig(f"eindstand_animatie_{self.grid_edit.nummer}.png", dpi=300)
-            print(f"Afbeelding opgeslagen: eindstand_animatie_{self.grid_edit.nummer}.png")
+        
+
+    def generate_3d_visual(self, ax, grid_edit_obj):
+        """
+        Genereert een 3D-visualisatie en slaat deze op als een afbeelding.
+        """
+        # Check of er gates zijn
+        if not grid_edit_obj.gate_dict:
+            print("   geen gates in de dict")
+            return
+
+        # Zet gates in de visualisatie
+        for _, (y, x, z) in grid_edit_obj.gate_dict.items():
+            ax.scatter(x, y, z, color='blue', s=100, marker='o')
+
+        kleuren_palet = cycle([
+            'black', 'blue', 'green', 'orange', 'purple', 'teal', 'gold',
+            'pink', 'coral', 'olive', 'indigo', 'yellow'
+        ])
+
+        # Teken de draden
+        wires = grid_edit_obj.wirepaths_list
+        if wires:
+            for wire in wires:
+                kleur = next(kleuren_palet)
+                wire_y, wire_x, wire_z = zip(*wire)
+                ax.plot(wire_x, wire_y, wire_z, color=kleur, linewidth=2)
+        else:
+            print("   geen wires gevonden")
+
+        # Print wirecrosses in visual
+        wirecross = grid_edit_obj.wirecross_list
+        if wirecross:
+            for y, x, z in wirecross:
+                ax.scatter(x, y, z, color='red', s=125, marker='x')
+        else:
+            print("   geen kruisingen gevonden.")
+
+        # Print overlaps in visual
+        overlap = grid_edit_obj.overlapping_lijst
+        if overlap:
+            for segment in overlap:
+                if len(segment) == 2:
+                    overlap_y, overlap_x, overlap_z = zip(*segment)
+                    ax.plot(overlap_x, overlap_y, overlap_z, color='red', linewidth=3)
+        else:
+            print("   geen overlappingen gevonden.")
+
+        # Stel assen in
+        ax.set_xticks(range(0, grid_edit_obj.maximum_x + 1, 1))
+        ax.set_yticks(range(0, grid_edit_obj.maximum_y + 1, 1))
+        ax.set_zlim(bottom=0)
+        ax.set_zticks(range(1, 10, 1))
+
+        # Labels en titel
+        ax.set_xlabel("X-as")
+        ax.set_ylabel("Y-as")
+        ax.set_zlabel("Z-as")
+        ax.set_title(f"3D Visualisatie van nummer {grid_edit_obj.nummer} \n Score:{grid_edit_obj.score}")
+
+        # Voeg legenda toe
+        legend_elements = [
+            Line2D([0], [0], color='red', marker='x', linestyle='None', markersize=10, label='Kruising'),
+            Line2D([0], [0], color='red', linewidth=3, label='Overlapping'),
+            Line2D([0], [0], color='blue', marker='o', linestyle='None', markersize=8, label='Gate')
+        ]
+        ax.legend(handles=legend_elements, loc="upper right")
+
+        # Set de kijkhoek
+        ax.view_init(elev=37, azim=-131, roll=7)
+        ax.dist = 2
+
+        # Sla afbeelding op
+        filename = f"3D_visualisatie_{grid_edit_obj.nummer}.png"
+        plt.savefig(filename, dpi=300)
+        print(f"Afbeelding opgeslagen: {filename}")
+        print("**Sluit het venster van animatie om programma te stoppen**")
+        plt.show()
+
 
     def visualisatie(self):
         """
@@ -127,23 +203,32 @@ class output:
         Gates worden weergegeven als blauwe punten en wires als rode lijnen.
         z = 0 is de bodem
         """
-        print("-----animatie-----")
+        print("-----visualisatie-----")
         print("Start met maken van de animatie")
 
+        # Vraag de gebruiker of ze een animatie of afbeelding willen
+        order = input("Wil je animatie of afbeelding? Typ ani of afb: ")
+        while order != "ani" and order != "afb":
+            order = input("Wil je animatie of afbeelding? Typ ani of afb: ")
+        
         # Setup - Gebruik het grid_edit object dat is doorgegeven aan de class
         grid_edit_obj = self.grid_edit
         fig = plt.figure(figsize=(11, 8))
         ax = fig.add_subplot(111, projection='3d')
-        wires = grid_edit_obj.wirepaths_list
-        animatie = self.animation
 
-        
-        total_frames = sum(len(wire) for wire in wires)
         # Maak de animatie
-        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=1, repeat=False)
-
-        # Toon de animatie
-        plt.show()
+        if order == 'ani':
+            
+            wires = grid_edit_obj.wirepaths_list
+            total_frames = sum(len(wire) for wire in wires)
+            animation = FuncAnimation(fig, self.animation, frames = total_frames, fargs=(ax, grid_edit_obj), interval=1, repeat=False)
+            plt.show()
+            
+                  
+        # Maak de afbeelding
+        if order == 'afb':
+            self.generate_3d_visual(ax, grid_edit_obj)
+    
         
     
     def write_to_csv(self, wirepaths_list, overlapping_lijst, wirecount): # DEZE TOEVOEGEN
