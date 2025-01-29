@@ -8,11 +8,6 @@ class hil_climber:
     #TODO
     #hou alle scores bij
     #hou alle laagste scores bij per iteratie
-    #zorg dat hij oneindig lang kan loopen over de loop_hill climb
-    
-    #zorg dat hij een betere score opslaat en een slechtere score verwerpt, en dan de oude draden weer toevoegt
-
-
 
     """haalt een of meerdere wire verbinden tussen gates weg, en legt deze opnieuw met een bepaalde methode (zie reconstruct_ine)"""
     def __init__(self, grid_edit_obj):
@@ -58,6 +53,7 @@ class hil_climber:
             print(f"y={y}, x={x}, z={z}")
             self.grid_edit.remove_wire(y, x, z)
 
+        print(wireconnection)
         self.grid_edit.remove_wire_parallel_set(wireconnection)
 
     def hill_climb(self, reset_amount, total_wirelist ):
@@ -82,13 +78,23 @@ class hil_climber:
 
             print(f"check(1){self.netlist[random_pick][0]}")
             print(f"check(2){self.netlist[random_pick][1]}")
-            self.netlist.remove(random_pick)
+
+            print(f"GROTE TEST KDLFHLSKD")
+            print(f"netlist{self.netlist}")
+
+            print (f"test zelfde lengte{len(self.netlist)} en {len(self.grid_edit.wirepaths_list)}")
+            
+            print(f"tussen gate {self.netlist[random_pick][0]} ({self.grid_edit.gate_dict[self.netlist[random_pick][0]]}) en  {self.netlist[random_pick][1]} ({self.grid_edit.gate_dict[self.netlist[random_pick][1]]}) --- wireconnection die gekozen is {wireconnection}")
+            
+            print(f"test remove{self.netlist[random_pick]}")
+            print(f"random pick {random_pick}")
+            self.netlist.pop(random_pick)
 
             #verwijder de complete wire lijn
             self.remove_wire_connection(wireconnection)
             i+=1
 
-        print(remakelist)
+        print(f"test de remakelist:{remakelist}")
         #met de opgeslagen chips, maak de wire opnieuw
         i=0
         while i <= reset_amount:
@@ -97,6 +103,7 @@ class hil_climber:
             self.reconstruct_line(chip_a, chip_b)
             i+=1
 
+        print(oldwirelist)
         return oldwirelist
 
     def reset_oude_grid(self, wirenet):
