@@ -219,9 +219,9 @@ class ManhattanDistance():
             self.grid_edit.add_wire(path)
             
             wirepaths_list.append(path)
-
-        # adds the combination of coordinates to the parallel set to prevent parallel lines
-        self.grid_edit.add_wire_parallel_set(path)
+            
+            # adds the combination of coordinates to the parallel set to prevent parallel lines
+            self.grid_edit.add_wire_parallel_set(path)
 
         self.grid_edit.wirepaths_list = wirepaths_list
         print("")
