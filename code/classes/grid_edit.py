@@ -110,7 +110,7 @@ class grid_edit:
                 wirecross.extend(sublist[1:-1])  # Pak alles behalve eerste en laatste element
 
         # Stap 2: Houd alleen de waarden die exact twee keer voorkomen
-        wirecross = [item for item in wirecross if wirecross.count(item) == 2]
+        wirecross = [item for item in wirecross if wirecross.count(item) == 2 or wirecross.count(item) == 3]
         print(f"\n\n** voor eindde Wirecrosses gevonden: {wirecross}\n\n")
 
         # Stap 3: Haal alle (y, x, z)-waarden uit overlappingen_lijst
