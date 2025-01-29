@@ -13,6 +13,8 @@ class hil_climber:
 
 
     #bug fixes
+    #gebruik crl f om te zoeken waar de bug is
+        #voor nu ziet het er naar uit dat de netlist en wirelist niet samenlopen en dat het wires koppelts aan netlist connecties die niet kloppen.
 
     """haalt een of meerdere wire verbinden tussen gates weg, en legt deze opnieuw met een bepaalde methode (zie reconstruct_ine)"""
     def __init__(self, grid_edit_obj):
@@ -78,7 +80,7 @@ class hil_climber:
 
         self.grid_edit.remove_wire_parallel_set(wireconnection)
 
-    def hill_climb(self, ):
+    def hill_climb(self):
         """reset_amount voor de hoeveelheid lijnen die je weg wilt halen, total_wirelist moet een list met alle lijnen die je hebt gelegt list, netlist moet de lijst zijn met de volgorde dat je draden hebt gelegt"""
 
         #seed zodat je dezelfde resultaten krijgt
