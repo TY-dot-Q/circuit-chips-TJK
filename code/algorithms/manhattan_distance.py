@@ -52,16 +52,34 @@ class ManhattanDistance():
             
             # else checks if the position is empty
             if self.grid_edit.grid[z][y][x] == '+': 
-                
-                # checks if the neighbor would create a parallel wire
-                parallel_check = (pos, neighbor)
-                if parallel_check not in self.grid_edit.parallel_set:
-                    return True
-                else:
-                    print("!!!!!!!!!!!!!!!PARALLELE LIJNEN!!!!!!!!!!!!")
-                    return False
+                return True
+            else:
+                return False
+    
+    def check_parallel(self, pos: tuple[int], neighbor: tuple[int])->bool:
+        """
+        Checks if moving to the neighboring position creates parallel wires
+
+        Args:
+            pos tuple[int]: current position
+            neighbor tuple[int]: position of the neighbor
+
+        Returns:
+            bool: True if wires don't run parallel, False otherwise
+        """
+        
+        y, x, z = neighbor
+        
+        # checks if the position is in the grid
+        if 0 <= x <= self.grid_edit.maximum_x and 0 <= y <= self.grid_edit.maximum_y and 0 <= z <= 7:
+            
+            # checks if the the wire already is in the parallelset
+            parallel_check = (pos, neighbor)
+            if parallel_check not in self.grid_edit.parallel_set:
+                return True
         else:
             return False
+        
     
     def shortest_path(self, gate_1: int, gate_2: int) -> list[(tuple[int])]:
         """
@@ -125,6 +143,9 @@ class ManhattanDistance():
                 neighbor = (current[0] + dy, current[1] + dx, current[2] + dz)
                 #print(f"Checking neighbor: {neighbor}")
                 
+                if not self.check_parallel(current, neighbor):
+                    continue
+
                 # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor, end) != True:
                     #print(f"Neighbor {neighbor} is invalid")
