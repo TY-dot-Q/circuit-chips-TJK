@@ -268,13 +268,15 @@ class grid_edit:
             for i in item:
                 counter2+=1
 
-        print(counter2)
+        print(f"aantal parrallel set coordinaten:{counter2}")
 
         for item in self.wirepaths_list:
             for i in item:
                 counter+=1
-        print(counter)    
+        print(f"aantal wires:{counter}")    
         #print(self.parallel_set)
+        print("")
+        
 
         for i in range(len(wire) - 1):
             parallel = (wire[i], wire[i + 1])

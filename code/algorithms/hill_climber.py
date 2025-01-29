@@ -37,12 +37,12 @@ class hil_climber:
         #geef hier op welke manier je wilt gebruiken om de lijn opnieuw te leggen
         path = ManhattanDistance_obj.shortest_path(chip_a, chip_b)
 
-
-        print(chip_a, chip_b)
-        print(self.netlist)
-        self.netlist.append((chip_a)(chip_b))
+        self.netlist.append((chip_a, chip_b))
         self.grid_edit.add_wire(path)
-
+        self.grid_edit.add_wire_parallel_set(path)
+        print("")
+        print("--------------------------------------------------------------------------------------------------")
+        print(f"gate {chip_a} en {chip_b} ---- lengte netlist: {len(self.netlist)}")
 
     def remove_wire_connection(self, wireconnection):
         """verwijdert een complete lijn en verwijdert dit in de grid, verwacht nu van wire connection ((y,x,z), (y,x,z), etc)"""
@@ -69,7 +69,7 @@ class hil_climber:
 
         remakelist=[]
         i=0
-        while i <= reset_amount:
+        while i < reset_amount:
 
             #pakt een random wire in de total_wirelist
             random_pick = random.randint(0, len(total_wirelist))
@@ -79,11 +79,9 @@ class hil_climber:
             #zorgt dat de chips van de wirelist worden opgeslagen om later opnieuw te leggen
             remakelist.append(((self.netlist[random_pick][0]), (self.netlist[random_pick][1])))
 
-            print(f"check(1){self.netlist[random_pick][0]}")
-            print(f"check(2){self.netlist[random_pick][1]}")
-
-            print(f"GROTE TEST KDLFHLSKD")
-            print(f"netlist{self.netlist}")
+            print("")
+            print(f"TEST HILL_CLIMB LIJN VERWIJDERING NUMMER {i}---------------------------------------------------")
+            #print(f"netlist{self.netlist}")
 
             print (f"test zelfde lengte{len(self.netlist)} en {len(self.grid_edit.wirepaths_list)}")
             
@@ -91,6 +89,8 @@ class hil_climber:
             
             print(f"test remove{self.netlist[random_pick]}")
             print(f"random pick {random_pick}")
+            print("")
+
             self.netlist.pop(random_pick)
 
             #verwijder de complete wire lijn
@@ -98,9 +98,15 @@ class hil_climber:
             i+=1
 
         print(f"test de remakelist:{remakelist}")
+
+        print("")
+        print("")
+        
         #met de opgeslagen chips, maak de wire opnieuw
         i=0
-        while i <= reset_amount:
+        while i < reset_amount:
+            print("")
+            print(f"REMAKE VAN DE LIJNEN {i}----------------------------------------------")
             chip_a = remakelist[i][0]
             chip_b = remakelist[i][1]
             self.reconstruct_line(chip_a, chip_b)
@@ -134,6 +140,8 @@ class hil_climber:
 
         while datetime.now()<eind_tijd:
             print("de loop is nog nog bezig...")
+            print("")
+            print("")
             oldwirelist=self.hill_climb(reset_amount, total_wirelist)
             nieuwe_score=self.grid_edit.score
 
