@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib.animation import FuncAnimation
-
+from matplotlib.lines import Line2D
 
 class output:
     def __init__(self, grid_edit_obj):
@@ -42,15 +42,12 @@ class output:
 
         # Zet gates opnieuw in de visualisatie
         if frame == 0:
-            for gate_nr, (y, x, z) in grid_edit_obj.gate_dict.items():
-                ax.scatter(x, y, z, color='blue', label=f'Gate' if gate_nr == 1 else "", s=100, marker = 'o')
+            for _, (y, x, z) in grid_edit_obj.gate_dict.items():
+                ax.scatter(x, y, z, color='blue', s=100, marker = 'o')
 
         kleuren_palet = cycle([ 
-            'green', 'blue', 'cyan', 'magenta', 'pink',
-            'gray', 'orange', 'brown', 'purple', 'teal', 'gold', 'lime',
-            'indigo', 'maroon', 'navy', 'olive', 'coral', 'aqua', 'fuchsia',
-            'salmon', 'tan', 'lavender', 'beige', 'khaki', 'ivory', 'azure',
-            'turquoise', 'plum', 'orchid', 'violet'])
+        'black', 'blue', 'green', 'orange', 'purple', 'teal', 'gold',
+        'pink', 'coral', 'olive', 'indigo', 'yellow'])
 
         # Teken de lijnen stap voor stap
         wires = grid_edit_obj.wirepaths_list
@@ -62,7 +59,7 @@ class output:
                 kleur = next(kleuren_palet) 
                 if frame < current_frame + wire_length:
                     wire_y, wire_x, wire_z = zip(*wire[:frame - current_frame + 1])
-                    ax.plot(wire_x, wire_y, wire_z, color=kleur, linewidth=2, label='Wire Path' if frame == 0 else "")
+                    ax.plot(wire_x, wire_y, wire_z, color=kleur, linewidth = 2)
                     break
                 current_frame += wire_length
         else:
@@ -74,7 +71,7 @@ class output:
             wirecross = grid_edit_obj.wirecross_list 
             if wirecross:
                 for y, x, z in wirecross:
-                    ax.scatter(x, y, z, color='black', label='Kruising' if frame == total_frames - 1 else "", s=250, marker='x')
+                    ax.scatter(x, y, z, color='black', s=250, marker='x')
             else:
                 print("   geen kruisingen gevonden.")
 
@@ -83,11 +80,12 @@ class output:
         if frame == total_frames - 1: 
             overlap = grid_edit_obj.overlapping_lijst
             if isinstance(overlap, list):
-                flattened_overlap = [coord for sublist in overlap for coord in sublist]
-                if all(isinstance(coord, tuple) and len(coord) == 3 for coord in flattened_overlap):
-                    if flattened_overlap:
-                        overlap_y, overlap_x, overlap_z = zip(*flattened_overlap)
-                        ax.plot(overlap_x, overlap_y, overlap_z, color='red', linewidth=3, label='Overlapping' if frame == total_frames - 1 else "")
+                if all(isinstance(sublist, list) and all(isinstance(coord, tuple) and len(coord) == 3 for coord in sublist) for sublist in overlap):
+                    if overlap:
+                        for segment in overlap:
+                            if len(segment) == 2: 
+                                overlap_y, overlap_x, overlap_z = zip(*segment)
+                                ax.plot(overlap_x, overlap_y, overlap_z, color='red', linewidth=3)
                     else:
                         print("   geen overlappingen gevonden.")
             
@@ -104,6 +102,14 @@ class output:
         ax.set_ylabel("Y-as")
         ax.set_zlabel("Z-as")
         ax.set_title(f"3D Visualisatie van nummer {self.grid_edit.nummer} \n Score:{self.grid_edit.score}")
+        legend_elements = [
+        Line2D([0], [0], color='black', marker='x', linestyle='None', markersize=10, label='Kruising'),
+        Line2D([0], [0], color='red', linewidth=3, label='Overlapping'),
+        Line2D([0], [0], color='blue', marker='o', linestyle='None', markersize=8, label='Gate')
+        ]
+
+        # Voeg de aangepaste legenda toe
+        ax.legend(handles=legend_elements, loc="upper right")
         ax.legend()
 
         # Set the view
@@ -134,7 +140,7 @@ class output:
         
         total_frames = sum(len(wire) for wire in wires)
         # Maak de animatie
-        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=16, repeat=False)
+        animatie = FuncAnimation(fig, animatie, frames = total_frames, fargs=(ax, grid_edit_obj), interval=1, repeat=False)
 
         # Toon de animatie
         plt.show()
