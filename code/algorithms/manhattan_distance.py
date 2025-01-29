@@ -9,7 +9,6 @@ random.seed(10)
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
         self.grid_edit = grid_edit_obj
-        self.parallel_set = set()
 
     def check_valid(self, pos: tuple[int], end: tuple[int]) -> bool:
         """
@@ -56,7 +55,7 @@ class ManhattanDistance():
                 
                 # checks if the neighbor would create a parallel wire
                 parallel_check = (pos, neighbor)
-                if parallel_check not in self.parallel_set:
+                if parallel_check not in self.grid_edit.parallel_set:
                     return True
                 else:
                     print("!!!!!!!!!!!!!!!PARALLELE LIJNEN!!!!!!!!!!!!")
@@ -222,11 +221,7 @@ class ManhattanDistance():
             wirepaths_list.append(path)
 
         # adds the combination of coordinates to the parallel set to prevent parallel lines
-        for j in range(len(path) - 1):
-                parallel = (path[j], path[j + 1])
-                reverse_parallel = (path[j+1], path[j])
-                self.parallel_set.add(parallel)
-                self.parallel_set.add(reverse_parallel)
+        self.grid_edit.add_wire_parallel_set(path)
 
         self.grid_edit.wirepaths_list = wirepaths_list
         print("")

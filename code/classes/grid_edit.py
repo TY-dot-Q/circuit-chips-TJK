@@ -9,6 +9,7 @@ class grid_edit:
     gate_nr = gate_nrstart
     wirecross_list = [] 
     overlapping_lijst = []
+    parallel_set = set()
     
 
     def __init__(self):
@@ -232,3 +233,37 @@ class grid_edit:
             gate_nr_teller -=1
         
         return gate_return, check_optimum
+
+    def add_wire_parallel_set(self, wire: list[(tuple[int])])-> None:
+        """
+        Adds the coordinate combinations of a wire to the parallel set
+
+        Args:
+            wire: a list of the coordinates of wire
+            in order of the start gate to the end gate
+        
+        Returns:
+            None
+        """
+        for i in range(len(wire) - 1):
+            parallel = (wire[i], wire[i + 1])
+            reverse_parallel = (wire[i + 1], wire[i])
+            self.parallel_set.add(parallel)
+            self.parallel_set.add(reverse_parallel)
+    
+    def remove_wire_parallel_set(self, wire: list[(tuple[int])])-> None:
+        """
+        removes the coordinate combinations of a wire to the parallel set
+
+        Args:
+            wire: a list of the coordinates of wire
+            in order of the start gate to the end gate
+        
+        Returns:
+            None
+        """
+        for i in range(len(wire) - 1):
+            parallel = (wire[i], wire[i + 1])
+            reverse_parallel = (wire[i + 1], wire[i])
+            self.parallel_set.remove(parallel)
+            self.parallel_set.remove(reverse_parallel)
