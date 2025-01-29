@@ -110,7 +110,7 @@ class grid_edit:
                 wirecross.extend(sublist[1:-1])  # Pak alles behalve eerste en laatste element
 
         # Stap 2: Houd alleen de waarden die exact twee keer voorkomen
-        wirecross = [item for item in wirecross if wirecross.count(item) == 2]
+        wirecross = [item for item in wirecross if wirecross.count(item) == 2 or wirecross.count(item) == 3]
         print(f"\n\n** voor eindde Wirecrosses gevonden: {wirecross}\n\n")
 
         # Stap 3: Haal alle (y, x, z)-waarden uit overlappingen_lijst
@@ -268,13 +268,15 @@ class grid_edit:
             for i in item:
                 counter2+=1
 
-        print(counter2)
+        print(f"aantal parrallel set coordinaten:{counter2}")
 
         for item in self.wirepaths_list:
             for i in item:
                 counter+=1
-        print(counter)    
+        print(f"aantal wires:{counter}")    
         #print(self.parallel_set)
+        print("")
+        
 
         for i in range(len(wire) - 1):
             parallel = (wire[i], wire[i + 1])
