@@ -248,7 +248,9 @@ class grid_edit:
         """
         for i in range(len(wire) - 1):
             parallel = (wire[i], wire[i + 1])
+            #print(F"wat hij toevoegt{parallel}")
             reverse_parallel = (wire[i + 1], wire[i])
+            #print(f"en {reverse_parallel}")
             self.parallel_set.add(parallel)
             self.parallel_set.add(reverse_parallel)
     

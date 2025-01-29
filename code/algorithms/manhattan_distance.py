@@ -179,7 +179,9 @@ class ManhattanDistance():
         #prints shortest path to terminal 
         print("")
         print(f"gate {gate_1} {self.grid_edit.gate_dict[gate_1]} en gate {gate_2} {self.grid_edit.gate_dict[gate_2]}")
-        print(f"is het kortst gevonden pad: {kortste_pad}")
+        print(f"is het kortst (lengte:{len(kortste_pad)}) gevonden pad:")
+        print(kortste_pad)
+        print("")
         return kortste_pad
 
     def reconstruct_path(self, origin: dict[(tuple[int]), (tuple[int])], start: (tuple[int]), end: (tuple[int])) -> list[(tuple[int])]:
