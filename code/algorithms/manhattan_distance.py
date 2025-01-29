@@ -2,45 +2,60 @@ from code.classes import grid_edit
 import csv, os
 import heapq
 import random
+import time
 
-random.seed(100)
+random.seed(10)
 
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
         self.grid_edit = grid_edit_obj
         self.parallel_set = set()
 
-    def check_valid(self, pos, end):
+    def check_valid(self, pos: tuple[int], end: tuple[int]) -> bool:
         """
         Checks if the position in the grid is inside and not already taken
+        
+        Args:
+            pos (tuple[int]): current position
+            end (tuple[int]): end position
+        
+        Returns:
+            bool: True if valid, False otherwise
         """
         y, x, z = pos
         
         # checks if the position is in the grid
         if 0 <= x <= self.grid_edit.maximum_x and 0 <= y <= self.grid_edit.maximum_y and 0 <= z <= 7:
-            # checks if the positions is the end position
-            if pos == end:
-                return True
             
-            # else checks if the position is empty
-            elif self.grid_edit.grid[z][y][x] == 0:
-                return True        
+            # checks if the position is empty or the end position
+            if pos == end or self.grid_edit.grid[z][y][x] == 0:
+                return True
         else:
             #print(f"position {pos} is occupied")
             return False
 
-    def check_valid_cross(self, current, adjacent):
+    def check_intersection(self, pos: tuple[int], neighbor: tuple[int]) -> bool:
         """
-        Checks if the position in the grid is inside and not already taken
-        This is the check needed to consider a wire cross
+        Checks if the position of the neighbor in the grid is inside the grid
+        and if an intersection can be made without making parallel lines
+        
+        Args:
+            pos (tuple[int]): current position
+            neighbor (tuple[int]): neighbors position 
+
+        Returns:
+            bool: True if wire can be made, False otherwise
         """
-        y, x, z = adjacent
+        y, x, z = neighbor
         
         # checks if the position is in the grid
         if 0 <= x <= self.grid_edit.maximum_x and 0 <= y <= self.grid_edit.maximum_y and 0 <= z <= 7:
+            
             # else checks if the position is empty
             if self.grid_edit.grid[z][y][x] == '+': 
-                parallel_check = (current, adjacent)
+                
+                # checks if the neighbor would create a parallel wire
+                parallel_check = (pos, neighbor)
                 if parallel_check not in self.parallel_set:
                     return True
                 else:
@@ -49,9 +64,18 @@ class ManhattanDistance():
         else:
             return False
     
-    def shortest_path(self, gate_1, gate_2):
+    def shortest_path(self, gate_1: int, gate_2: int) -> list[(tuple[int])]:
         """
-        Finds the shortest path between two gates in the grid using A* and the Manhattan Distance as heuristic
+        Finds the shortest path between two gates in the grid using A*
+        and the Manhattan Distance as heuristic
+        
+        Args:
+            gate_1 (int): number of the start gate
+            gate_2 (int): number of the end gate
+        
+        Returns:
+            kortste_pad (list[tuple[int]]): a list of coordinates of the traversed path
+            from the start gate to the end gate
         """
         # turns the gate numbers into coordinates
         start = self.grid_edit.gate_dict[gate_1]
@@ -59,16 +83,27 @@ class ManhattanDistance():
         
         # sets up the heuristic
         def heuristic(a,b):
+            """
+            Manhattan Distance heuristic for the algorithm
+
+            Args:
+                a (tuple[int]): position of the first coordinate
+                b (tuple[int]): position of the second coordinate
+
+            Returns:
+                int: a score value of how much it would cost to go from a to b in the grid
+            """
             return abs(a[0] - b[0]) + abs(a[1] - b[1]) + abs(a[2] - b[2])
 
-        # makes a priority list for the node
+        # makes a priority list for the algorithm
         open_set = []
         heapq.heappush(open_set, (0, start))
         
         # a dict to keep track of the path traversed
         path_traversed = {}
         
-        cross_checker = False
+        #
+        intersection_check = False
 
         # a dict for the current cost for each node
         current_cost = {start: 0}
@@ -94,17 +129,15 @@ class ManhattanDistance():
                 # checks if the neighbor is inside the grid                
                 if self.check_valid(neighbor, end) != True:
                     #print(f"Neighbor {neighbor} is invalid")
-                    cross_checker = True    
+                    intersection_check = True    
 
-                    if self.check_valid_cross(current, neighbor) != True:
-                        cross_checker = False
+                    if self.check_intersection(current, neighbor) != True:
+                        intersection_check = False
                         continue
-                    
-                
                 
                 # cost for moving to the neighbor
                 new_cost = current_cost[current] + 1
-                if cross_checker:
+                if intersection_check:
                     new_cost += 5
 
                 if neighbor not in current_cost or new_cost < current_cost[neighbor]:
@@ -129,7 +162,18 @@ class ManhattanDistance():
         print(f"is het kortst gevonden pad: {kortste_pad}")
         return kortste_pad
 
-    def reconstruct_path(self, origin, start, end):
+    def reconstruct_path(self, origin: dict[(tuple[int]), (tuple[int])], start: (tuple[int]), end: (tuple[int])) -> list[(tuple[int])]:
+        """
+        Reconstructs the path from end to start
+
+        Args:
+            origin dict[(tuple[int]), (tuple[int])]: a dict that keeps track of the path that the algorithm follows through the grid
+            start (tuple[int]): the coordinates of the starting gate
+            end (tuple[int]): the coordinates of the ending gate
+
+        Returns:
+            list [(tuple[int])]: a list of the path traversed from the start to the end
+        """
         # turns the gate numbers into their coordinates
         current = end
         
@@ -150,19 +194,34 @@ class ManhattanDistance():
         # returns the path
         return path
     
-    def netlist_looper(self, netlist):
+    def netlist_looper(self, netlist: (tuple[int])) -> None:
         """
-        Loops over the netlist to connect the gates.
+        Loops over the netlist and connects the gates with wires.
+
+        Args:
+            netlist list[(tuple[int])]: a list of the gate numbers that need to be connected
+        
+        Returns:
+            None
         """
+        # sets up the wirepathlist
         wirepaths_list=[]
         print(netlist)
+        
+        # loops over the items in the list
         for i in range(len(netlist)):
-            gate_1= netlist[i][0]
-            gate_2= netlist[i][1]
-            path = self.shortest_path(gate_1, gate_2)
-            self.grid_edit.add_wire(path)
-            wirepaths_list.append(path)
+            gate_1 = netlist[i][0]
+            gate_2 = netlist[i][1]
             
+            # finds the shortest path between the gates
+            path = self.shortest_path(gate_1, gate_2)
+            
+            # adds the wire in the grid
+            self.grid_edit.add_wire(path)
+            
+            wirepaths_list.append(path)
+
+        # adds the combination of coordinates to the parallel set to prevent parallel lines
         for j in range(len(path) - 1):
                 parallel = (path[j], path[j + 1])
                 reverse_parallel = (path[j+1], path[j])
