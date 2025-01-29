@@ -39,12 +39,10 @@ class output:
             print("   geen gates in de dict")
             return
         
-
-        # Zet gates opnieuw in de visualisatie
         if frame == 0:
             for _, (y, x, z) in grid_edit_obj.gate_dict.items():
-                ax.scatter(x, y, z, color='blue', s=100, marker = 'o')
-
+                ax.scatter(x, y, z, color='blue', s=100, marker='o')  # Teken de bolletjes
+        
         kleuren_palet = cycle([ 
         'black', 'blue', 'green', 'orange', 'purple', 'teal', 'gold',
         'pink', 'coral', 'olive', 'indigo', 'yellow'])
@@ -76,8 +74,18 @@ class output:
                 print("   geen kruisingen gevonden.")
 
 
-        # print overlaps in visual
+        # Laatste Frame weergegeven
         if frame == total_frames - 1: 
+
+            # print wirecrosses in visual
+            wirecross = grid_edit_obj.wirecross_list 
+            if wirecross:
+                for y, x, z in wirecross:
+                    ax.scatter(x, y, z, color='red', s=125, marker='x')
+            else:
+                print("   geen kruisingen gevonden.")
+
+            # print overlaps in visual
             overlap = grid_edit_obj.overlapping_lijst
             if isinstance(overlap, list):
                 if all(isinstance(sublist, list) and all(isinstance(coord, tuple) and len(coord) == 3 for coord in sublist) for sublist in overlap):
@@ -88,9 +96,9 @@ class output:
                                 ax.plot(overlap_x, overlap_y, overlap_z, color='red', linewidth=3)
                     else:
                         print("   geen overlappingen gevonden.")
+
             
         # set axes for grid
-        maximum = max(grid_edit_obj.maximum_y, grid_edit_obj.maximum_x)
         ax.set_xticks(range(0, self.grid_edit.maximum_x + 1, 1))
         ax.set_yticks(range(0, self.grid_edit.maximum_y + 1, 1))
         ax.set_zlim(bottom=0)
