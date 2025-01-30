@@ -253,7 +253,7 @@ class output:
             with open('test.csv', 'r', newline='') as check_csvfile:
                 reader = csv.reader(check_csvfile)
                 rows = list(reader)
-                nummer = len(rows)  # Nummer is gelijk aan het aantal rijen, zodat het begint bij 1
+                nummer = 1 if len(rows) == 0 else len(rows)  # Nummer is gelijk aan het aantal rijen, zodat het begint bij 1
 
                 # Dit zijn de andere gegevens die je wilt toevoegen. Pas deze aan op basis van je eigen logica.
                 data = {
@@ -269,8 +269,8 @@ class output:
                 
                 # Schrijf in csv bestand
                 writer.writerow(data)
-                nummer += 1  # Verhoog het nummer voor de volgende rij
-        self.grid_edit.nummer = nummer - 1
+                self.grid_edit.nummer = nummer
+        
         print("-----output-----")
         print("CSV-bestand succesvol geschreven.")
         print("\n")
