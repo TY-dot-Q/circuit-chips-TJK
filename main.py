@@ -26,8 +26,8 @@ if __name__ == "__main__":
     #mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
-    grid_path="data/chip_1/print_1.csv"
-    netlist_path="data/chip_1/netlist/netlist_2.csv"
+    grid_path="data/chip_2/print_2.csv"
+    netlist_path="data/chip_2/netlist/netlist_1.csv"
     name_file = "data/test.csv"
 
     # maakt file weer leeg
@@ -40,6 +40,8 @@ if __name__ == "__main__":
     #----------------Netlist passer------------------------
     netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
     netlist_list=user_input_obj.load_netlist(netlist_path)
+    
+    
     
 
     #----------------No cross finder-----------------------
