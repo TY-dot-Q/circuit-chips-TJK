@@ -359,3 +359,9 @@ class output:
         choice = int(choice)
         self.load_specific_result(name_csv_file, choice)
         self.visualisatie()
+
+if __name__ == "__main__":
+    # Assuming you have a grid_edit_obj to pass to the output class
+    grid_edit_obj = None  # Replace with actual grid_edit_obj
+    vis = output(grid_edit_obj)
+    vis.visual()
