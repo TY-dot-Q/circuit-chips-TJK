@@ -5,7 +5,10 @@ class user_input:
         self.grid_edit=grid_edit_obj
 
     def score_request(self, wirecount)->None:
-        """print de score van de grid door de bijgehouden waardes van de grid_edit classe te bekijken"""
+        """
+        print de score van de grid door de bijgehouden waardes 
+        van de grid_edit classe te bekijken
+        """
         print("-----score_request-----")
         print(f"er zijn {wirecount} draaden")
         print(f"er zijn {self.grid_edit.wirecrosscount} die overelkaar lopen")
@@ -13,57 +16,69 @@ class user_input:
         print("")
     
     def load_gates(self, file_path: str)->None:
-            """voegt gates toe in het grid, gebruikt de file path waar de grid locaties staan opgeslagen"""
+        """
+        voegt gates toe in het grid, 
+        gebruikt de file path waar de grid locaties staan opgeslagen
+        """
 
-            print("-----load_gates-----")
-            if not os.path.isfile(file_path):
-                print(f"Bestand '{file_path}' niet gevonden!")
-            else:
-                try:
-                    with open(file_path, mode='r') as file:
-                        csv_reader = csv.reader(file)
-                        next(csv_reader)  # sla de eerste regel over
+        print("-----load_gates-----")
 
-                        for row in csv_reader:
-                            if len(row) < 2:
-                                print(f"Ongeldige regel in CSV-bestand: {row}")
-                                continue
+        # Controleer of het bestand bestaat
+        if not os.path.isfile(file_path):
+            print(f"Bestand '{file_path}' niet gevonden!")
+        else:
+            try:
+                # Open het bestand en lees de regels
+                with open(file_path, mode='r') as file:
+                    csv_reader = csv.reader(file)
+                    next(csv_reader)  # sla de eerste regel over
+                    
+                    # Loop door de regels en voeg de gates toe
+                    for row in csv_reader:
+                        if len(row) < 2:
+                            print(f"Ongeldige regel in CSV-bestand: {row}")
+                            continue
 
 
-                            try:
-                                x=int(row[1])
-                                y=int(row[2])
-                                z=0
-                                self.grid_edit.add_gate(y,x,z)
-                            
-                            except ValueError:
-                                print(f'print:error met waardes in regel:{row}')
-                                continue
+                        try:
+                            x=int(row[1])
+                            y=int(row[2])
+                            z=0
+                            self.grid_edit.add_gate(y,x,z)
+                        
+                        except ValueError:
+                            print(f'print:error met waardes in regel:{row}')
+                            continue
 
-                    print("Alle gates zijn succesvol geladen uit het CSV-bestand.")
-                except FileNotFoundError:
-                    print(f"Fout: Het bestand '{file_path}' bestaat niet.")
-                except ValueError:
-                    print("Fout: Ongeldige waarden in het CSV-bestand.")
+                print("Alle gates zijn succesvol geladen uit het CSV-bestand.")
+            except FileNotFoundError:
+                print(f"Fout: Het bestand '{file_path}' bestaat niet.")
+            except ValueError:
+                print("Fout: Ongeldige waarden in het CSV-bestand.")
 
-            print("")
+        print("")
     
     def load_netlist(self, file_path: str)->None:
-            """voegt alle verbindingen tussen de gates toe aan een lijst en geeft deze lijst terug. heeft een file_path nodig met de verbonden gates"""
+            """
+            voegt alle verbindingen tussen de gates toe aan een lijst en geeft deze lijst terug. 
+            Heeft een file_path nodig met de verbonden gates
+            """
             connection_list=[]
             print("-----load_netlist-----")
 
-
+            # Controleer of het bestand bestaat
             if not os.path.isfile(file_path):
                 print(f"Bestand '{file_path}' niet gevonden!")
             else:
                 try:
+                    # Open het bestand en lees de regels
                     with open(file_path, mode='r') as file:
                         csv_reader = csv.reader(file)
                         next(csv_reader)  # sla de eerste regel over
 
                         counter=0
-
+    
+                        # Loop door de regels en voeg de verbindingen toe
                         for row in csv_reader:
                             if len(row) < 2:
                                 print(f"(Netlist) Ongeldige regel in CSV-bestand: {row}")
@@ -79,6 +94,7 @@ class user_input:
                                 print(f'(Netlist) print:error met waardes in regel:{row}')
                                 continue
                         
+                        #sla de counter op in de grid_edit klasse voor validatiecheck
                         self.grid_edit.netlist_counter = counter
                         print(self.grid_edit.netlist_counter)
                         print("Netlist is succesvol geladen uit het CSV-bestand.")
@@ -93,18 +109,22 @@ class user_input:
             print("")
 
     def max_grid_values(self, file_path: str):
-        """Bepaal de maximale y-, x-, en z-waarden uit een CSV-bestand.
+        """
+        Bepaal de maximale y-, x-, en z-waarden uit een CSV-bestand.
         Het bestand moet een lijst van coördinaten bevatten.
-        Retourneert een tuple (max_y, max_x, max_z)."""
+        Retourneert een tuple (max_y, max_x, max_z).
+        """
         print("-----max_grid_values-----")
          
         max_y, max_x = 0, 0  # Initiële waarden voor maxima
 
+        # Controleer of het bestand bestaat
         if not os.path.isfile(file_path):
             print(f"Bestand '{file_path}' niet gevonden!")
             return max_y, max_x  # Zorg voor een veilige return bij fout
 
         try:
+            # Open het bestand en lees de regels
             with open(file_path, mode='r') as file:
                 csv_reader = csv.reader(file)
                 next(csv_reader)  # Sla de kopregel over
@@ -137,15 +157,21 @@ class user_input:
 
         except Exception as e:
             print(f"Fout tijdens het lezen van het bestand: {e}")
-            return max_y, max_x  # Zorg voor een veilige return
+            return max_y, max_x  # Zorg voor een veilige return bij fout
 
     def match_wirepaths_to_nets(self, netlist_list: list)-> list:
-        """Koppelt de juiste wirepaths aan de netlist-verbindigen voor output.csv."""
+        """
+        Koppelt de juiste wirepaths aan de netlist-verbindigen voor output.csv.
+        """
         matched_wires = []
+
+        # Loop door de netlist en zoek de bijbehorende wirepaths
         for chip_a, chip_b in netlist_list:
             gate_a = self.grid_edit.gate_dict.get(chip_a)
             gate_b = self.grid_edit.gate_dict.get(chip_b)
             if gate_a and gate_b:
+                
+                # Zoek de wirepath die begint bij gate_a en eindigt bij gate_b
                 for path in self.grid_edit.wirepaths_list:
                     if path[0] == gate_a and path[-1] == gate_b:
                         matched_wires.append((chip_a, chip_b, path))
