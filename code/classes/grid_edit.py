@@ -3,14 +3,6 @@
 gate_nrstart = 1
 
 class grid_edit:
-    grid=[]
-    gate_dict={}
-    wirepaths_list=[]
-    gate_nr = gate_nrstart
-    wirecross_list = [] 
-    overlapping_lijst = []
-    parallel_set = set()
-    
 
     def __init__(self):
         """initaliseer de gridedit class"""
@@ -19,7 +11,16 @@ class grid_edit:
         self.score=0
         self.maximum_y = 0
         self.maximum_x = 0
-        self.nummer = 0 
+        self.nummer = 0
+        self.grid=[]
+        self.gate_dict={}
+        self.wirepaths_list=[]
+        self.gate_nr = gate_nrstart
+        self.wirecross_list = [] 
+        self.overlapping_lijst = []
+        self.parallel_set = set()
+        self.valide_counter = 0
+        self.netlist_counter = 0
 
     def grid_create (self, max_y, max_x) -> None:
         """
@@ -304,5 +305,6 @@ class grid_edit:
         self.overlapping_lijst = []
         self.wirecount = 0
         self.wirecrosscount = 0
+        self.valide_counter = 0
 
         print("Grid reset! Gates remain, but all wires are removed.")
