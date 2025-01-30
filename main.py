@@ -68,8 +68,8 @@ if __name__ == "__main__":
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
-    for i in range(1000):
-        grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
+    # for i in range(1):
+    #     grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Load and reorder netlist
         netlist_list = user_input_obj.load_netlist(netlist_path)  
