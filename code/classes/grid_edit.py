@@ -22,12 +22,15 @@ class grid_edit:
         self.valide_counter = 0
         self.netlist_counter = 0
 
+        self.wire_cross_count=[]
+
     def grid_create (self, max_y, max_x) -> None:
         """
         creeert een array 3d grid gebaseerde op de globale max_z en opgegeven max_y en x
         let op dit vervangt alle waardes niet runnen nadat gates zijn opgegeven.
         """
         self.grid = [[[0 for _ in range(max_x + 1)] for _ in range(max_y + 1)] for _ in range(8)]
+        self.wire_crossing_count = [[[0 for _ in range(max_x+1)] for _ in range(max_y+1)] for _ in range(8)]
         print("grid succesvol gemaakt")
 
     def add_gate (self, y, x, z) ->None:
@@ -157,9 +160,11 @@ class grid_edit:
             if self.grid[z][y][x] == 0:
                 self.grid[z][y][x] = '+' #voeg de wire toe
                 print(f"wire toegevoegd op de coordinaten y={y}, x={x} z={z} ")
+                self.wire_crossing_count[z][y][x]=1
             elif self.grid[z][y][x]=="+":
 
                 print(f"Over kruisend draad heen op de coördinaten y={y}, x={x}, z={z}")
+                self.wire_crossing_count[z][y][x]+=1
        
             else:
                 print(f"er staat al iets namelijk: \"{self.grid[z][y][x]}\"")
@@ -195,8 +200,11 @@ class grid_edit:
     def remove_wire(self, y, x, z):
         """verwijdert een wire op een opgegeven locatie in de grid (neemt y, x, z in als input voor de coordinaten)"""
         if self.grid[z][y][x]=="+":
-            self.grid[z][y][x]=0
-            print(f"wire op locatie y{y}, x{x}, z{z} succesvol verwijdert")
+            if self.grid[z][y][x]==0:
+                self.grid[z][y][x]=0
+                print(f"wire op locatie y{y}, x{x}, z{z} succesvol verwijdert")
+            else:
+                self.wire_crossing_count[z][y][x]-=1
         else:
             print(f"er is op locate y{y}, x{x}, z{z} geen wire gevonden.")
     

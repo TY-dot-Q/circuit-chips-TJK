@@ -257,7 +257,7 @@ class hil_climber:
 
         loopcounter=0
 
-        while datetime.now()<eind_tijd:
+        while loopcounter<5:#datetime.now()<eind_tijd:
             print(f"de loop is nog nog bezig...({loopcounter})")
             print("")
             print("")
