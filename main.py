@@ -71,7 +71,7 @@ if __name__ == "__main__":
     #output_obj.print_grid() 
 
     
-    output_obj.output_to_csv(match_wires, netlist_path, wirecount)
+    output_obj.output_to_csv(match_wires, netlist_path)
 
     # schrijf de resultaten naar het bestand wirepaths.csv
     output_obj.write_to_csv(wirecount)
