@@ -58,7 +58,7 @@ class output:
                 if frame < current_frame + wire_length:
                     wire_y, wire_x, wire_z = zip(*wire[:frame - current_frame + 1])
                     ax.plot(wire_x, wire_y, wire_z, color=kleur, linewidth = 2)
-                    break
+                    return
                 current_frame += wire_length
         else:
             print("   geen wires gevonden")
@@ -201,7 +201,7 @@ class output:
         filename = f"3D_visualisatie_{self.grid_edit.nummer}.png"
         plt.savefig(filename, dpi=300)
         print(f"Afbeelding opgeslagen: {filename}")
-        print("**Sluit het venster van animatie om programma te stoppen**")
+        print("**Sluit het venster van 3D visualisatie om programma te stoppen**")
         plt.show()
 
 
@@ -225,10 +225,9 @@ class output:
 
         # Maak de animatie
         if order == 'ani':
-            
             wires = self.grid_edit.wirepaths_list
             total_frames = sum(len(wire) for wire in wires)
-            animation = FuncAnimation(fig, self.animation, frames = total_frames, fargs=(ax, self.grid_edit), interval=1, repeat=False)
+            animation = FuncAnimation(fig, self.animation, frames = total_frames, fargs=(ax), interval=1, repeat=False)
             plt.show()
             
                   
@@ -238,9 +237,9 @@ class output:
     
         
     
-    def write_to_csv(self, wirecount): # DEZE TOEVOEGEN
+    def write_to_csv(self, wirecount, name_file): # DEZE TOEVOEGEN
         # Open het CSV-bestand in 'append' mode
-        with open('random_netlist.csv', 'a', newline='') as csvfile:
+        with open(name_file, 'a', newline='') as csvfile:
             kolom = ['nummer', 'pad', 'overlappingen', 'kruisingen', 'succes', 'score', 'aantal_wires', 'aantal_kruisingen']
             writer = csv.DictWriter(csvfile, fieldnames=kolom)
 
@@ -250,7 +249,7 @@ class output:
                 writer.writeheader()
 
             # Genereer nummer voor de nieuwe rij
-            with open('random_netlist.csv', 'r', newline='') as check_csvfile:
+            with open(name_file, 'r', newline='') as check_csvfile:
                 reader = csv.reader(check_csvfile)
                 rows = list(reader)
                 nummer = 1 if len(rows) == 0 else len(rows)  # Nummer is gelijk aan het aantal rijen, zodat het begint bij 1
@@ -278,7 +277,7 @@ class output:
 
     def output_to_csv(self, matched_wires, netlist_path):
         """Slaat de matched wirepaths op in output.csv en overschrijft het bestand bij elke run."""
-        output_file = "output.csv"
+        output_file = "data/output.csv"
         split_parts = netlist_path.split("/")
         chip_id = split_parts[1]  
         net_id = split_parts[-1].replace("netlist_", "").replace(".csv", "") 
@@ -294,12 +293,12 @@ class output:
             # Voeg de chip-net info toe
             writer.writerow([f"{chip_id}_net_{net_id}", self.grid_edit.score])
     
-    def load_best_result(self):
+    def search_row(self, name_file):
         best_score = None
         best_row = None
 
         # Open CSV-bestand om de beste rij te zoeken
-        with open('test.csv', 'r', newline='') as csvfile:
+        with open(name_file, 'r', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 if row['succes'] == "Ja":
@@ -308,16 +307,56 @@ class output:
                     # Eerste keer instellen of als een betere score wordt gevonden
                     if best_score is None or score < best_score:
                         best_score = score
-                        best_row = row
+                        best_row = row 
+
+        # Return de beste rij als deze is gevonden
+        if best_row:
+            return best_row
+        
+    def load_best_result(self, name_file, best_row):
 
         # Als een geldige rij is gevonden, importeer de waarden
-        if best_row:
-            self.grid_edit.visualiseer_nummer = int(best_row['nummer'])
-            self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # Converteer string naar lijst
-            self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # Converteer string naar lijst
-            self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # Converteer string naar lijst
-            self.grid_edit.score = best_score  # Update de beste score
+        # Open CSV-bestand om de beste rij te zoeken
+        with open(name_file, 'r', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['nummer'] == best_row['nummer']:  # Vergelijk met het juiste nummer
+                    self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # Converteer string naar lijst
+                    self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # Converteer string naar lijst
+                    self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # Converteer string naar lijst
+                    self.grid_edit.score = int(best_row['score'])  # Update de beste score
+                    print(f"Beste score geladen: {self.grid_edit.score}, nummer {best_row['nummer']}")
+                else:
+                    print("Geen succesvolle resultaten gevonden.")
 
-            print(f"Beste score geladen: {best_score}, nummer {best_row['nummer']}")
-        else:
-            print("Geen succesvolle resultaten gevonden.")
+
+    def load_specific_result(self, name_file, nummer):
+        # Open het CSV-bestand en zoek naar de rij met het opgegeven nummer
+        with open(name_file, 'r', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['nummer'] == str(nummer):  # Vergelijk met het juiste nummer
+                    # Gevonden rij, zet de waarden in de visualisatie objecten
+                    self.grid_edit.wirepaths_list = ast.literal_eval(row['pad'])  # Converteer string naar lijst
+                    self.grid_edit.overlapping_lijst = ast.literal_eval(row['overlappingen'])  # Converteer string naar lijst
+                    self.grid_edit.wirecross_list = ast.literal_eval(row['kruisingen'])  # Converteer string naar lijst
+                    self.grid_edit.score = int(row['score'])  # Update de score
+                    print(f"Visualisatie geladen voor nummer {row['nummer']} met score {row['score']}")
+    
+
+    def visual(self):
+        name_csv_file = "data/test.csv"
+        max_num = 100000
+        choice = input(f"\nWil je de visualisatie van een andere iteratie zien? \nTyp het nummer van de iteratie zoals staat in {name_csv_file} of \"stop\" om te stoppen: ")
+
+        while not choice.isdigit() and int(choice) > max_num and choice != "stop":
+            print(f"Ongeldige invoer :(, kies nummer tussen 1 en {max_num}.")
+            continue
+
+        if choice == "stop":
+            print("Het programma wordt afgesloten :).")
+            return
+
+        choice = int(choice)
+        self.load_specific_result(name_csv_file, choice)
+        self.visualisatie()
