@@ -6,6 +6,8 @@ from code.classes.auto_start import auto_functions
 from code.algorithms.manhattan_distance import ManhattanDistance as MD
 from code.algorithms.netlist_reorder import netlist_reordering
 from code.algorithms.hill_climber import hil_climber
+from code.algorithms.crossless.hill_climber_nc import hil_climber_nc
+from code.algorithms.crossless.mh_nc import ManhattanDistance_nc as mh_nc
 
 if __name__ == "__main__":
     #-----------------setup-------------------------------
@@ -18,7 +20,10 @@ if __name__ == "__main__":
     start_obj = auto_functions(grid_edit_obj)
     algorithm_obj= MD(grid_edit_obj)
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
-    #hil_climber_obj=hil_climber(grid_edit_obj)
+    hil_climber_obj=hil_climber(grid_edit_obj)
+
+    hil_climber_nc_obj=hil_climber_nc(grid_edit_obj)
+    mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
     grid_path="data/chip_1/print_1.csv"
@@ -33,8 +38,14 @@ if __name__ == "__main__":
     netlist_list=user_input_obj.load_netlist(netlist_path)
     
 
+    #----------------No cross finder-----------------------
+    reset_wires = 5 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
+    reloop_time = 5 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
+    mh_nc_obj.netlist_looper(netlist_list)
+    hil_climber_nc_obj.start_hill_climb(reset_wires, netlist_list, reloop_time)
+
     #----------------Manhatten distance---------------------
-    algorithm_obj.netlist_looper(netlist_list)
+    #algorithm_obj.netlist_looper(netlist_list)
 
 
     #----------------Hill climber---------------------------
