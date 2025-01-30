@@ -240,7 +240,7 @@ class output:
     
     def write_to_csv(self, wirecount): # DEZE TOEVOEGEN
         # Open het CSV-bestand in 'append' mode
-        with open('test.csv', 'a', newline='') as csvfile:
+        with open('random_netlist.csv', 'a', newline='') as csvfile:
             kolom = ['nummer', 'pad', 'overlappingen', 'kruisingen', 'succes', 'score', 'aantal_wires', 'aantal_kruisingen']
             writer = csv.DictWriter(csvfile, fieldnames=kolom)
 
@@ -250,7 +250,7 @@ class output:
                 writer.writeheader()
 
             # Genereer nummer voor de nieuwe rij
-            with open('no_reload_no_random.csv', 'r', newline='') as check_csvfile:
+            with open('random_netlist.csv', 'r', newline='') as check_csvfile:
                 reader = csv.reader(check_csvfile)
                 rows = list(reader)
                 nummer = 1 if len(rows) == 0 else len(rows)  # Nummer is gelijk aan het aantal rijen, zodat het begint bij 1
