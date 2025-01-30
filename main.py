@@ -7,7 +7,7 @@ from code.algorithms.manhattan_distance import ManhattanDistance as MD
 from code.algorithms.netlist_reorder import netlist_reordering
 from code.algorithms.hill_climber import hil_climber
 from code.algorithms.crossless.hill_climber_nc import hil_climber_nc
-from code.algorithms.crossless.mh_nc import ManhattanDistance_nc as mh_nc
+from code.algorithms.crossless.mh_nc import mh_nc
 
 if __name__ == "__main__":
     #-----------------setup-------------------------------
@@ -79,20 +79,20 @@ if __name__ == "__main__":
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
-    for i in range(1000):
-        grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
+    #for i in range(1000):
+        #grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Run the algorithm on the netlist
-        algorithm_obj.netlist_looper(netlist_list)
+        #algorithm_obj.netlist_looper(netlist_list)
 
         # Calculate wire count and wire crossings
-        wirecount = grid_edit_obj.update_wirecount()
-        grid_edit_obj.find_wirecross() 
+        #wirecount = grid_edit_obj.update_wirecount()
+        #grid_edit_obj.find_wirecross() 
 
         # Compute cost and score
-        output_obj.costen_berekening(wirecount)
-        match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
-        output_obj.write_to_csv(wirecount)
-        print(grid_edit_obj.valide_counter, grid_edit_obj.netlist_counter)
+        #output_obj.costen_berekening(wirecount)
+        #match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
+        #output_obj.write_to_csv(wirecount)
+        #print(grid_edit_obj.valide_counter, grid_edit_obj.netlist_counter)
 
-        print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
+        #print(f"Iteration {i+1} Score: {grid_edit_obj.score}")

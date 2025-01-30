@@ -5,6 +5,10 @@ from code.algorithms.crossless.mh_nc import mh_nc
 import time
 from datetime import datetime, timedelta
 
+from code.classes.user_input import user_input
+from code.visualisation.visualisation import output
+
+
 
 class hil_climber_nc:
     #TODO
@@ -18,6 +22,12 @@ class hil_climber_nc:
 
     """haalt een of meerdere wire verbinden tussen gates weg, en legt deze opnieuw met een bepaalde methode (zie reconstruct_ine)"""
     def __init__(self, grid_edit_obj):
+        user_input_obj = user_input(grid_edit_obj)
+        output_obj = output(grid_edit_obj)
+
+        self.user_input = user_input_obj
+        self.output=output_obj
+
         self.grid_edit = grid_edit_obj
         self.lowest_score=0
         self.netlist=[] #locale versie niet hetzelfde als in main of andere py bestanden
@@ -252,14 +262,30 @@ class hil_climber_nc:
         start_tijd = datetime.now()
         eind_tijd=start_tijd+timedelta(minutes=loop)
 
+        valid_check=0
+
         loopcounter=0
 
-        while loopcounter<5: #datetime.now()<eind_tijd:
+        while loopcounter<0: #datetime.now()<eind_tijd:
             print(f"de loop is nog nog bezig...({loopcounter})")
             print("")
             print("")
             oldwirelist, remakenetlist =self.hill_climb()
             
+            wirecount = self.grid_edit.update_wirecount()
+            self.grid_edit.find_wirecross() 
+
+            # Compute cost and score
+            self.output.costen_berekening(wirecount)
+            match_wires = self.user_input.match_wirepaths_to_nets(self.netlist)
+            self.output.write_to_csv(wirecount)
+            print(self.grid_edit.valide_counter, self.grid_edit.netlist_counter)
+
+            if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter):
+                valid_check=1 #succes = ja
+            else:
+                valid_check=2 #succes = nee
+
             self.update_score()
             print(self.grid_edit.wirecount, self.grid_edit.wirecrosscount)
             
@@ -269,7 +295,7 @@ class hil_climber_nc:
             print("")
             print(self.netlist)
 
-            if self.lowest_score<nieuwe_score:
+            if self.lowest_score<nieuwe_score & valid_check==1:
                 print("dus de oude score wordt behouden")
                 self.remove_nieuw_wires()
                 self.reset_oude_grid(oldwirelist, remakenetlist)
@@ -280,3 +306,6 @@ class hil_climber_nc:
                 self.lowest_score=nieuwe_score
                 #hou de nieuwe grid en reset de minimale score
             loopcounter+=1
+        
+        print(f"loop times = {loopcounter}")
+        print(f"beste score={self.lowest_score}")
