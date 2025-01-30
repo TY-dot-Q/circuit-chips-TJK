@@ -293,4 +293,4 @@ class output:
                 writer.writerow([f"({chip_a},{chip_b})", f"{path}"])
 
             # Voeg de chip-net info toe
-            writer.writerow([f"{chip_id}_net_{net_id}", wirecount])
+            writer.writerow([f"{chip_id}_net_{net_id}", self.grid_edit.score])
