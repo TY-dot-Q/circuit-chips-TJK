@@ -79,6 +79,8 @@ class user_input:
                                 print(f'(Netlist) print:error met waardes in regel:{row}')
                                 continue
                         
+                        self.grid_edit.netlist_counter = counter
+                        print(self.grid_edit.netlist_counter)
                         print("Netlist is succesvol geladen uit het CSV-bestand.")
                         print("")
                         return connection_list
@@ -147,5 +149,6 @@ class user_input:
                 for path in self.grid_edit.wirepaths_list:
                     if path[0] == gate_a and path[-1] == gate_b:
                         matched_wires.append((chip_a, chip_b, path))
+                        self.grid_edit.valide_counter += 1
                         break
         return matched_wires 

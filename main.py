@@ -62,22 +62,13 @@ if __name__ == "__main__":
     output_obj.output_to_csv(match_wires, netlist_path, wirecount)
 
     # schrijf de resultaten naar het bestand wirepaths.csv
-    #output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
+    output_obj.write_to_csv(wirecount)
    
     # 3d visualisatie
-    #output_obj.visualisatie()
-    # for i in range(2):
-    #     grid_edit_obj.reset_grid()
-    #     netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
-    #     netlist_list=user_input_obj.load_netlist(netlist_path)
-    #     algorithm_obj.netlist_looper(netlist_list)
-    #     wirecount = grid_edit_obj.update_wirecount()
-    #     grid_edit_obj.find_wirecross() 
-    #     output_obj.costen_berekening(wirecount)
-    #     print(grid_edit_obj.score)
+    output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
-    # for i in range(20):
+    # for i in range(1):
     #     grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
     #     # Load and reorder netlist
@@ -92,5 +83,6 @@ if __name__ == "__main__":
 
     #     # Compute cost and score
     #     output_obj.costen_berekening(wirecount)
+
 
     #     print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
