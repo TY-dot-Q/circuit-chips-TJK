@@ -250,7 +250,7 @@ class output:
                 writer.writeheader()
 
             # Genereer nummer voor de nieuwe rij
-            with open('test.csv', 'r', newline='') as check_csvfile:
+            with open('no_reload_no_random.csv', 'r', newline='') as check_csvfile:
                 reader = csv.reader(check_csvfile)
                 rows = list(reader)
                 nummer = 1 if len(rows) == 0 else len(rows)  # Nummer is gelijk aan het aantal rijen, zodat het begint bij 1

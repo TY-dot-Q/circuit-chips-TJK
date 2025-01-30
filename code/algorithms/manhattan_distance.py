@@ -5,7 +5,7 @@ import random
 import time
 import numpy as np
 
-random.seed(10)
+random.seed(time.time())
 
 class ManhattanDistance():
     def __init__(self, grid_edit_obj):
