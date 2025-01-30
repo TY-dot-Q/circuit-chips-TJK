@@ -68,7 +68,13 @@ if __name__ == "__main__":
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
-    # for i in range(1):
+    # aantal keer dat je de algoritme wilt runnen
+    intiteration_runner= input("Hoe vaak wil je het algoritme runnen?: ")
+    while iteration_runner.isnumeric() == False and iteration_runner < 0 and iteration_runner > 10000:
+        iteration_runner = input("Voer een getal in tussen 1 en 10000: ")
+    iteration_runner = int(iteration_runner)
+
+    # for i in range(iteration_runner):
     #     grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
     #     # Load and reorder netlist
