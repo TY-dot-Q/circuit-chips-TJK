@@ -19,6 +19,7 @@ class output:
         """
         Print de huidig grid status met gates en verschillende lagen.
         """
+        # Print de grid in de terminal
         try:
             for z, layer in enumerate(self.grid_edit.grid):
                 print(f"Laag {z}")
@@ -46,10 +47,12 @@ class output:
             print("   geen gates in de dict")
             return
 
+        # Zet gates in de visualisatie
         if frame == 0:
             for _, (y, x, z) in grid_edit_obj.gate_dict.items():
-                ax.scatter(x, y, z, color='blue', s=100, marker='o')  # Teken de bolletjes
+                ax.scatter(x, y, z, color='blue', s=100, marker='o')  
 
+        # Maak een kleurenpalet voor de draden
         kleuren_palet = cycle([ 
         'black', 'blue', 'green', 'orange', 'purple', 'teal', 'gold',
         'pink', 'coral', 'olive', 'indigo', 'yellow'])
@@ -71,7 +74,7 @@ class output:
             print("   geen wires gevonden")
 
 
-        # print wirecrosses in visual
+        # print kruisingen in visual
         if frame == total_frames - 1: 
             wirecross = grid_edit_obj.wirecross_list 
             if wirecross:
@@ -80,19 +83,7 @@ class output:
             else:
                 print("   geen kruisingen gevonden.")
 
-
-        # Laatste Frame weergegeven
-        if frame == total_frames - 1: 
-
-            # print wirecrosses in visual
-            wirecross = grid_edit_obj.wirecross_list 
-            if wirecross:
-                for y, x, z in wirecross:
-                    ax.scatter(x, y, z, color='red', s=125, marker='x')
-            else:
-                print("   geen kruisingen gevonden.")
-
-            # print overlaps in visual
+            # print overlappingen in visual
             overlap = grid_edit_obj.overlapping_lijst
             if isinstance(overlap, list):
                 if all(isinstance(sublist, list) and all(isinstance(coord, tuple) and len(coord) == 3 for coord in sublist) for sublist in overlap):
@@ -105,14 +96,14 @@ class output:
                         print("   geen overlappingen gevonden.")
 
 
-        # set axes for grid
+        # set assen
         ax.set_xticks(range(0, self.grid_edit.maximum_x + 3, 1))
         ax.set_yticks(range(0, self.grid_edit.maximum_y + 3, 1))
         ax.set_zlim(bottom=0)
         ax.set_zticks(range(1, 10, 1))
 
 
-        # title axes and legend
+        # labels and titels
         ax.set_xlabel("X-as")
         ax.set_ylabel("Y-as")
         ax.set_zlabel("Z-as")
@@ -126,7 +117,7 @@ class output:
         # Voeg de aangepaste legenda toe
         ax.legend(handles=legend_elements, loc="upper right")
 
-        # Set the view
+        # Set de kijkhoek
         ax.view_init(elev=37, azim=-131, roll=7)
         ax.dist = 2
 
@@ -161,7 +152,7 @@ class output:
         else:
             print("   geen wires gevonden")
 
-        # Print wirecrosses in visual
+        # Print kruisingen in visual
         wirecross = self.grid_edit.wirecross_list
         if wirecross:
             for y, x, z in wirecross:
@@ -239,7 +230,6 @@ class output:
         # Maak de afbeelding
         if order == 'afb':
             self.generate_3d_visual(ax)
-    
         
     
     def write_to_csv(self, wirecount, name_file): # DEZE TOEVOEGEN
@@ -261,9 +251,9 @@ class output:
             with open(name_file, 'r', newline='') as check_csvfile:
                 reader = csv.reader(check_csvfile)
                 rows = list(reader)
-                nummer = 1 if len(rows) == 0 else len(rows)  # Nummer is gelijk aan het aantal rijen, zodat het begint bij 1
+                nummer = 1 if len(rows) == 0 else len(rows)  # Nummer is gelijk aan het aantal rijen, begint bij 1
 
-                # Dit zijn de andere gegevens die je wilt toevoegen. Pas deze aan op basis van je eigen logica.
+                # gegevens voor elke rij
                 data = {
                     'nummer': nummer,
                     'pad': str(self.grid_edit.wirepaths_list),
@@ -275,7 +265,7 @@ class output:
                     'aantal_kruisingen': self.grid_edit.wirecrosscount  # aantal kruisingen 
                 }
                 
-                # Schrijf in csv bestand
+                # Schrijf gegevens in csv bestand
                 writer.writerow(data)
                 self.grid_edit.nummer = nummer
         
@@ -294,7 +284,7 @@ class output:
         chip_id = split_parts[1]  
         net_id = split_parts[-1].replace("netlist_", "").replace(".csv", "") 
 
-        # Leeg het bestand en schrijf de headers
+        # maak bestand leeg en schrijf de headers
         with open(output_file, "w", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(["net", "wires"])
@@ -302,7 +292,7 @@ class output:
             for chip_a, chip_b, path in matched_wires:
                 writer.writerow([f"({chip_a},{chip_b})", f"{path}"])
 
-            # Voeg de chip-net info toe
+            # Voeg de chip en net toe aan de output
             writer.writerow([f"{chip_id}_net_{net_id}", self.grid_edit.score])
     
     def search_row(self, name_file):
@@ -333,7 +323,6 @@ class output:
         Laadt de beste resultaten van het data CSV-bestand in de grid_edit object.
         """
 
-        # Als een geldige rij is gevonden, importeer de waarden
         # Open CSV-bestand om de beste rij te zoeken
         with open(name_file, 'r', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -344,6 +333,3 @@ class output:
                     self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # Converteer string naar lijst
                     self.grid_edit.score = int(best_row['score'])  # Update de beste score
                     print(f"Beste score geladen: {self.grid_edit.score}, nummer {best_row['nummer']}")
-                else:
-                    print("Geen succesvolle resultaten gevonden.")
-
