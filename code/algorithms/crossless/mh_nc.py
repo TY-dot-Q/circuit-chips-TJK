@@ -7,7 +7,7 @@ import numpy as np
 
 random.seed(10)
 
-class ManhattanDistance_nc():
+class mh_nc():
     def __init__(self, grid_edit_obj):
         self.grid_edit = grid_edit_obj
 

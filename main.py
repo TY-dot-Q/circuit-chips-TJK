@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     #----------------Netlist passer------------------------
     netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
-    # netlist_list=user_input_obj.load_netlist(netlist_path)
+    #netlist_list=user_input_obj.load_netlist(netlist_path)
     
 
     #----------------No cross finder-----------------------
@@ -79,20 +79,27 @@ if __name__ == "__main__":
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
-    for i in range(1000):
-        grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
+    # aantal keer dat je de algoritme wilt runnen
+    intiteration_runner= input("Hoe vaak wil je het algoritme runnen?: ")
+    while iteration_runner.isnumeric() == False and iteration_runner < 0 and iteration_runner > 10000:
+        iteration_runner = input("Voer een getal in tussen 1 en 10000: ")
+    iteration_runner = int(iteration_runner)
 
-        # Run the algorithm on the netlist
-        algorithm_obj.netlist_looper(netlist_list)
+    # for i in range(iteration_runner):
+    #     grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
-        # Calculate wire count and wire crossings
-        wirecount = grid_edit_obj.update_wirecount()
-        grid_edit_obj.find_wirecross() 
+    #     # Load and reorder netlist
+    #     netlist_list = user_input_obj.load_netlist(netlist_path)  
 
-        # Compute cost and score
-        output_obj.costen_berekening(wirecount)
-        match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
-        output_obj.write_to_csv(wirecount)
-        print(grid_edit_obj.valide_counter, grid_edit_obj.netlist_counter)
+    #     # Run the algorithm on the netlist
+    #     algorithm_obj.netlist_looper(netlist_list)
 
-        print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
+    #     # Calculate wire count and wire crossings
+    #     wirecount = grid_edit_obj.update_wirecount()
+    #     grid_edit_obj.find_wirecross() 
+
+    #     # Compute cost and score
+    #     output_obj.costen_berekening(wirecount)
+
+
+    #     print(f"Iteration {i+1} Score: {grid_edit_obj.score}")

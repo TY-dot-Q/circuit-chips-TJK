@@ -1,7 +1,7 @@
 import random
 from code.classes.grid_edit import grid_edit
 from code.visualisation.visualisation import output
-from code.algorithms.crossless.mh_nc import ManhattanDistance
+from code.algorithms.crossless.mh_nc import mh_nc
 import time
 from datetime import datetime, timedelta
 
@@ -54,7 +54,7 @@ class hil_climber_nc:
     def reconstruct_line(self, chip_a, chip_b):
         """neemt een gegeven wire connection en legt deze opnieuw en gaat controleren of deze beter kan"""
 
-        ManhattanDistance_obj=ManhattanDistance(self.grid_edit)
+        ManhattanDistance_obj=mh_nc(self.grid_edit)
 
         #geef hier op welke manier je wilt gebruiken om de lijn opnieuw te leggen
         path = ManhattanDistance_obj.shortest_path(chip_a, chip_b)
@@ -254,7 +254,7 @@ class hil_climber_nc:
 
         loopcounter=0
 
-        while loopcounter<5:#datetime.now()<eind_tijd:
+        while loopcounter<5: #datetime.now()<eind_tijd:
             print(f"de loop is nog nog bezig...({loopcounter})")
             print("")
             print("")
