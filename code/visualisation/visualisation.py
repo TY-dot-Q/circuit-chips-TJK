@@ -1,5 +1,5 @@
 from itertools import cycle
-import csv, os, ast
+import csv, ast
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -7,12 +7,17 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
 
 class output:
+    '''
+    Deze class bevat de functies voor het printen van de grid, 
+    het berekenen van de kosten en het maken van de visualisatie.
+    '''
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
+
     def print_grid (self) -> None:
         """
-        print de huidig grid status met gates en verschillende lagen.
+        Print de huidig grid status met gates en verschillende lagen.
         """
         try:
             for z, layer in enumerate(self.grid_edit.grid):
@@ -27,12 +32,14 @@ class output:
             print("Klaar met printen.\n\n")        
 
     def costen_berekening(self, wirecount)->int: 
-        """berekent de score van de geplaatste draden"""
+        """
+        Berekent de score van de geplaatste draden
+        """
         self.grid_edit.score = wirecount + (300 * self.grid_edit.wirecrosscount)
 
     def animation(self, frame, ax, grid_edit_obj):
         """
-        Functie die wordt aangeroepen voor elke frame van de animatie.
+        Functie die wordt aangeroepen voor elke frame van de 3D animatie.
         """
         # Check of er gates zijn
         if not grid_edit_obj.gate_dict:
@@ -208,7 +215,6 @@ class output:
         """
         Visualiseert de gates en wires in een 3D-omgeving.
         Gates worden weergegeven als blauwe punten en wires als rode lijnen.
-        z = 0 is de bodem
         """
         print("-----visualisatie-----")
         print("Start met maken van de animatie")
@@ -237,6 +243,10 @@ class output:
         
     
     def write_to_csv(self, wirecount, name_file): # DEZE TOEVOEGEN
+        """
+        Schrijft de huidige wirepaths, overlappingen, kruisingen en score naar een CSV-bestand.
+        Deze functie wordt voornamelijk gebruikt voor data-analyse en het bijhouden van de voortgang.
+        """
         # Open het CSV-bestand in 'append' mode
         with open(name_file, 'a', newline='') as csvfile:
             kolom = ['nummer', 'pad', 'overlappingen', 'kruisingen', 'succes', 'score', 'aantal_wires', 'aantal_kruisingen']
@@ -275,7 +285,10 @@ class output:
         print(self.grid_edit.valide_counter, self.grid_edit.netlist_counter)
 
     def output_to_csv(self, matched_wires, netlist_path):
-        """Slaat de matched wirepaths op in output.csv en overschrijft het bestand bij elke run."""
+        """
+        Deze functie slaat beste resultaat op in output.csv volgens richtlijn van de opdracht
+        Overschrijft het bestand bij elke run.
+        """
         output_file = "data/output.csv"
         split_parts = netlist_path.split("/")
         chip_id = split_parts[1]  
@@ -293,6 +306,9 @@ class output:
             writer.writerow([f"{chip_id}_net_{net_id}", self.grid_edit.score])
     
     def search_row(self, name_file):
+        """
+        Zoekt de rij met de beste score in het data CSV-bestand.
+        """
         best_score = None
         best_row = None
 
@@ -313,6 +329,9 @@ class output:
             return best_row
         
     def load_best_result(self, name_file, best_row):
+        """
+        Laadt de beste resultaten van het data CSV-bestand in de grid_edit object.
+        """
 
         # Als een geldige rij is gevonden, importeer de waarden
         # Open CSV-bestand om de beste rij te zoeken
