@@ -136,3 +136,16 @@ class user_input:
         except Exception as e:
             print(f"Fout tijdens het lezen van het bestand: {e}")
             return max_y, max_x  # Zorg voor een veilige return
+
+    def match_wirepaths_to_nets(self, netlist_list: list)-> list:
+        """Koppelt de juiste wirepaths aan de netlist-verbindigen voor output.csv."""
+        matched_wires = []
+        for chip_a, chip_b in netlist_list:
+            gate_a = self.grid_edit.gate_dict.get(chip_a)
+            gate_b = self.grid_edit.gate_dict.get(chip_b)
+            if gate_a and gate_b:
+                for path in self.grid_edit.wirepaths_list:
+                    if path[0] == gate_a and path[-1] == gate_b:
+                        matched_wires.append((chip_a, chip_b, path))
+                        break
+        return matched_wires 
