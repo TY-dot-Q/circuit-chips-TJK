@@ -1,5 +1,5 @@
 from itertools import cycle
-import csv, os
+import csv, os, ast
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -276,7 +276,7 @@ class output:
         print("\n")
         print(self.grid_edit.valide_counter, self.grid_edit.netlist_counter)
 
-    def output_to_csv(self, matched_wires, netlist_path, wirecount):
+    def output_to_csv(self, matched_wires, netlist_path):
         """Slaat de matched wirepaths op in output.csv en overschrijft het bestand bij elke run."""
         output_file = "output.csv"
         split_parts = netlist_path.split("/")
@@ -293,3 +293,31 @@ class output:
 
             # Voeg de chip-net info toe
             writer.writerow([f"{chip_id}_net_{net_id}", self.grid_edit.score])
+    
+    def load_best_result(self):
+        best_score = None
+        best_row = None
+
+        # Open CSV-bestand om de beste rij te zoeken
+        with open('test.csv', 'r', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['succes'] == "Ja":
+                    score = int(row['score'])  # Zet score om naar een integer
+
+                    # Eerste keer instellen of als een betere score wordt gevonden
+                    if best_score is None or score < best_score:
+                        best_score = score
+                        best_row = row
+
+        # Als een geldige rij is gevonden, importeer de waarden
+        if best_row:
+            self.grid_edit.visualiseer_nummer = int(best_row['nummer'])
+            self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # Converteer string naar lijst
+            self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # Converteer string naar lijst
+            self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # Converteer string naar lijst
+            self.grid_edit.score = best_score  # Update de beste score
+
+            print(f"Beste score geladen: {best_score}, nummer {best_row['nummer']}")
+        else:
+            print("Geen succesvolle resultaten gevonden.")
