@@ -276,3 +276,21 @@ class output:
         print("-----output-----")
         print("CSV-bestand succesvol geschreven.")
         print("\n")
+
+    def output_to_csv(self, matched_wires, netlist_path, wirecount):
+        """Slaat de matched wirepaths op in output.csv en overschrijft het bestand bij elke run."""
+        output_file = "output.csv"
+        split_parts = netlist_path.split("/")
+        chip_id = split_parts[1]  
+        net_id = split_parts[-1].replace("netlist_", "").replace(".csv", "") 
+
+        # Leeg het bestand en schrijf de headers
+        with open(output_file, "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(["net", "wires"])
+
+            for chip_a, chip_b, path in matched_wires:
+                writer.writerow([f"({chip_a},{chip_b})", f"{path}"])
+
+            # Voeg de chip-net info toe
+            writer.writerow([f"{chip_id}_net_{net_id}", wirecount])
