@@ -32,6 +32,7 @@ class hil_climber_nc:
         self.lowest_score=0
         self.netlist=[] #locale versie niet hetzelfde als in main of andere py bestanden
         self.reset_amount=5
+        self.optimum_wirelist=[]
 
         correct_gate_check=0
         self.seed=31
@@ -326,6 +327,8 @@ class hil_climber_nc:
                 print("dus de nieuwe score wordt behouden")
                 self.lowest_score=nieuwe_score
                 improvementcoun+=1
+                self.optimum_wirelist=self.grid_edit.wirepaths_list
+                
                 #hou de nieuwe grid en reset de minimale score
 
             elif valid_check==False:
@@ -339,8 +342,12 @@ class hil_climber_nc:
 
             loopcounter+=1
 
+        print(self.optimum_wirelist)
         print(f"loop times = {loopcounter}")
         print(f"valid solutions={valid_count}")
         print(f"invalid solutions = {invalid_count}")
         print(f"keren dat een beter score gevonden is: {improvementcoun}")
         print(f"beste score={self.lowest_score}")
+
+        returnlist=self.optimum_wirelist
+        return returnlist
