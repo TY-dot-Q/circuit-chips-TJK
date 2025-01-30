@@ -306,8 +306,10 @@ class hil_climber_nc:
                 valid_check=True #succes = ja
                 valid_count+=1
             else:
-                valid_check=True #succes = nee
+                valid_check=False #succes = nee
                 invalid_count+=1
+
+            self.grid_edit.valide_counter =0
 
             ##print(self.grid_edit.wirecount) 
             ##print(self.grid_edit.wirecrosscount)
@@ -320,13 +322,13 @@ class hil_climber_nc:
 
             print(f"lowest score check : {self.lowest_score} -- {nieuwe_score} -- {valid_check}")
 
-            if self.lowest_score>=nieuwe_score and valid_check==True:
+            if self.lowest_score>nieuwe_score and valid_check==True:
                 print("dus de nieuwe score wordt behouden")
                 self.lowest_score=nieuwe_score
                 improvementcoun+=1
                 #hou de nieuwe grid en reset de minimale score
 
-            elif valid_check==1:
+            elif valid_check==False:
                 print("dus de oude grid wordt terug gezet")
                 print("remove_nieuw_wires")
                 self.remove_nieuw_wires()
