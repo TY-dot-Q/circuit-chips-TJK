@@ -286,3 +286,23 @@ class grid_edit:
             reverse_parallel = (wire[i + 1], wire[i])
             self.parallel_set.remove(parallel)
             self.parallel_set.remove(reverse_parallel)
+    
+    def reset_grid(self):
+        """Resets the grid while keeping gate positions intact."""
+        # Create a fresh grid with all zeros
+        self.grid_create(self.maximum_y, self.maximum_x)
+
+        self.gate_nr = gate_nrstart
+        # Restore gate positions from gate_dict
+        for gate_nr, (y, x, z) in self.gate_dict.items():
+            self.grid[z][y][x] = gate_nr  # Keep gate numbers in place
+        
+        # Reset wire-related data
+        self.wirepaths_list = []
+        self.parallel_set = set()
+        self.wirecross_list = []
+        self.overlapping_lijst = []
+        self.wirecount = 0
+        self.wirecrosscount = 0
+
+        print("Grid reset! Gates remain, but all wires are removed.")

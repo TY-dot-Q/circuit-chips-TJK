@@ -18,7 +18,7 @@ if __name__ == "__main__":
     start_obj = auto_functions(grid_edit_obj)
     algorithm_obj= MD(grid_edit_obj)
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
-    hil_climber_obj=hil_climber(grid_edit_obj)
+    #hil_climber_obj=hil_climber(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
     grid_path="data/chip_1/print_1.csv"
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
 
     #----------------Netlist passer------------------------
-    #netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
+    netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
     netlist_list=user_input_obj.load_netlist(netlist_path)
     
 
@@ -38,18 +38,19 @@ if __name__ == "__main__":
 
 
     #----------------Hill climber---------------------------
-    reset_wires = 5 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
-    reloop_time = 5 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
-    hil_climber_obj.start_hill_climb(reset_wires, netlist_list, reloop_time) #wertk nog niet
+    # reset_wires = 5 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
+    # reloop_time = 5 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
+    #hil_climber_obj.start_hill_climb(reset_wires, netlist_list, reloop_time) #wertk nog niet
 
     #-----------------resulten------------------------------
     wirecount = grid_edit_obj.update_wirecount()
-    succes = grid_edit_obj.check_all_overlaps() 
+    # succes = grid_edit_obj.check_all_overlaps() 
     grid_edit_obj.find_wirecross() 
 
     # scores bepalen
     output_obj.costen_berekening(wirecount)
-    user_input_obj.score_request(wirecount)
+    print(grid_edit_obj.score)
+    #user_input_obj.score_request(wirecount)
 
     #----------------visualisatie----------------------------
     
@@ -61,4 +62,32 @@ if __name__ == "__main__":
     #output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
    
     # 3d visualisatie
-    output_obj.visualisatie()
+    #output_obj.visualisatie()
+    # for i in range(2):
+    #     grid_edit_obj.reset_grid()
+    #     netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
+    #     netlist_list=user_input_obj.load_netlist(netlist_path)
+    #     algorithm_obj.netlist_looper(netlist_list)
+    #     wirecount = grid_edit_obj.update_wirecount()
+    #     grid_edit_obj.find_wirecross() 
+    #     output_obj.costen_berekening(wirecount)
+    #     print(grid_edit_obj.score)
+    
+    # ----------------iteration runner----------------------------
+    # for i in range(20):
+    #     grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
+
+    #     # Load and reorder netlist
+    #     netlist_list = user_input_obj.load_netlist(netlist_path)  
+
+    #     # Run the algorithm on the netlist
+    #     algorithm_obj.netlist_looper(netlist_list)
+
+    #     # Calculate wire count and wire crossings
+    #     wirecount = grid_edit_obj.update_wirecount()
+    #     grid_edit_obj.find_wirecross() 
+
+    #     # Compute cost and score
+    #     output_obj.costen_berekening(wirecount)
+
+    #     print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
