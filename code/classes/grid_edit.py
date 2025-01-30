@@ -98,13 +98,8 @@ class grid_edit:
             
         # Update de lijst van overlappen
         self.overlapping_lijst = unieke_overlappingen
-
-        # Controleer of er geen overlappen zijn
-        if not self.overlapping_lijst:
-            return "Ja"  # Geen overlappingen gevonden
-
         print(f"Overlappingen gevonden: {self.overlapping_lijst}")
-        return "Nee"
+        
     
     def find_wirecross(self): # VOEG TOE
         # Stap 1: Verzamel alle elementen behalve de eerste en laatste uit elke sublijst
