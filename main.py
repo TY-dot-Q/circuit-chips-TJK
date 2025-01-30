@@ -46,7 +46,7 @@ if __name__ == "__main__":
     wirecount = grid_edit_obj.update_wirecount()
     # succes = grid_edit_obj.check_all_overlaps() 
     grid_edit_obj.find_wirecross() 
-
+    match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
     # scores bepalen
     output_obj.costen_berekening(wirecount)
     print(grid_edit_obj.score)
@@ -57,6 +57,9 @@ if __name__ == "__main__":
     # print de grid in de terminal
     
     #output_obj.print_grid() 
+
+    
+    output_obj.output_to_csv(match_wires, netlist_path, wirecount)
 
     # schrijf de resultaten naar het bestand wirepaths.csv
     #output_obj.write_to_csv(grid_edit_obj.wirepaths_list, grid_edit_obj.overlapping_lijst, wirecount)
