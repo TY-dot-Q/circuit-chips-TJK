@@ -74,7 +74,7 @@ if __name__ == "__main__":
     #     print(grid_edit_obj.score)
     
     # ----------------iteration runner----------------------------
-    for i in range(3):
+    for i in range(1):
         grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Load and reorder netlist
