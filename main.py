@@ -26,8 +26,9 @@ if __name__ == "__main__":
     mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
-    grid_path="data/chip_0/print_0.csv"
-    netlist_path="data/chip_0/netlist/netlist_1.csv"
+    grid_path="data/chip_1/print_1.csv"
+    netlist_path="data/chip_1/netlist/netlist_2.csv"
+    name_file = "data/test.csv"
 
     # maak de grid aan        
     start_obj.Auto_start_functie(grid_path)
@@ -81,7 +82,13 @@ if __name__ == "__main__":
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
-    #for i in range(1000):
+    # Run the algorithm for a number of iterations
+    max_iterations = 100000
+    iterations = input("Hoeveel iteraties wil je runnen?: ")
+    while not iterations.isdigit() or int(iterations) > max_iterations:
+        iterations = input("Voer een geldig getal in tussen 1 en 100000: ")
+    iterations = int(iterations)
+    for i in range(iterations):
         #grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Run the algorithm on the netlist
@@ -92,9 +99,19 @@ if __name__ == "__main__":
         #grid_edit_obj.find_wirecross() 
 
         # Compute cost and score
-        #output_obj.costen_berekening(wirecount)
-        #match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
-        #output_obj.write_to_csv(wirecount)
-        #print(grid_edit_obj.valide_counter, grid_edit_obj.netlist_counter)
+        output_obj.costen_berekening(wirecount)
+        user_input_obj.match_wirepaths_to_nets(netlist_list)
+        output_obj.write_to_csv(wirecount, name_file)
+        print(grid_edit_obj.valide_counter, grid_edit_obj.netlist_counter)
 
-        #print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
+        print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
+
+    # Sla resultaten op in een csv en visualiseer
+    row = output_obj.search_row(name_file)
+    output_obj.load_best_result(name_file, row)
+    match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
+    output_obj.output_to_csv(match_wires, netlist_path)
+    output_obj.visualisatie()
+
+    # Voeg dit aan het einde van je script toe, nadat de visualisatie is uitgevoerd.
+    output_obj.visual()
