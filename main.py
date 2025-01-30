@@ -74,20 +74,20 @@ if __name__ == "__main__":
     #     print(grid_edit_obj.score)
     
     # ----------------iteration runner----------------------------
-    # for i in range(20):
-    #     grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
+    for i in range(3):
+        grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
-    #     # Load and reorder netlist
-    #     netlist_list = user_input_obj.load_netlist(netlist_path)  
+        # Load and reorder netlist
+        netlist_list = user_input_obj.load_netlist(netlist_path)  
 
-    #     # Run the algorithm on the netlist
-    #     algorithm_obj.netlist_looper(netlist_list)
+        # Run the algorithm on the netlist
+        algorithm_obj.netlist_looper(netlist_list)
 
-    #     # Calculate wire count and wire crossings
-    #     wirecount = grid_edit_obj.update_wirecount()
-    #     grid_edit_obj.find_wirecross() 
+        # Calculate wire count and wire crossings
+        wirecount = grid_edit_obj.update_wirecount()
+        grid_edit_obj.find_wirecross() 
 
-    #     # Compute cost and score
-    #     output_obj.costen_berekening(wirecount)
+        # Compute cost and score
+        output_obj.costen_berekening(wirecount)
 
-    #     print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
+        print(f"Iteration {i+1} Score: {grid_edit_obj.score}")

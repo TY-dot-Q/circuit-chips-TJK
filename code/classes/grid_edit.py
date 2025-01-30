@@ -111,7 +111,7 @@ class grid_edit:
 
         # Stap 2: Houd alleen de waarden die exact twee keer of drie keer voorkomen
         wirecross = [item for item in wirecross if wirecross.count(item) == 2 or wirecross.count(item) == 3]
-        print(f"\n\n** voor eindde Wirecrosses gevonden: {wirecross}\n\n")
+        print(f"\n\n** voor einde Wirecrosses gevonden: {wirecross}\n\n")
 
         # Stap 3: Haal alle (y, x, z)-waarden uit overlappingen_lijst
         overlapping_values = [item for sublist in self.overlapping_lijst for item in sublist]
@@ -181,10 +181,10 @@ class grid_edit:
         # Trek het aantal wirepaths af van het totaal
         wirecount = total_count - len(self.wirepaths_list)
 
-        # Debug-informatie
-        print(f"Totaal aantal coördinaten: {total_count}") #haal weg
-        print(f"Aantal wirepaths: {len(self.wirepaths_list)}") #haal weg 
-        print(f"Wirecount: {wirecount}")
+        # # Debug-informatie
+        # print(f"Totaal aantal coördinaten: {total_count}") #haal weg
+        # print(f"Aantal wirepaths: {len(self.wirepaths_list)}") #haal weg 
+        # print(f"Wirecount: {wirecount}")
 
         return wirecount
 
