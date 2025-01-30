@@ -29,26 +29,26 @@ class output:
     def costen_berekening(self, wirecount)->int: 
         """berekent de score van de geplaatste draden"""
         self.grid_edit.score = wirecount + (300 * self.grid_edit.wirecrosscount)
-    
-    def animation(self, frame, ax):
+
+    def animation(self, frame, ax, grid_edit_obj):
         """
         Functie die wordt aangeroepen voor elke frame van de animatie.
         """
         # Check of er gates zijn
-        if not self.grid_edit.gate_dict:
+        if not grid_edit_obj.gate_dict:
             print("   geen gates in de dict")
             return
-        
+
         if frame == 0:
-            for _, (y, x, z) in self.grid_edit.gate_dict.items():
+            for _, (y, x, z) in grid_edit_obj.gate_dict.items():
                 ax.scatter(x, y, z, color='blue', s=100, marker='o')  # Teken de bolletjes
-        
+
         kleuren_palet = cycle([ 
         'black', 'blue', 'green', 'orange', 'purple', 'teal', 'gold',
         'pink', 'coral', 'olive', 'indigo', 'yellow'])
 
         # Teken de lijnen stap voor stap
-        wires = self.grid_edit.wirepaths_list
+        wires = grid_edit_obj.wirepaths_list
         if wires:
             total_frames = sum(len(wire) for wire in wires)
             current_frame = 0
@@ -58,15 +58,15 @@ class output:
                 if frame < current_frame + wire_length:
                     wire_y, wire_x, wire_z = zip(*wire[:frame - current_frame + 1])
                     ax.plot(wire_x, wire_y, wire_z, color=kleur, linewidth = 2)
-                    return
+                    break
                 current_frame += wire_length
         else:
             print("   geen wires gevonden")
 
-        
+
         # print wirecrosses in visual
         if frame == total_frames - 1: 
-            wirecross = self.grid_edit.wirecross_list 
+            wirecross = grid_edit_obj.wirecross_list 
             if wirecross:
                 for y, x, z in wirecross:
                     ax.scatter(x, y, z, color='red', s=125, marker='x')
@@ -78,7 +78,7 @@ class output:
         if frame == total_frames - 1: 
 
             # print wirecrosses in visual
-            wirecross = self.grid_edit.wirecross_list 
+            wirecross = grid_edit_obj.wirecross_list 
             if wirecross:
                 for y, x, z in wirecross:
                     ax.scatter(x, y, z, color='red', s=125, marker='x')
@@ -86,7 +86,7 @@ class output:
                 print("   geen kruisingen gevonden.")
 
             # print overlaps in visual
-            overlap = self.grid_edit.overlapping_lijst
+            overlap = grid_edit_obj.overlapping_lijst
             if isinstance(overlap, list):
                 if all(isinstance(sublist, list) and all(isinstance(coord, tuple) and len(coord) == 3 for coord in sublist) for sublist in overlap):
                     if overlap:
@@ -97,10 +97,10 @@ class output:
                     else:
                         print("   geen overlappingen gevonden.")
 
-            
+
         # set axes for grid
-        ax.set_xticks(range(0, self.grid_edit.maximum_x + 1, 1))
-        ax.set_yticks(range(0, self.grid_edit.maximum_y + 1, 1))
+        ax.set_xticks(range(0, self.grid_edit.maximum_x + 3, 1))
+        ax.set_yticks(range(0, self.grid_edit.maximum_y + 3, 1))
         ax.set_zlim(bottom=0)
         ax.set_zticks(range(1, 10, 1))
 
@@ -125,7 +125,6 @@ class output:
 
         if frame == total_frames - 1:
             print("\n3D visualisatie succesvol getoond.\n**Sluit het venster van animatie om programma te stoppen**")
-        
 
     def generate_3d_visual(self, ax):
         """
@@ -227,7 +226,7 @@ class output:
         if order == 'ani':
             wires = self.grid_edit.wirepaths_list
             total_frames = sum(len(wire) for wire in wires)
-            animation = FuncAnimation(fig, self.animation, frames = total_frames, fargs=(ax), interval=1, repeat=False)
+            animation = FuncAnimation(fig, self.animation, frames = total_frames, fargs=(ax, self.grid_edit), interval=1, repeat=False)
             plt.show()
             
                   
