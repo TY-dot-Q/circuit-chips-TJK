@@ -67,6 +67,11 @@ class hil_climber_nc:
         ManhattanDistance_obj=mh_nc(self.grid_edit)
 
         #geef hier op welke manier je wilt gebruiken om de lijn opnieuw te leggen
+
+
+        print(f"wirepaths_list{self.grid_edit.wirepaths_list}")
+        print(f"lengte: {len(self.grid_edit.wirepaths_list)}")
+        print("")
         path = ManhattanDistance_obj.shortest_path(chip_a, chip_b)
 
         self.netlist.append((chip_a, chip_b))
@@ -105,18 +110,19 @@ class hil_climber_nc:
         remakelist=[]
         i=0
         while i < self.reset_amount:
-
             #pakt een random wire in de total_wirelist
             random_pick = random.randint(0, len(self.grid_edit.wirepaths_list ))
+            #print(self.grid_edit.wirepaths_list)
             wireconnection=self.grid_edit.wirepaths_list [random_pick]
             oldwirelist.append(wireconnection)
-
             #zorgt dat de chips van de wirelist worden opgeslagen om later opnieuw te leggen
             remakelist.append(((self.netlist[random_pick][0]), (self.netlist[random_pick][1])))
 
             print("")
             print(f"TEST HILL_CLIMB LIJN VERWIJDERING NUMMER {i+1}---------------------------------------------------")
             #print(f"netlist{self.netlist}")
+            print(f"volledige lijn: {self.grid_edit.wirepaths_list}")
+
             print(f"random pick is: {random_pick}")
             print (f"netlist: {len(self.netlist)} -- wirepaths: {len(self.grid_edit.wirepaths_list)}")
             
@@ -165,7 +171,6 @@ class hil_climber_nc:
         print(len(self.netlist))
         print(len(self.grid_edit.wirepaths_list))
         
-
         i=0
         while i < self.reset_amount:
             print(f"ronde nummer {i+1}")
@@ -173,8 +178,6 @@ class hil_climber_nc:
             print(f"toevoegen van wirepath: {wirenet[i]}")
 
             self.grid_edit.wirepaths_list.append(wirenet[i])
-
-            print(f"toevoegen van wire_parrallel set: {wirenet[i]}")
 
             self.netlist.append(oldnetlist[i])
 
@@ -201,13 +204,13 @@ class hil_climber_nc:
 
         print("")
         print("verwijderen van nieuwe draden --------------------")
-        print(self.netlist)
         remove_number=0
+        cycle_count=self.reset_amount
 
-        while remove_rate > length_of_netlist-self.reset_amount:
+        while cycle_count>0:
             print("")
-            remove_number = remove_rate-1
-            print(f"REMOVE WIRE IN PLACE {remove_number}-------------------------------------------------------------------------")
+            remove_number = -1
+            print(f"REMOVE OLD WIRE TO RESET GRID{cycle_count}-------------------------------------------------------------------------")
             print(f"remove_rate: {remove_rate}")
             print(f"todat test: {length_of_netlist-self.reset_amount}")
             print(f"lengte van de netlist {len(self.netlist)} lengte wirepathlist: {len(self.grid_edit.wirepaths_list)}")
@@ -218,16 +221,17 @@ class hil_climber_nc:
             print(f"dit is het pad:")
 
 
-            print(f"test1{self.grid_edit.wirepaths_list[remove_number]}")
+            print(f"de wirelist{self.grid_edit.wirepaths_list[remove_number]}")
+            print(f"de wirepathlist: {self.grid_edit.wirepaths_list}")
+            print(f"de netlist die moet matchen: {self.netlist}")
             #print(f"test1{self.grid_edit.wirepaths_list[remove_number]}")
-            remove_number-=1
             #print(f"test2 met remove nummer {remove_number} geeft list {self.grid_edit.wirepaths_list[remove_number]}")
             
             print(self.grid_edit.wirepaths_list[remove_number])
             print("")
 
             remove_wire=self.grid_edit.wirepaths_list[remove_number] #verwijdert de path
-            self.netlist.pop(remove_number+1)#verwijdert de connection
+            self.netlist.pop(remove_number)#verwijdert de connection
             
             self.remove_wire_connection(self.grid_edit.wirepaths_list[remove_number], remove_number)
 
@@ -240,10 +244,10 @@ class hil_climber_nc:
             print(f"remove wire teskt{remove_wire}")
 
             print(self.netlist)
-            print(f"test welke netlist connectie wordt weg gehaald{self.netlist[remove_number]}")
+            #print(f"test welke netlist connectie wordt weg gehaald{self.netlist[remove_number]}")
             print(remove_number)
 
-            remove_rate-=1
+            cycle_count-=1
 
         
         print("test hij komt uit de loop")
@@ -280,7 +284,7 @@ class hil_climber_nc:
 
         loopcounter=0
 
-        while loopcounter<100: #datetime.now()<eind_tijd:
+        while loopcounter<3: #datetime.now()<eind_tijd:
             print(f"de loop is nog nog bezig...({loopcounter})")
             print("")
             print("")
@@ -292,10 +296,11 @@ class hil_climber_nc:
                 valid_check=1 #succes = ja
                 valid_count+=1
             else:
-                valid_check=2 #succes = nee
+                valid_check=1 #succes = nee
                 invalid_count+=1
 
-            print(self.grid_edit.wirecount, self.grid_edit.wirecrosscount)
+            print(self.grid_edit.wirecount) 
+            print(self.grid_edit.wirecrosscount)
             
             nieuwe_score=self.grid_edit.score
             print(f"de nieuwe score is:({nieuwe_score}) de oude score is:({self.lowest_score})")
@@ -311,9 +316,12 @@ class hil_climber_nc:
                 improvementcoun+=1
                 #hou de nieuwe grid en reset de minimale score
 
-            elif valid_check==2:
-                print("dus de oude score wordt behouden")
+            elif valid_check==1:
+                print("dus de oude grid wordt terug gezet")
+                print("remove_nieuw_wires")
                 self.remove_nieuw_wires()
+
+                print("reset_oude_grid")
                 self.reset_oude_grid(oldwirelist, remakenetlist)
                 #maak de oude grid weer aan als de score hoger is
 

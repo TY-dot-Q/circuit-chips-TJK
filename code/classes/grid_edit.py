@@ -195,11 +195,12 @@ class grid_edit:
     def remove_wire(self, y, x, z):
         """verwijdert een wire op een opgegeven locatie in de grid (neemt y, x, z in als input voor de coordinaten)"""
         if self.grid[z][y][x]=="+":
-            if self.grid[z][y][x]==0:
+            if self.wire_cross_count!=1:
                 self.grid[z][y][x]=0
                 print(f"wire op locatie y{y}, x{x}, z{z} succesvol verwijdert")
             else:
                 self.wire_crossing_count[z][y][x]-=1
+                print(f"wirecountverlaagt er staat dus nog steeds een draad")
         else:
             print(f"er is op locate y{y}, x{x}, z{z} geen wire gevonden.")
     

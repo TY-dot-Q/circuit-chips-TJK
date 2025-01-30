@@ -26,8 +26,8 @@ if __name__ == "__main__":
     mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
-    grid_path="data/chip_1/print_1.csv"
-    netlist_path="data/chip_1/netlist/netlist_2.csv"
+    grid_path="data/chip_0/print_0.csv"
+    netlist_path="data/chip_0/netlist/netlist_1.csv"
 
     # maak de grid aan        
     start_obj.Auto_start_functie(grid_path)
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     
 
     #----------------No cross finder-----------------------
-    reset_wires = 5 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
+    reset_wires = 2 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
     reloop_time = 5 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
     mh_nc_obj.netlist_looper(netlist_list)
     hil_climber_nc_obj.start_hill_climb(reset_wires, netlist_list, reloop_time)
@@ -70,12 +70,14 @@ if __name__ == "__main__":
     #output_obj.print_grid() 
 
     
-    output_obj.output_to_csv(match_wires, netlist_path, wirecount)
+    output_obj.output_to_csv(match_wires, netlist_path)
 
     # schrijf de resultaten naar het bestand wirepaths.csv
     output_obj.write_to_csv(wirecount)
    
     # 3d visualisatie
+
+    output_obj.print_grid()
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
