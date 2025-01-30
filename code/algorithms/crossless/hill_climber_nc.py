@@ -265,7 +265,7 @@ class hil_climber_nc:
             # Compute cost and score
         self.output.costen_berekening(wirecount)
         match_wires = self.user_input.match_wirepaths_to_nets(self.netlist)
-        self.output.write_to_csv(wirecount)
+        self.output.write_to_csv(wirecount, "test_hill_climb")
         print(self.grid_edit.valide_counter, self.grid_edit.netlist_counter)
 
     def loop_climb(self, loop):

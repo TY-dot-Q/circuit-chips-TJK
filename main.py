@@ -105,11 +105,11 @@ if __name__ == "__main__":
         print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
 
     # Sla resultaten op in een csv en visualiseer
-    #row = output_obj.search_row(name_file)
-    #output_obj.load_best_result(name_file, row)
-    #match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
-    #output_obj.output_to_csv(match_wires, netlist_path)
-    #output_obj.visualisatie()
+    row = output_obj.search_row(name_file)
+    output_obj.load_best_result(name_file, row)
+    match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
+    output_obj.output_to_csv(match_wires, netlist_path)
+    output_obj.visualisatie()
 
     # Voeg dit aan het einde van je script toe, nadat de visualisatie is uitgevoerd.
     output_obj.visual()
