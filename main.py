@@ -77,7 +77,7 @@ if __name__ == "__main__":
         # Run the algorithm on the netlist
         algorithm_obj.netlist_looper(netlist_list)
 
-        # berekent aantal draden en kurisingen
+        # berekent aantal draden en kruisingen
         wirecount = grid_edit_obj.update_wirecount()
         grid_edit_obj.find_wirecross() 
 
