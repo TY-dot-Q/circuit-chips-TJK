@@ -21,7 +21,9 @@ In de mainfolder bevinden zich verschillende subfolders en bestanden:
 * requirements.txt - hierin staan alle benodigdheden om de code succesvol te draaien
 * Code - Hierin staan de verschillende code onderdelen van hert programma, 
   zoals de algoritmes en heurstieken, de visualisatie en de classes.
-* Data - Hierin bevinden zich alle datafiles zoals de netlist en de gates.
+* Data - Hierin bevinden zich alle datafiles zoals de netlist en de gates 
+  en de resultatenmap waarin gegenereerde informatie zit bij het runnen 
+  van de verschillende algoritmes - De csv bestanden zijn verwijderd vanwege het geheugen.
   Ook worden hier de csv bestanden opgeslagen die het programma produceert 
   in output.csv en data.csv.
 * Scripts - alle scripts die gebruikt worden om het programma te laten draaien
