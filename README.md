@@ -49,29 +49,29 @@ alle output die het programma produceert komt in de onderstaande map:
 """
 
 # Uitleg algoritmes
+## A*-pathfinding
+Het algoritme vindt een valide oplossing door over de netlist heen te loopen en voor iedere combinatie aan gates een pad te vinden. Dat pad vindt het door te starten bij de coördinaten van de eerste gate. Hij berekent dan voor de buurcoördinaten, met een met de Manhattan Distance heuristiek, de kosten om naar de coördinaten van de tweede gate te gaan. Hij doet de kosten en coördinaten van alle buren in een prioriteitslijst en gaat dan de goedkoopste optie als eerst af, terwijl hij bijhoudt waar hij vandaan komt. Dit wordt herhaald totdat hij bij het eindpunt is gekomen. Dan reconstrueert hij het pad terug naar het begin en maakt hij een wire aan en past dat aan in het grid. Dit wordt herhaald voor elke combinatie in de netlist. 
 
 
-## hill climber
-De hill climber algortime is een algortime dat draden tussen gates weghaalt en opnieuw probeert te leggen in een andere volgorde
+## Hill Climber
+De Hill Climber algoritme is een algoritme dat draden tussen gates weghaalt en opnieuw probeert te leggen in een andere volgorde.
 Dit kan bepaalde draden uit de knop halen en helpt met het vinden van een valide oplossing.
-nadat het alle draden heeft verbonden als dat niet direct gebeurt, gaat het door met het herleggen van draden en zoekt het een zo'n best mogelijke oplossing.
+Nadat het alle draden heeft verbonden als dat niet direct gebeurt, gaat het door met het herleggen van draden en zoekt het een zo'n best mogelijke oplossing.
 Dit doet het door de beste gevonden score oplossing te gebruiken om draden weg te halen tot het een betere vindt.
 
 Op dit moment werkt alleen de hill_climber_nc omdat hij moeite had met de parallel draden weghalen en controleren
 
-Hij werkt nu door in de main een x aantal draden op te geven die het weghaalt elke loop en een aantal minuten dat hij moet loopen
-hij blijft zolang loopen en geeft het beste resultaat, of score of meeste verbonden draden. 
+Hij werkt nu door in de main een aantal draden op te geven die het weghaalt elke loop en een aantal minuten dat hij moet loopen.
+Hij blijft zolang loopen en geeft het beste resultaat, score of meeste verbonden draden. 
 
 let op de seed hij doet nu niks 100% random maar volgens de seed. 
 
 ## mh_nc
-dit is de standaard A* algortime om paden te vinden maar deze kan geen kruisingen aanmakken.
+Dit is de standaard A* algortime om paden te vinden maar deze kan geen kruisingen aanmaken.
 
 ## netlist_reorder
-dit pakt informatie van de netlist en her orderd deze gebaseerd op hoe belangrijk de connectie is. 
-hoe belangrijk de connectie is wordt gebasseerd op de afstand tot het midden, afstand tot de andere gate en hoeveel draden verbonden zijn aan deze gate deze waarde telt 5X meer
-dan de andere twee omdat het helpt met valide oplossingen te genereren
-
+Dit pakt informatie van de netlist en reorderd deze gebaseerd op hoe belangrijk de connectie is. 
+Hoe belangrijk de connectie is wordt gebasseerd op de afstand tot het midden, afstand tot de andere gate en hoeveel draden verbonden zijn aan deze gate. Deze laatste waarde telt 5X meer dan de andere twee. Dat komt omdat dat meer valide oplossingen genereerde.
 
 
 # Dank
