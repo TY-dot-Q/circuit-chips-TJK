@@ -39,9 +39,7 @@ class hil_climber:
         self.netlist=real_netlist
         self.reset_amount=reset_amount
         
-        
-        #print(self.netlist) 
-        #print(reset_amount)
+
 
         if loop <=0:
             self.hill_climb()
