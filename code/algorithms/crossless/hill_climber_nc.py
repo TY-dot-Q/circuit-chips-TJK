@@ -61,7 +61,11 @@ class hil_climber_nc:
             self.hill_climb()
         else:
             self.manual_update()
-            self.lowest_score=self.grid_edit.score
+            if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter):
+                self.lowest_score=self.grid_edit.score
+                self.lowest_score+=400
+            else:
+                self.lowest_score=self.grid_edit.score
             print(f"lowest_score{self.lowest_score}")
             self.loop_climb(loop)
         
@@ -128,14 +132,14 @@ class hil_climber_nc:
             remakelist.append(((self.netlist[random_pick][0]), (self.netlist[random_pick][1])))
 
             ##print("")
-            print(f"TEST HILL_CLIMB LIJN VERWIJDERING NUMMER {i+1}---------------------------------------------------")
+            #print(f"TEST HILL_CLIMB LIJN VERWIJDERING NUMMER {i+1}---------------------------------------------------")
             #print(f"netlist{self.netlist}")
             ##print(f"volledige lijn: {self.grid_edit.wirepaths_list}")
 
-            print(f"random pick is: {random_pick}")
-            print (f"netlist: {len(self.netlist)} -- wirepaths: {len(self.grid_edit.wirepaths_list)}")
+            #print(f"random pick is: {random_pick}")
+            #print (f"netlist: {len(self.netlist)} -- wirepaths: {len(self.grid_edit.wirepaths_list)}")
             
-            print(f"{i}tussen gate {self.netlist[random_pick][0]} {self.grid_edit.gate_dict[self.netlist[random_pick][0]]} en  {self.netlist[random_pick][1]} {self.grid_edit.gate_dict[self.netlist[random_pick][1]]}")
+            #print(f"{i}tussen gate {self.netlist[random_pick][0]} {self.grid_edit.gate_dict[self.netlist[random_pick][0]]} en  {self.netlist[random_pick][1]} {self.grid_edit.gate_dict[self.netlist[random_pick][1]]}")
             ##print(f"wire path heeft een lengte van ({len(wireconnection)})")
             ##print("")
             ##print(f"{wireconnection}")
@@ -290,18 +294,19 @@ class hil_climber_nc:
         invalid_count=0
         valid_count=0
         improvementcoun=0
+        start_invalid=False
 
         loopcounter=0
 
-        while loopcounter<70: #datetime.now()<eind_tijd:
-            print(f"de loop is nog nog bezig...({loopcounter})")
-            print("")
+        while datetime.now()<eind_tijd:
+            #print(f"de loop is nog nog bezig...({loopcounter})")
+            #print("")
             ##print("")
             oldwirelist, remakenetlist =self.hill_climb()
             
             self.manual_update()
 
-            print(f"check 1 = {len(self.grid_edit.overlapping_lijst)} check 2 = {self.grid_edit.valide_counter} check 3 = {self.grid_edit.netlist_counter}")
+            #print(f"check 1 = {len(self.grid_edit.overlapping_lijst)} check 2 = {self.grid_edit.valide_counter} check 3 = {self.grid_edit.netlist_counter}")
 
             if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter):
                 valid_check=True #succes = ja
@@ -310,6 +315,7 @@ class hil_climber_nc:
                 valid_check=False #succes = nee
                 invalid_count+=1
 
+            #zorgt dat de valid check hierboven blijft werken
             self.grid_edit.valide_counter =0
 
             ##print(self.grid_edit.wirecount) 
@@ -321,10 +327,10 @@ class hil_climber_nc:
             ##print("")
             ##print(self.netlist)
 
-            print(f"lowest score check : {self.lowest_score} -- {nieuwe_score} -- {valid_check}")
+            #print(f"lowest score check : {self.lowest_score} -- {nieuwe_score} -- {valid_check}")
 
             if self.lowest_score>nieuwe_score and valid_check==True:
-                print("dus de nieuwe score wordt behouden")
+                #print("dus de nieuwe score wordt behouden")
                 self.lowest_score=nieuwe_score
                 improvementcoun+=1
                 self.optimum_wirelist=self.grid_edit.wirepaths_list
@@ -332,11 +338,11 @@ class hil_climber_nc:
                 #hou de nieuwe grid en reset de minimale score
 
             elif valid_check==False:
-                print("dus de oude grid wordt terug gezet")
-                print("remove_nieuw_wires")
+                #print("dus de oude grid wordt terug gezet")
+                #print("remove_nieuw_wires")
                 self.remove_nieuw_wires()
 
-                print("reset_oude_grid")
+                #print("reset_oude_grid")
                 self.reset_oude_grid(oldwirelist, remakenetlist)
                 #maak de oude grid weer aan als de score hoger is
 
