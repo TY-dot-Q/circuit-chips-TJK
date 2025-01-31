@@ -22,12 +22,12 @@ if __name__ == "__main__":
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
     hil_climber_obj=hil_climber(grid_edit_obj)
 
-    hil_climber_nc_obj=hil_climber_nc(grid_edit_obj)
-    mh_nc_obj=mh_nc(grid_edit_obj)
+    #hil_climber_nc_obj=hil_climber_nc(grid_edit_obj)
+    #mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Paden van de grid en netlist die je wilt oplossen.
-    grid_path="data/chip_0/print_0.csv"
-    netlist_path="data/chip_0/netlist/netlist_1.csv"
+    grid_path="data/chip_1/print_1.csv"
+    netlist_path="data/chip_1/netlist/netlist_1.csv"
 
     # Pad voor output opslag -> beste resultaat.
     name_file = "data/data.csv"
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     #----------------Netlist passer------------------------
     netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
-    #netlist_list=user_input_obj.load_netlist(netlist_path)
+    netlist_list=user_input_obj.load_netlist(netlist_path)
     
     
     #----------------No cross finder-----------------------
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     #optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
     
     #----------------Manhatten distance---------------------
-    #algorithm_obj.netlist_looper(netlist_list)
+    algorithm_obj.netlist_looper(netlist_list)
 
 
     #----------------Hill climber---------------------------
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     
     # ----------------iteration runner----------------------------
-    # Run the algorithm for a number of iterations
+    """# Run the algorithm for a number of iterations
     max_iterations = 100000
     iterations = input("Hoeveel iteraties wil je runnen?: ")
     while not iterations.isdigit() or int(iterations) > max_iterations:
@@ -75,21 +75,18 @@ if __name__ == "__main__":
         grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Run the algorithm on the netlist
-        algorithm_obj.netlist_looper(netlist_list)
+        algorithm_obj.netlist_looper(netlist_list)"""
 
-        # berekent aantal draden en kruisingen
-        wirecount = grid_edit_obj.update_wirecount()
-        grid_edit_obj.find_wirecross() 
+    # berekent aantal draden en kruisingen
+    wirecount = grid_edit_obj.update_wirecount()
+    grid_edit_obj.find_wirecross() 
 
-        # kosten en scores berekenen
-        output_obj.costen_berekening(wirecount)
-        user_input_obj.match_wirepaths_to_nets(netlist_list)
-        output_obj.write_to_csv(wirecount, name_file)
+    # kosten en scores berekenen
+    output_obj.costen_berekening(wirecount)
+    user_input_obj.match_wirepaths_to_nets(netlist_list)
+    output_obj.write_to_csv(wirecount, name_file)
 
-        # print de grid in de terminal (kan uitgezet worden met '#')
-        output_obj.print_grid() 
 
-        print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
 
     # Sla resultaten op in een csv en visualiseer
     output_obj.load_best_result(name_file)
