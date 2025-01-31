@@ -183,11 +183,11 @@ class mh_nc():
         kortste_pad = self.reconstruct_path(path_traversed, start, current)
 
         #prints shortest path to terminal 
-        print("")
-        print(f"gate {gate_1} {self.grid_edit.gate_dict[gate_1]} en gate {gate_2} {self.grid_edit.gate_dict[gate_2]}")
-        print(f"is het kortst (lengte:{len(kortste_pad)}) gevonden pad:")
-        print(kortste_pad)
-        print("")
+        #print("")
+        #print(f"gate {gate_1} {self.grid_edit.gate_dict[gate_1]} en gate {gate_2} {self.grid_edit.gate_dict[gate_2]}")
+        #print(f"is het kortst (lengte:{len(kortste_pad)}) gevonden pad:")
+        #print(kortste_pad)
+        #print("")
         return kortste_pad
 
     def reconstruct_path(self, origin: dict[(tuple[int]), (tuple[int])], start: (tuple[int]), end: (tuple[int])) -> list[(tuple[int])]:
@@ -253,10 +253,10 @@ class mh_nc():
             self.grid_edit.add_wire_parallel_set(path)
 
         self.grid_edit.wirepaths_list = wirepaths_list
-        print("")
-        print("complete wirepath list:")
-        print(self.grid_edit.wirepaths_list)
-        print("")
+        #print("")
+        #print("complete wirepath list:")
+        #print(self.grid_edit.wirepaths_list)
+        #print("")
 
     # def run(self, iterations):
     #     """
