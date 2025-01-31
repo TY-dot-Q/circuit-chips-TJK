@@ -50,7 +50,7 @@ alle output die het programma produceert komt in de onderstaande map:
 
 # Uitleg algoritmes
 ## A*-pathfinding
-Het algoritme vindt een valide oplossing door over de netlist heen te loopen en voor iedere combinatie aan gates een pad te vinden. Dat pad vindt het door te starten bij de coördinaten van de eerste gate. Hij berekent dan voor de buurcoördinaten, met een met de Manhattan Distance heuristiek, de kosten om naar de coördinaten van de tweede gate te gaan. Hij doet de kosten en coördinaten van alle buren in een prioriteitslijst en gaat dan de goedkoopste optie als eerst af, terwijl hij bijhoudt waar hij vandaan komt. Dit wordt herhaald totdat hij bij het eindpunt is gekomen. Dan reconstrueert hij het pad terug naar het begin en maakt hij een wire aan en past dat aan in het grid. Dit wordt herhaald voor elke combinatie in de netlist. 
+Het algoritme vindt een valide oplossing door over de netlist heen te loopen en voor iedere combinatie aan gates een pad te vinden. Dat pad vindt het door te starten bij de coördinaten van de eerste gate. Hij berekent dan voor de buurcoördinaten, met een met de Manhattan Distance heuristiek, de kosten om naar de coördinaten van de tweede gate te gaan. Hij randomized ook de lijst van neighbors waar hij over loopt om wat variatie in het pad te creëren. Hij doet de kosten en coördinaten van alle buren in een prioriteitslijst en gaat dan de goedkoopste optie als eerst af, terwijl hij bijhoudt waar hij vandaan komt. Dit wordt herhaald totdat hij bij het eindpunt is gekomen. Dan reconstrueert hij het pad terug naar het begin en maakt hij een wire aan en past dat aan in het grid. Dit wordt herhaald voor elke combinatie in de netlist.
 
 
 ## Hill Climber
@@ -64,7 +64,7 @@ Op dit moment werkt alleen de hill_climber_nc omdat hij moeite had met de parall
 Hij werkt nu door in de main een aantal draden op te geven die het weghaalt elke loop en een aantal minuten dat hij moet loopen.
 Hij blijft zolang loopen en geeft het beste resultaat, score of meeste verbonden draden. 
 
-let op de seed hij doet nu niks 100% random maar volgens de seed. 
+Let op de seed hij doet nu niks 100% random maar volgens de seed. 
 
 ## mh_nc
 Dit is de standaard A* algortime om paden te vinden maar deze kan geen kruisingen aanmaken.
@@ -78,5 +78,3 @@ Hoe belangrijk de connectie is wordt gebasseerd op de afstand tot het midden, af
 * Alle TA's van de minor programmeren 
 * Martijn, Jelle, Wouter 
 * Onze begeleiders - Jacob & Jona
-
-
