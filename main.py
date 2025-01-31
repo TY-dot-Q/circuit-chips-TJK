@@ -24,9 +24,11 @@ if __name__ == "__main__":
     hil_climber_nc_obj=hil_climber_nc(grid_edit_obj)
     mh_nc_obj=mh_nc(grid_edit_obj)
     
-    # Path van de grid en netlist die je wilt oplossen.
+    # Paden van de grid en netlist die je wilt oplossen.
     grid_path="data/chip_0/print_0.csv"
     netlist_path="data/chip_0/netlist/netlist_1.csv"
+
+    # Pad voor output opslag -> beste resultaat.
     name_file = "data/test.csv"
 
     # maakt file weer leeg
@@ -41,15 +43,17 @@ if __name__ == "__main__":
     #netlist_list=user_input_obj.load_netlist(netlist_path)
     
     
-    
-
     #----------------No cross finder-----------------------
-    reset_wires_amount = 3 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
-    reloop_time = 1 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
+    # hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
+    reset_wires_amount = 3 #default = 3
+
+    # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
+    reloop_time = 1 # default = 1
+
     mh_nc_obj.netlist_looper(netlist_list)
     optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
     
-    print(f"test32{optimum}")
+    print(f"{optimum}")
     #----------------Manhatten distance---------------------
     #algorithm_obj.netlist_looper(netlist_list)
 
@@ -98,11 +102,11 @@ if __name__ == "__main__":
         # Run the algorithm on the netlist
         #algorithm_obj.netlist_looper(netlist_list)
 
-        # Calculate wire count and wire crossings
-        #wirecount = grid_edit_obj.update_wirecount()
-        #grid_edit_obj.find_wirecross() 
+        # berekent aantal draden en kurisingen
+        wirecount = grid_edit_obj.update_wirecount()
+        grid_edit_obj.find_wirecross() 
 
-        # Compute cost and score
+        # kosten en scores berekenen
         output_obj.costen_berekening(wirecount)
         user_input_obj.match_wirepaths_to_nets(netlist_list)
         output_obj.write_to_csv(wirecount, name_file)
@@ -110,11 +114,11 @@ if __name__ == "__main__":
         # print de grid in de terminal (kan uitgezet worden met '#')
         output_obj.print_grid() 
 
-        #print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
+        print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
 
     # Sla resultaten op in een csv en visualiseer
-   # row = output_obj.search_row(name_file)
-    #output_obj.load_best_result(name_file, row)
-    #match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
-    #output_obj.output_to_csv(match_wires, netlist_path)
-    #output_obj.visualisatie() 
+    row = output_obj.search_row(name_file)
+    output_obj.load_best_result(name_file, row)
+    match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
+    output_obj.output_to_csv(match_wires, netlist_path)
+    output_obj.visualisatie() 
