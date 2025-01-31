@@ -6,21 +6,25 @@ class auto_functions:
 
     def Auto_start_functie(self, user_path) ->None:
             """
-            Maakt automatisch een grid aan. Dit checkt voor de x en y waarde die de grid moet krijgen, maakt een grid aan en zet dan de gates in de grid. 
+            Maakt automatisch een grid aan. 
+            Dit checkt voor de x en y waarde die de grid moet krijgen, 
+            en zet dan de gates in de grid. 
             """
             user_input_obj = user_input(self.grid_edit)
 
-            #geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
-            
+            # geef eerst de maximaal breedte en hoogte y en x van de grid (hoogte standaard 3)
             max_y, max_x = user_input_obj.max_grid_values(user_path)
-            #print(max_x, max_y)
             self.grid_edit.grid_create(max_y, max_x) #maakt de grid met de opgegeven hoogte en breedt
             
             # user_path=input("geef de file path op: ")
             user_input_obj.load_gates(user_path)
 
     def wire_list_laying(self, connection_list):
-        """gaat over de opgegeven wire list en gebruikt een andere functie (nu connect_two_gates) om de draden te verbinden"""
+        """
+        gaat over de opgegeven wire list 
+        en gebruikt een andere functie (nu connect_two_gates) 
+        om de draden te verbinden
+        """
 
         wire_path_count=0
 

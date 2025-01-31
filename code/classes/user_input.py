@@ -20,7 +20,7 @@ class user_input:
     
     def load_gates(self, file_path: str)->None:
         """
-        voegt gates toe in het grid, 
+        voegt gates toe in het grid door de functie add_gate in de grid_edit klasse
         gebruikt de file path waar de grid locaties staan opgeslagen
         """
 
@@ -63,7 +63,7 @@ class user_input:
     
     def load_netlist(self, file_path: str)->None:
             """
-            voegt alle verbindingen tussen de gates toe aan een lijst en geeft deze lijst terug. 
+            Voegt alle verbindingen tussen de gates toe aan een lijst en geeft deze lijst terug. 
             Heeft een file_path nodig met de verbonden gates
             """
             connection_list=[]
@@ -164,7 +164,8 @@ class user_input:
 
     def match_wirepaths_to_nets(self, netlist_list: list)-> list:
         """
-        Koppelt de juiste wirepaths aan de netlist-verbindigen voor output.csv.
+        Koppelt de juiste wirepaths aan de netlist-verbindigen en returnt deze in een tuple
+        voor de functie output_to_csv.
         """
         matched_wires = []
 
@@ -178,6 +179,8 @@ class user_input:
                 for path in self.grid_edit.wirepaths_list:
                     if path[0] == gate_a and path[-1] == gate_b:
                         matched_wires.append((chip_a, chip_b, path))
+
+                        # counter voor validatiecheck
                         self.grid_edit.valide_counter += 1
                         break
         return matched_wires 
