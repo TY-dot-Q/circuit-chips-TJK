@@ -261,8 +261,8 @@ class output:
                     'pad': str(self.grid_edit.wirepaths_list),
                     'overlappingen': str(self.grid_edit.overlapping_lijst),
                     'kruisingen': str(self.grid_edit.wirecross_list),
-                    'succes': "Ja" if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter) else "Nee",  # klopt niet - als er geen overlapping is dus twee twee 
-                    'score': self.grid_edit.score,  # klopt niet
+                    'succes': "Ja" if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter) else "Nee",  # checkt naar valide oplossing
+                    'score': self.grid_edit.score,  # score van hele netwerk
                     'aantal_wires': wirecount,  # Aantal draden in netwerk
                     'aantal_kruisingen': self.grid_edit.wirecrosscount  # aantal kruisingen 
                 }
