@@ -22,8 +22,8 @@ if __name__ == "__main__":
     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
     hil_climber_obj=hil_climber(grid_edit_obj)
 
-    #hil_climber_nc_obj=hil_climber_nc(grid_edit_obj)
-    #mh_nc_obj=mh_nc(grid_edit_obj)
+    hil_climber_nc_obj=hil_climber_nc(grid_edit_obj)
+    mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Paden van de grid en netlist die je wilt oplossen.
     grid_path="data/chip_1/print_1.csv"
@@ -46,13 +46,13 @@ if __name__ == "__main__":
     
     #----------------No cross finder-----------------------
     # hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
-    #reset_wires_amount = 3 #default = 3
+    reset_wires_amount = 3 #default = 3
 
     # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
-    #reloop_time = 1 # default = 1
+    reloop_time = 1 # default = 1
 
-    #mh_nc_obj.netlist_looper(netlist_list)
-    #optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
+    mh_nc_obj.netlist_looper(netlist_list)
+    optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
     
     #----------------Manhatten distance---------------------
     algorithm_obj.netlist_looper(netlist_list)

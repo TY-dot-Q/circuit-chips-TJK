@@ -286,8 +286,6 @@ class hil_climber_nc:
             # Compute cost and score
         self.output.costen_berekening(wirecount)
         match_wires = self.user_input.match_wirepaths_to_nets(self.netlist)
-        self.output.write_to_csv(wirecount, "test_hill_climb")
-        ##print(self.grid_edit.valide_counter, self.grid_edit.netlist_counter)
 
     def loop_climb(self, loop):
         """loop over de hill_climb om meerdere keeren het aantal draden te verwijderen """
@@ -380,14 +378,12 @@ class hil_climber_nc:
         returnlist=self.optimum_wirelist
         
 
-        with open("histogram.csv", mode="w", newline="") as file:
+        with open("data/histogram.csv", mode="w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows([[value] for value in histolist])
 
-        with open("resultimprovement.csv", mode="w", newline="") as file:
+        with open("/data/resultimprovement_hilclimber.csv", mode="w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows(improvelist)
-
-
 
         return returnlist

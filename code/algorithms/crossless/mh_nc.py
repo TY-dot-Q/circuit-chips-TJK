@@ -253,35 +253,3 @@ class mh_nc():
             self.grid_edit.add_wire_parallel_set(path)
 
         self.grid_edit.wirepaths_list = wirepaths_list
-        #print("")
-        #print("complete wirepath list:")
-        #print(self.grid_edit.wirepaths_list)
-        #print("")
-
-    # def run(self, iterations):
-    #     """
-    #     Run the algorithm for the given amount of iterations
-    #     Also used to see which parameters give the lowest score
-    #     """
-    #     lowest_score = float('inf')
-    #     ls_avg = float('inf')
-    #     ls_std = float('inf')
-
-    #     grid_edit_obj = grid_edit()
-    #     user_input_obj = user_input(grid_edit_obj)
-    #     output_obj = output(grid_edit_obj)
-    #     start_obj = auto_functions(grid_edit_obj)
-    #     algorithm_obj= MD(grid_edit_obj)
-    #     netlist_reorder_obj=netlist_reordering(grid_edit_obj)
-    #     grid_path="data/chip_1/print_1.csv"
-    #     netlist_path="data/chip_1/netlist/netlist_2.csv"
-
-    #     for iteration in range(interations):
-    #         start_obj.Auto_start_functie(grid_path)
-    #         netlist_list=netlist_reorder_obj.netlist_reorder(netlist_path)
-    #         netlist_list=user_input_obj.load_netlist(netlist_path)
-    #         algorithm_obj.netlist_looper(netlist_list)
-    #         wirecount = grid_edit_obj.update_wirecount()
-    #         grid_edit_obj.find_wirecross() 
-    #         output_obj.costen_berekening(wirecount)
-    #         print(grid_edit_obj.score)
