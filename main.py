@@ -29,7 +29,7 @@ if __name__ == "__main__":
     netlist_path="data/chip_0/netlist/netlist_1.csv"
 
     # Pad voor output opslag -> beste resultaat.
-    name_file = "data/test.csv"
+    name_file = "data/data.csv"
 
     # maakt file weer leeg
     open(name_file, 'w').close()
@@ -45,15 +45,14 @@ if __name__ == "__main__":
     
     #----------------No cross finder-----------------------
     # hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
-    reset_wires_amount = 3 #default = 3
+    #reset_wires_amount = 3 #default = 3
 
     # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
-    reloop_time = 1 # default = 1
+    #reloop_time = 1 # default = 1
 
-    mh_nc_obj.netlist_looper(netlist_list)
-    optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
+    #mh_nc_obj.netlist_looper(netlist_list)
+    #optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
     
-    print(f"{optimum}")
     #----------------Manhatten distance---------------------
     #algorithm_obj.netlist_looper(netlist_list)
 
@@ -76,7 +75,7 @@ if __name__ == "__main__":
         grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Run the algorithm on the netlist
-        #algorithm_obj.netlist_looper(netlist_list)
+        algorithm_obj.netlist_looper(netlist_list)
 
         # berekent aantal draden en kurisingen
         wirecount = grid_edit_obj.update_wirecount()
@@ -93,8 +92,7 @@ if __name__ == "__main__":
         print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
 
     # Sla resultaten op in een csv en visualiseer
-    row = output_obj.search_row(name_file)
-    output_obj.load_best_result(name_file, row)
+    output_obj.load_best_result(name_file)
     match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
     output_obj.output_to_csv(match_wires, netlist_path)
     output_obj.visualisatie() 

@@ -297,11 +297,13 @@ class output:
             # Voeg de chip en net toe aan de output
             writer.writerow([f"{chip_id}_net_{net_id}", self.grid_edit.score])
     
-    def search_row(self, name_file):
+    def load_best_result(self, name_file):
         """
-        Zoekt de rij met de beste score in het data CSV-bestand.
-        Geeft de rij van de beste terug als string 
+        Zoekt de rij met de beste score in het CSV-bestand
+        en laadt de resultaten in het grid_edit object.
+        Output_to_csv en visualisatie halen hier hun gegevens uit.
         """
+
         best_score = None
         best_row = None
 
@@ -315,26 +317,14 @@ class output:
                     # Eerste keer instellen of als een betere score wordt gevonden
                     if best_score is None or score < best_score:
                         best_score = score
-                        best_row = row 
+                        best_row = row
 
-        # Return de beste rij als deze is gevonden als 
         if best_row:
-            return best_row
-        
-    def load_best_result(self, name_file, best_row):
-        """
-        Neemt best row van search_row functie en
-        laadt de beste resultaten van het data CSV-bestand in de grid_edit object.
-        Hierdoor kunnen de gegevvens door output_to_csv en visualitatie worden gebruikt.
-        """
-
-        # Open CSV-bestand om de beste rij te zoeken
-        with open(name_file, 'r', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if row['nummer'] == best_row['nummer']:  # Vergelijk met het juiste nummer
-                    self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # zet string om naar lijst
-                    self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # zet string om naar lijst
-                    self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # zet string om naar lijst
-                    self.grid_edit.score = int(best_row['score'])  # Update de beste score
-                    print(f"Beste score geladen: {self.grid_edit.score}, nummer {best_row['nummer']}")
+            # Laad de beste resultaten in het grid_edit object
+            self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # Zet string om naar lijst
+            self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # Zet string om naar lijst
+            self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # Zet string om naar lijst
+            self.grid_edit.score = int(best_row['score'])  # Update de beste score
+            print(f"Beste score geladen: {self.grid_edit.score}, nummer {best_row['nummer']}")
+        else:
+            print("")
