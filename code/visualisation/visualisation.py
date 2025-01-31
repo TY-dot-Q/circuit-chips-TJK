@@ -205,7 +205,8 @@ class output:
     def visualisatie(self):
         """
         Visualiseert de gates en wires in een 3D-omgeving.
-        Gates worden weergegeven als blauwe punten en wires als rode lijnen.
+        Gates worden weergegeven als blauwe punten en wires als rode lijnen
+        Je kan kiezen tussen animatie of afbeelding.
         """
         print("-----visualisatie-----")
         print("Start met maken van de animatie")
@@ -234,8 +235,9 @@ class output:
     
     def write_to_csv(self, wirecount, name_file): # DEZE TOEVOEGEN
         """
-        Schrijft de huidige wirepaths, overlappingen, kruisingen en score naar een CSV-bestand.
-        Deze functie wordt voornamelijk gebruikt voor data-analyse en het bijhouden van de voortgang.
+        Schrijft de huidige wirepaths, overlappingen, kruisingen en score naar een CSV-bestand genaamd data.
+        Deze functie wordt voornamelijk gebruikt voor data-analyse en het bijhouden van de voortgang
+        het bestand staat in de map 'data'.
         """
         # Open het CSV-bestand in 'append' mode
         with open(name_file, 'a', newline='') as csvfile:
@@ -277,7 +279,7 @@ class output:
     def output_to_csv(self, matched_wires, netlist_path):
         """
         Deze functie slaat beste resultaat op in output.csv volgens richtlijn van de opdracht
-        Overschrijft het bestand bij elke run.
+        Overschrijft het bestand bij elke run. De output staat in de map data.
         """
         output_file = "data/output.csv"
         split_parts = netlist_path.split("/")
@@ -298,6 +300,7 @@ class output:
     def search_row(self, name_file):
         """
         Zoekt de rij met de beste score in het data CSV-bestand.
+        Geeft de rij van de beste terug als string 
         """
         best_score = None
         best_row = None
@@ -314,13 +317,15 @@ class output:
                         best_score = score
                         best_row = row 
 
-        # Return de beste rij als deze is gevonden
+        # Return de beste rij als deze is gevonden als 
         if best_row:
             return best_row
         
     def load_best_result(self, name_file, best_row):
         """
-        Laadt de beste resultaten van het data CSV-bestand in de grid_edit object.
+        Neemt best row van search_row functie en
+        laadt de beste resultaten van het data CSV-bestand in de grid_edit object.
+        Hierdoor kunnen de gegevvens door output_to_csv en visualitatie worden gebruikt.
         """
 
         # Open CSV-bestand om de beste rij te zoeken
@@ -328,8 +333,8 @@ class output:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 if row['nummer'] == best_row['nummer']:  # Vergelijk met het juiste nummer
-                    self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # Converteer string naar lijst
-                    self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # Converteer string naar lijst
-                    self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # Converteer string naar lijst
+                    self.grid_edit.wirepaths_list = ast.literal_eval(best_row['pad'])  # zet string om naar lijst
+                    self.grid_edit.overlapping_lijst = ast.literal_eval(best_row['overlappingen'])  # zet string om naar lijst
+                    self.grid_edit.wirecross_list = ast.literal_eval(best_row['kruisingen'])  # zet string om naar lijst
                     self.grid_edit.score = int(best_row['score'])  # Update de beste score
                     print(f"Beste score geladen: {self.grid_edit.score}, nummer {best_row['nummer']}")
