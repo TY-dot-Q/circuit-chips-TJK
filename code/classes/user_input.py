@@ -1,6 +1,9 @@
 import csv, os
 
 class user_input:
+    """
+    Deze klasse bevat alle functies die te maken hebben met het inlezen van bestanden en het printen van de score
+    """
     def __init__(self, grid_edit_obj):
         self.grid_edit=grid_edit_obj
 
@@ -170,7 +173,7 @@ class user_input:
             gate_a = self.grid_edit.gate_dict.get(chip_a)
             gate_b = self.grid_edit.gate_dict.get(chip_b)
             if gate_a and gate_b:
-                
+
                 # Zoek de wirepath die begint bij gate_a en eindigt bij gate_b
                 for path in self.grid_edit.wirepaths_list:
                     if path[0] == gate_a and path[-1] == gate_b:
