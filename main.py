@@ -14,6 +14,7 @@ if __name__ == "__main__":
 
     # maakt een instantie van grid edit aan en geeft dit door aan andere classes
     grid_edit_obj = grid_edit()
+
     user_input_obj = user_input(grid_edit_obj)
     output_obj = output(grid_edit_obj)
     start_obj = auto_functions(grid_edit_obj)
@@ -70,7 +71,6 @@ if __name__ == "__main__":
     while not iterations.isdigit() or int(iterations) > max_iterations:
         iterations = input("Voer een geldig getal in tussen 1 en 100000: ")
     iterations = int(iterations)
-
     for i in range(iterations):
         grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
