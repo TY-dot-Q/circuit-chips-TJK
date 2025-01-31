@@ -27,6 +27,7 @@ class grid_edit:
         self.parallel_set = set()
         self.valide_counter = 0
         self.netlist_counter = 0
+        self.histolijst_nc=[]
 
         self.wire_cross_count=[]
 

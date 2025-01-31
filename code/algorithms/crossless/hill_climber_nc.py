@@ -5,6 +5,8 @@ from code.algorithms.crossless.mh_nc import mh_nc
 import time
 from datetime import datetime, timedelta
 
+import csv, os
+
 from code.classes.user_input import user_input
 from code.visualisation.visualisation import output
 
@@ -35,7 +37,7 @@ class hil_climber_nc:
         self.optimum_wirelist=[]
 
         correct_gate_check=0
-        self.seed=31
+        self.seed=800
 
         #testen (houdt bij wat de aanpassingen zijn die het maakt)
         self.first_length=-1
@@ -63,10 +65,10 @@ class hil_climber_nc:
             self.manual_update()
             if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter):
                 self.lowest_score=self.grid_edit.score
-                self.lowest_score+=400
+                self.lowest_score=self.grid_edit.score
                 self.valid_check=True
             else:
-                self.lowest_score=self.grid_edit.score
+                self.lowest_score=self.grid_edit.score+400
                 self.valid_check=False
             print(f"lowest_score{self.lowest_score}")
             self.loop_climb(loop)
@@ -296,6 +298,9 @@ class hil_climber_nc:
         highest_valid_count=0
         issuessolved=0
 
+        histolist=[]
+        improvelist=[]
+
 
         invalid_count=0
         valid_count=0
@@ -317,6 +322,7 @@ class hil_climber_nc:
             if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter):
                 valid_check=True #succes = ja
                 valid_count+=1
+                histolist.append(self.grid_edit.score)
             else:
                 valid_check=False #succes = nee
                 invalid_count+=1
@@ -329,11 +335,13 @@ class hil_climber_nc:
             
             nieuwe_score=self.grid_edit.score
 
-            if self.grid_edit.valide_counter>highest_valid_count:
-                highest_valid_count=self.grid_edit.valide_counter
-                issuessolved+=1
-                self.optimum_wirelist=self.grid_edit.wirepaths_list
-                valid_check=True
+            #if self.grid_edit.valide_counter>highest_valid_count:
+                #highest_valid_count=self.grid_edit.valide_counter
+                #issuessolved+=1
+                #self.optimum_wirelist=self.grid_edit.wirepaths_list
+                #valid_check=True
+
+
             ##print(f"de nieuwe score is:({nieuwe_score}) de oude score is:({self.lowest_score})")
             ##print(self.grid_edit.wirepaths_list)
             ##print("")
@@ -346,6 +354,8 @@ class hil_climber_nc:
                 self.lowest_score=nieuwe_score
                 improvementcoun+=1
                 self.optimum_wirelist=self.grid_edit.wirepaths_list
+                improvelist.append((self.lowest_score, loopcounter))
+
                 
                 #hou de nieuwe grid en reset de minimale score
 
@@ -368,4 +378,16 @@ class hil_climber_nc:
         print(f"beste score={self.lowest_score}")
 
         returnlist=self.optimum_wirelist
+        
+
+        with open("histogram.csv", mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows([[value] for value in histolist])
+
+        with open("resultimprovement.csv", mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows(improvelist)
+
+
+
         return returnlist
