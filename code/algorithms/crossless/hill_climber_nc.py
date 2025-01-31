@@ -64,8 +64,10 @@ class hil_climber_nc:
             if (len(self.grid_edit.overlapping_lijst) == 0 and self.grid_edit.valide_counter == self.grid_edit.netlist_counter):
                 self.lowest_score=self.grid_edit.score
                 self.lowest_score+=400
+                self.valid_check=True
             else:
                 self.lowest_score=self.grid_edit.score
+                self.valid_check=False
             print(f"lowest_score{self.lowest_score}")
             self.loop_climb(loop)
         
@@ -290,7 +292,11 @@ class hil_climber_nc:
         start_tijd = datetime.now()
         eind_tijd=start_tijd+timedelta(minutes=loop)
 
-        valid_check=True
+        valid_check=self.valid_check#geeft door of de eerste oplossing valide is
+        highest_valid_count=0
+        issuessolved=0
+
+
         invalid_count=0
         valid_count=0
         improvementcoun=0
@@ -316,17 +322,23 @@ class hil_climber_nc:
                 invalid_count+=1
 
             #zorgt dat de valid check hierboven blijft werken
-            self.grid_edit.valide_counter =0
+            
 
             ##print(self.grid_edit.wirecount) 
             ##print(self.grid_edit.wirecrosscount)
             
             nieuwe_score=self.grid_edit.score
+
+            if self.grid_edit.valid_counter>highest_valid_count:
+                highest_valid_count=self.grid_edit.valide_counter
+                issuessolved+=1
+                self.optimum_wirelist=self.grid_edit.wirepaths_list
+                valid_check=True
             ##print(f"de nieuwe score is:({nieuwe_score}) de oude score is:({self.lowest_score})")
             ##print(self.grid_edit.wirepaths_list)
             ##print("")
             ##print(self.netlist)
-
+            self.grid_edit.valide_counter =0
             #print(f"lowest score check : {self.lowest_score} -- {nieuwe_score} -- {valid_check}")
 
             if self.lowest_score>nieuwe_score and valid_check==True:

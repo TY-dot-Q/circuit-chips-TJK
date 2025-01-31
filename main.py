@@ -14,6 +14,7 @@ if __name__ == "__main__":
 
     # maakt een instantie van grid edit aan en geeft dit door aan andere classes
     grid_edit_obj = grid_edit()
+
     user_input_obj = user_input(grid_edit_obj)
     output_obj = output(grid_edit_obj)
     start_obj = auto_functions(grid_edit_obj)
@@ -25,8 +26,8 @@ if __name__ == "__main__":
     mh_nc_obj=mh_nc(grid_edit_obj)
     
     # Path van de grid en netlist die je wilt oplossen.
-    grid_path="data/chip_0/print_0.csv"
-    netlist_path="data/chip_0/netlist/netlist_1.csv"
+    grid_path="data/chip_1/print_1.csv"
+    netlist_path="data/chip_1/netlist/netlist_2.csv"
     name_file = "data/test.csv"
 
     # maakt file weer leeg
@@ -44,8 +45,8 @@ if __name__ == "__main__":
     
 
     #----------------No cross finder-----------------------
-    reset_wires_amount = 3 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
-    reloop_time = 1 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
+    reset_wires_amount = 8 #hoeveel wires je per keer wilt laten verwijderen en opnieuw leggen
+    reloop_time = 15 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
     mh_nc_obj.netlist_looper(netlist_list)
     optimum=hil_climber_nc_obj.start_hill_climb(reset_wires_amount, netlist_list, reloop_time)
     
@@ -60,14 +61,14 @@ if __name__ == "__main__":
     #hil_climber_obj.start_hill_climb(reset_wires, netlist_list, reloop_time) #wertk nog niet
 
     #-----------------resulten------------------------------
-    wirecount = grid_edit_obj.update_wirecount()
+    #wirecount = grid_edit_obj.update_wirecount()
     # succes = grid_edit_obj.check_all_overlaps() 
-    grid_edit_obj.find_wirecross() 
-    match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
+    #grid_edit_obj.find_wirecross() 
+    #match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
     # scores bepalen
-    output_obj.costen_berekening(wirecount)
-    print(grid_edit_obj.score)
-    user_input_obj.score_request(wirecount)
+    #output_obj.costen_berekening(wirecount)
+    #print(grid_edit_obj.score)
+    #user_input_obj.score_request(wirecount)
 
     #----------------visualisatie----------------------------
     
@@ -76,24 +77,23 @@ if __name__ == "__main__":
     output_obj.print_grid() 
 
     
-    output_obj.output_to_csv(match_wires, netlist_path)
+    #output_obj.output_to_csv(match_wires, netlist_path)
 
     # schrijf de resultaten naar het bestand wirepaths.csv
-    output_obj.write_to_csv(wirecount, name_file)
+    #output_obj.write_to_csv(wirecount, name_file)
    
     # 3d visualisatie
     output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
     # Run the algorithm for a number of iterations
-    max_iterations = 100000
-    iterations = input("Hoeveel iteraties wil je runnen?: ")
-    while not iterations.isdigit() or int(iterations) > max_iterations:
-        iterations = input("Voer een geldig getal in tussen 1 en 100000: ")
-    iterations = int(iterations)
-
-    for i in range(iterations):
-        grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
+   # max_iterations = 100000
+   # iterations = input("Hoeveel iteraties wil je runnen?: ")
+    #while not iterations.isdigit() or int(iterations) > max_iterations:
+        #iterations = input("Voer een geldig getal in tussen 1 en 100000: ")
+   ## iterations = int(iterations)
+   # for i in range(iterations):
+        #grid_edit_obj.reset_grid()  # Reset the grid while keeping the gates in place
 
         # Run the algorithm on the netlist
         #algorithm_obj.netlist_looper(netlist_list)
@@ -103,12 +103,10 @@ if __name__ == "__main__":
         #grid_edit_obj.find_wirecross() 
 
         # Compute cost and score
-        output_obj.costen_berekening(wirecount)
-        user_input_obj.match_wirepaths_to_nets(netlist_list)
-        output_obj.write_to_csv(wirecount, name_file)
-
-        # print de grid in de terminal (kan uitgezet worden met '#')
-        output_obj.print_grid() 
+        #output_obj.costen_berekening(wirecount)
+        #user_input_obj.match_wirepaths_to_nets(netlist_list)
+        #output_obj.write_to_csv(wirecount, name_file)
+        #print(grid_edit_obj.valide_counter, grid_edit_obj.netlist_counter)
 
         #print(f"Iteration {i+1} Score: {grid_edit_obj.score}")
 
