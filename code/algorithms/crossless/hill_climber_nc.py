@@ -329,7 +329,7 @@ class hil_climber_nc:
             
             nieuwe_score=self.grid_edit.score
 
-            if self.grid_edit.valid_counter>highest_valid_count:
+            if self.grid_edit.valide_counter>highest_valid_count:
                 highest_valid_count=self.grid_edit.valide_counter
                 issuessolved+=1
                 self.optimum_wirelist=self.grid_edit.wirepaths_list
