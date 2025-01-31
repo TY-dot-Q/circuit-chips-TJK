@@ -63,30 +63,6 @@ if __name__ == "__main__":
     # reloop_time = 5 # de hoeveelheid tijd in minuten dat het opnieuw gaat lopen
     #hil_climber_obj.start_hill_climb(reset_wires, netlist_list, reloop_time) #wertk nog niet
 
-    #-----------------resulten------------------------------
-    wirecount = grid_edit_obj.update_wirecount()
-    # succes = grid_edit_obj.check_all_overlaps() 
-    grid_edit_obj.find_wirecross() 
-    match_wires = user_input_obj.match_wirepaths_to_nets(netlist_list)
-    # scores bepalen
-    output_obj.costen_berekening(wirecount)
-    print(grid_edit_obj.score)
-    user_input_obj.score_request(wirecount)
-
-    #----------------visualisatie----------------------------
-    
-    # print de grid in de terminal
-    
-    output_obj.print_grid() 
-
-    
-    output_obj.output_to_csv(match_wires, netlist_path)
-
-    # schrijf de resultaten naar het bestand wirepaths.csv
-    output_obj.write_to_csv(wirecount, name_file)
-   
-    # 3d visualisatie
-    output_obj.visualisatie()
     
     # ----------------iteration runner----------------------------
     # Run the algorithm for a number of iterations
