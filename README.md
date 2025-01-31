@@ -46,5 +46,15 @@ alle output die het programma produceert komt in de onderstaande map:
 /data
 """
 
+# Uitleg algoritmes
+
+
+
+
+
+# Dank
+* Alle TA's van de minor programmeren 
+* Martijn, Jelle, Wouter 
+* Onze begeleiders - Jacob & Jona
 
 
